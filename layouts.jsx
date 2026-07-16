@@ -499,10 +499,25 @@ function Contact({ spec }) {
 }
 
 /* ---------- 8. off-topic ---------- */
+const OFFTOPIC_SUGGESTIONS = [
+  "what's your best work?",
+  "tell me about manyfest",
+  "do you still dance?",
+  "why should we hire you?",
+];
+
 function OffTopic({ spec, onAsk }) {
   return (
     <div className="offtopic">
       <div className="big">{spec.big}</div>
+      <div className="ot-try">
+        <span className="ot-try-label">but i'm happy to answer:</span>
+        <div className="ot-chips">
+          {OFFTOPIC_SUGGESTIONS.map((q) => (
+            <button className="ot-chip" key={q} onClick={() => onAsk && onAsk(q)}>{q}</button>
+          ))}
+        </div>
+      </div>
       <button className="back-btn" onClick={() => onAsk && onAsk("show me your work")}>ok, back to work →</button>
     </div>
   );
