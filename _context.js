@@ -137,7 +137,7 @@ Rules:
    layout "manyfest-case" is ONLY for manychat-ds (items must be exactly ["manychat-ds"]).
    layout "releve-case" is ONLY for releve (items must be exactly ["releve"]).
    For canal, baw, espm use layout "single-project" with items being that one id.
-4. layout "gallery" / "quality-showcase" / "themed-list" take an array of project ids from:
+4. layout "gallery" / "themed-list" take an array of project ids from:
    ${GALLERY_IDS.join(", ")}.
    "gallery" is ONLY for browsing everything ("show me your work", "what have you done") -- all ids.
    ANY subjective or curated question about her WORK (best, favorite, worst, proudest, things she'd
