@@ -167,9 +167,10 @@ function ComposedPage({ spec, onAsk }) {
   const say = spec.answer || spec.intro;
   const showSay = !isAbout && !isContact && !isCase && say;
 
-  /* work-browsing layouts: two columns — the AI's answer stays pinned on the
-     left while the folders with the projects scroll on the right */
-  const isWork = spec.layout === "gallery" || spec.layout === "themed-list" || spec.layout === "quality-showcase";
+  /* curated work answers (best/worst/themed): two columns — the AI's answer
+     pinned left, folders right. the full gallery ("show me your work") keeps
+     its original big layout. */
+  const isWork = spec.layout === "themed-list" || spec.layout === "quality-showcase";
   if (isWork && showSay) {
     return (
       <div className="canvas canvas-wide page-enter">

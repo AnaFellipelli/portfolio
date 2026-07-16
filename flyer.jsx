@@ -32,6 +32,7 @@ body.contact-mode .page-enter{overflow:visible !important}
 @keyframes flpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
 .fl-answer{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
   font-size:clamp(30px,4vw,48px);line-height:1.2;color:#201d2b;max-width:13ch;margin:0 0 24px}
+.fl-answer.long{font-size:clamp(19px,1.9vw,26px);line-height:1.5;max-width:34ch}
 .fl-caret{display:inline-block;width:8px;height:.78em;background:#6B4EFF;vertical-align:-2px;
   margin-left:4px;border-radius:1px;animation:flblink 1s steps(1) infinite}
 @keyframes flblink{50%{opacity:0}}
@@ -229,8 +230,9 @@ function ContactFlyer({ spec }) {
           <span className="fl-status-dot" aria-hidden="true"></span>
           available · são paulo
         </div>
-        {/* the AI's real answer takes the headline slot when there is one */}
-        <p className="fl-answer">
+        {/* the AI's real answer takes the headline slot when there is one;
+            long answers drop to a readable size instead of shouting */}
+        <p className={"fl-answer" + (spec && spec.answer && spec.answer.length > 60 ? " long" : "")}>
           {(spec && spec.answer) || "always open to the right thing."}
           <span className="fl-caret" aria-hidden="true"></span>
         </p>
