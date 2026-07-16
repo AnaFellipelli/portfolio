@@ -23,7 +23,7 @@ const RENDER_PAGE_TOOL = {
       layout: {
         type: "string",
         enum: [
-          "single-project", "gallery", "quality-showcase", "themed-list",
+          "single-project", "gallery", "themed-list",
           "about", "contact", "off-topic", "case-study", "manyfest-case", "releve-case",
         ],
       },
@@ -82,6 +82,7 @@ function normalizeSpec(raw) {
   if (!raw || typeof raw !== "object" || typeof raw.layout !== "string") return GALLERY_FALLBACK;
 
   let { layout, items } = raw;
+  if (layout === "quality-showcase") layout = "themed-list"; // retired layout
   const title = clamp(raw.title, 40);
   const subtitle = clamp(raw.subtitle, 60);
   const intro = clamp(raw.intro, 140);
@@ -115,8 +116,10 @@ function normalizeSpec(raw) {
 
   if (layout === "gallery" || layout === "quality-showcase" || layout === "themed-list") {
     const valid = items.filter((x) => GALLERY_IDS.includes(x));
-    if (!valid.length) return { ...GALLERY_FALLBACK, answer };
-    return { layout, title: title || "selected work.", subtitle: subtitle || "", intro: intro || "", answer, items: valid };
+    /* work pages: the answer is an opener, two rendered lines max */
+    const short = clampAnswer(answer, 140);
+    if (!valid.length) return { ...GALLERY_FALLBACK, answer: short };
+    return { layout, title: title || "selected work.", subtitle: subtitle || "", intro: intro || "", answer: short, items: valid };
   }
 
   return GALLERY_FALLBACK;
