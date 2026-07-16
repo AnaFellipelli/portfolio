@@ -384,12 +384,11 @@
   }
   .ai-says .dotmark { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .ai-intro {
-    /* Unna 400 italic: calm editorial voice for the answers */
     font-family: "Unna", "Playfair Display", Georgia, serif;
     font-style: italic; font-weight: 400; letter-spacing: 0.015em;
-    font-size: clamp(16px, 1.5vw, 19px); line-height: 1.6; color: var(--text);
+    font-size: clamp(18px, 1.8vw, 22px); line-height: 1.6; color: var(--text);
     max-width: 640px; margin: 0 0 56px;
-    position: relative; /* ghost reserves the final height — no reflow while typing */
+    position: relative;
   }
   .ai-intro .ai-ghost { visibility: hidden; display: block; }
   .ai-intro .ai-live { position: absolute; inset: 0; }
