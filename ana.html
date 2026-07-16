@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,550;1,9..144,450;1,9..144,550&display=swap" rel="stylesheet" />
 
 <style>
   :root {
@@ -363,9 +363,10 @@
   }
   .ai-says .dotmark { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .ai-intro {
-    /* readable first: the answer is content, not decoration */
-    font-family: var(--sans); font-weight: 450;
-    font-size: clamp(17px, 1.6vw, 21px); line-height: 1.65; color: var(--text);
+    /* Fraunces: calligraphic soul, readable body — the voice of the answers */
+    font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 450;
+    font-size: clamp(20px, 1.9vw, 25px); line-height: 1.55; color: var(--text);
+    letter-spacing: 0.002em;
     max-width: 640px; margin: 0 0 56px;
     position: relative; /* ghost reserves the final height — no reflow while typing */
   }
