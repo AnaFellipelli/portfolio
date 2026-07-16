@@ -316,11 +316,6 @@ function FolderCard({ id, onAsk, showDesc }) {
 function FolderGallery({ spec, onAsk }) {
   return (
     <div>
-      <div className="page-head">
-        <h1 className="page-title med" dangerouslySetInnerHTML={{ __html: emph(spec.title) }} />
-        <p className="page-sub">{spec.subtitle}</p>
-      </div>
-      <p className="folder-hint">hover to peek · click to open a folder</p>
       <div className="folder-grid">
         {spec.items.map((id) => (
           <FolderCard key={id} id={id} onAsk={onAsk} />
