@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,550;1,9..144,450;1,9..144,550&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,600&display=swap" rel="stylesheet" />
 
 <style>
   :root {
@@ -27,7 +27,7 @@
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --display: "Archivo", system-ui, sans-serif;
+    --display: "Bricolage Grotesque", "Archivo", system-ui, sans-serif;
     --serif: "Playfair Display", Georgia, serif;
     --sans: "DM Sans", system-ui, sans-serif;
     --mono: "DM Mono", ui-monospace, monospace;
@@ -337,6 +337,27 @@
   .hero-about { position: relative; }
   .hero-about > .canvas { border-top: 1px solid var(--border); padding-top: 96px; }
 
+  /* site footer — closes the home scroll and the work page */
+  .site-footer {
+    max-width: 1080px; margin: 0 auto; padding: 56px 0 64px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .hero-footer .site-footer { max-width: none; margin: 0 48px; }
+  .sf-logo { font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--text); }
+  .sf-links { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-left: auto; }
+  .sf-link {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer;
+    text-decoration: none; transition: color .25s ease;
+  }
+  .sf-link:hover { color: var(--accent); }
+  .sf-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 700px) {
+    .site-footer { flex-direction: column; gap: 20px; }
+  }
+
   /* dot → line → portal primitives (pre-input reveal) */
   .seed-wrap {
     position: relative; height: 60px; width: min(480px, 86vw);
@@ -363,10 +384,10 @@
   }
   .ai-says .dotmark { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
   .ai-intro {
-    /* Fraunces: calligraphic soul, readable body — the voice of the answers */
-    font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 450;
-    font-size: clamp(20px, 1.9vw, 25px); line-height: 1.55; color: var(--text);
-    letter-spacing: 0.002em;
+    /* Bodoni Moda 600: magazine chic with enough ink — the voice of the answers */
+    font-family: "Bodoni Moda", "Playfair Display", Georgia, serif;
+    font-style: italic; font-weight: 600;
+    font-size: clamp(20px, 2vw, 24px); line-height: 1.6; color: var(--text);
     max-width: 640px; margin: 0 0 56px;
     position: relative; /* ghost reserves the final height — no reflow while typing */
   }
@@ -428,8 +449,9 @@
   /* ─────────── shared content atoms ─────────── */
   .page-head { margin-bottom: 8px; }
   .page-title {
-    font-family: var(--display); font-weight: 900; letter-spacing: -0.025em;
-    line-height: 0.9; margin: 0; color: var(--text); text-transform: uppercase;
+    font-family: var(--display); font-weight: 800;
+    letter-spacing: -0.045em; word-spacing: -0.06em;
+    line-height: 0.95; margin: 0; color: var(--text); text-transform: lowercase;
   }
   .page-title.huge { font-size: clamp(56px, 12vw, 140px); }
   .page-title.big { font-size: clamp(44px, 8vw, 96px); }
@@ -516,7 +538,7 @@
   .honest-row:hover .to { color: var(--accent); }
 
   /* about — one continuous lavender surface */
-  body.about-mode { background: #ebecf5; }
+  body.about-mode { background: #ebecf5; } /* matches the badge video backdrop */
   body.about-mode .atmosphere, body.about-mode .grain { display: none; }
   /* contact keeps its lavender all the way down — no cream on scroll */
   body.contact-mode { background: #eae6f7; }
@@ -568,8 +590,9 @@
   .about-now .v { font-size: 15px; line-height: 1.5; color: var(--muted-2); }
 
   /* hero serif answer */
-  .about-lead { font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 450;
-    font-size: clamp(19px, 2vw, 24px); line-height: 1.55; color: var(--text);
+  .about-lead { font-family: "Bodoni Moda", "Playfair Display", Georgia, serif;
+    font-style: italic; font-weight: 600;
+    font-size: clamp(19px, 2vw, 24px); line-height: 1.6; color: var(--text);
     max-width: 560px; margin: 0 0 26px; }
 
   /* video edge blend into the lavender */
@@ -946,6 +969,12 @@
     object-fit: cover; object-position: top center;
   }
   .fi-device .fi-img { border-radius: 12px; align-self: stretch; }
+  /* art-directed crop window — clips a zoomed/repositioned capture so the
+     scaled image never bleeds over bezels or caption bars */
+  .fi-crop { flex: 1; min-height: 0; align-self: stretch; overflow: hidden; display: block; position: relative; }
+  .fi-crop .fi-img { width: 100%; height: 100%; }
+  .fi-device .fi-crop { border-radius: 12px; }
+  .fi-device .fi-crop .fi-img { border-radius: 0; }
 
   /* phone screenshot — narrow */
   .fi-screen-paper { border-radius: 12px; }

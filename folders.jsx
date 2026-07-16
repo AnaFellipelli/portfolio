@@ -67,6 +67,17 @@ function ManychatMark() {
   );
 }
 
+/* per-item art direction — `pos` picks the focal point (object-position),
+   `zoom` magnifies into that same point (transform-origin follows `pos`),
+   so each artefact peeks with its most interesting region, not a blind top crop. */
+function artStyle(item) {
+  if (!item.pos && !item.zoom) return undefined;
+  const s = {};
+  if (item.pos) { s.objectPosition = item.pos; s.transformOrigin = item.pos; }
+  if (item.zoom) { s.transform = "scale(" + item.zoom + ")"; }
+  return s;
+}
+
 /* the artefact that peeks out of a folder */
 function FolderItem({ item }) {
   const { kind } = item;
@@ -74,7 +85,7 @@ function FolderItem({ item }) {
   if (kind === "photostrip") {
     return (
       <div className="fi fi-photo strip">
-        <img src={item.src} alt={item.caption || ""} loading="lazy" />
+        <img src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} />
       </div>
     );
   }
@@ -82,7 +93,7 @@ function FolderItem({ item }) {
   if (kind === "photo") {
     return (
       <div className="fi fi-polaroid">
-        <span className="fi-pol-pic"><img src={item.src} alt={item.caption || ""} loading="lazy" /></span>
+        <span className="fi-pol-pic"><img src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
       </div>
     );
   }
@@ -118,7 +129,7 @@ function FolderItem({ item }) {
       <div className="fi fi-device">
         <span className="fi-notch"></span>
         {item.src
-          ? <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" />
+          ? <span className="fi-crop"><img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
           : <span className="fi-screen"></span>}
         <span className="fi-cap">{item.caption}</span>
       </div>
@@ -130,7 +141,7 @@ function FolderItem({ item }) {
       <div className="fi fi-screen-paper">
         <span className="fi-bar"></span>
         {item.src
-          ? <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" />
+          ? <span className="fi-crop"><img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
           : <span className="fi-fill"></span>}
         <span className="fi-cap">{item.caption}</span>
       </div>
@@ -142,7 +153,7 @@ function FolderItem({ item }) {
     <div className="fi fi-shot">
       <span className="fi-bar wide"></span>
       {item.src
-        ? <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" />
+        ? <span className="fi-crop"><img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
         : <span className="fi-fill"></span>}
       <span className="fi-cap">{item.caption}</span>
     </div>

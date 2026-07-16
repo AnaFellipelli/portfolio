@@ -11,7 +11,7 @@
    Registers LAYOUTS["releve-case"] → hash route #/releve (app.jsx).
    ════════════════════════════════════════════════════════════ */
 
-const { useEffect: useEffectRlv } = React;
+const { useEffect: useEffectRlv, useState: useStateRlv } = React;
 
 /* ── (r)elevē identity — sampled, not invented ──
    stage black  #000000  (deck page bg, sampled releve-1/2/4)
@@ -197,6 +197,18 @@ const __RLV_STYLE = `
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .rl-duo { grid-template-columns: 1fr; } }
 
+  /* demo — two columns on the page grid: the title left, the phone right */
+  .rl-demo-duo { max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
+    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px);
+    display: grid; grid-template-columns: 1fr auto;
+    gap: clamp(28px, 5vw, 80px); align-items: center; }
+  @media (max-width: 1100px){ .rl-demo-duo { padding-left: clamp(24px, 5vw, 72px); } }
+  @media (max-width: 860px){ .rl-demo-duo { grid-template-columns: 1fr; justify-items: center; }
+    .rl-demo-left { text-align: center; } }
+  .rl-demo-title { font-family: var(--display, inherit); font-weight: 800;
+    text-transform: lowercase; letter-spacing: -0.04em; line-height: 0.95;
+    margin: 0; color: #fff; font-size: clamp(56px, 9vw, 140px); }
+
   /* the live prototype — the app in its own phone shell, running in demo mode */
   .rl-proto { display: flex; flex-direction: column; align-items: center; }
   .rl-proto-kicker { font-family: var(--rl-mono); font-size: 10.5px; letter-spacing: 0.24em;
@@ -204,12 +216,15 @@ const __RLV_STYLE = `
     align-items: center; gap: 10px; color: var(--text); }
   .rl-proto-kicker::before { content: ""; width: 8px; height: 8px; border-radius: 4px;
     background: var(--green); /* prototype C.green — the "live" dot */ }
-  .rl-phone { width: min(393px, calc(100vw - 48px)); height: 820px; border-radius: 55px;
+  /* the shell is ALWAYS a true iphone (393×820, radius 55) — when the viewport
+     is shorter than the phone, the whole object scales down as one piece
+     (js sets the wrapper size + transform), never squashed to a new ratio */
+  .rl-phone-fit { position: relative; }
+  .rl-phone { width: 393px; height: 820px; border-radius: 55px; transform-origin: top left;
     /* the prototype's own shell: 393px, radius 55, hairline border — read from its CSS */
     border: 2px solid rgba(255,255,255,0.1); overflow: hidden; background: #000;
     box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 90px rgba(91,63,232,0.18); }
   .rl-phone iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
-  @media (max-width: 460px){ .rl-phone { height: 74vh; min-height: 560px; border-radius: 36px; } }
 
   /* ── process — four beats ── */
   .rl-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -312,6 +327,28 @@ const RLV_OWN = [
   { h: "Research & testing", p: "Studio observation, six personas, the user-testing protocol. 83% task success, 4.4/5 usability, and six dancers who'd use it again." },
 ];
 
+/* iphone shell at true ratio — scales down as one object to fit the viewport */
+function RlvPhone() {
+  const [ps, setPs] = useStateRlv(1);
+  useEffectRlv(() => {
+    const fit = () => setPs(Math.min(
+      1,
+      (window.innerHeight - 130) / 820, /* room for the kicker + caption */
+      (window.innerWidth - 48) / 393
+    ));
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+  return (
+    <div className="rl-phone-fit" style={{ width: Math.round(393 * ps), height: Math.round(820 * ps) }}>
+      <div className="rl-phone" style={{ transform: "scale(" + ps + ")" }}>
+        <iframe src="https://releve-gvuu.onrender.com/" title="(r)elevē live prototype · ballet correction app" loading="lazy"></iframe>
+      </div>
+    </div>
+  );
+}
+
 function RlvScrollTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -394,22 +431,19 @@ function RlvCase({ spec, onAsk }) {
           </p>
         </div>
 
-        <div className="rl-wide">
-          {/* the composed product shot — frameless, the slide already stages the device */}
-          <figure style={{ margin: 0 }}>
-            <div className="rl-shot bare"><img src="releve-1.jpg" alt="(r)elevē demo slide: the app's home screen with technique score 48/100, exam countdown and session history, staged over an aurora gradient" loading="lazy" /></div>
-            <figcaption className="rl-cap">demo · composed shot · home screen, score ring, session history</figcaption>
-          </figure>
+        {/* demo — two columns: title on the page grid, the phone beside it */}
+        <div className="rl-demo-duo">
+          <div className="rl-demo-left">
+            <h3 className="rl-demo-title">demo</h3>
+            <p className="rl-cap" style={{ marginTop: 10 }}>what (r)elevē is, and how it works.</p>
+          </div>
 
           {/* ← the centerpiece: the app itself, in its own shell */}
           <figure className="rl-proto" id="rl-proto" style={{ margin: 0 }}>
             <span className="rl-proto-kicker">live prototype · demo mode, click through it</span>
-            <div className="rl-phone">
-              <iframe src="releve-proto.html" title="(r)elevē live prototype · ballet correction app" loading="lazy"></iframe>
-            </div>
+            <RlvPhone />
             <figcaption className="rl-cap">prototype · live build · upload → analysis → timestamped corrections</figcaption>
           </figure>
-
         </div>
       </section>
 
