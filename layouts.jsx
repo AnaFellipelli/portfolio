@@ -523,6 +523,21 @@ function OffTopic({ spec, onAsk }) {
   );
 }
 
+/* ---------- site footer — contacts + about, shared by home and work ---------- */
+function SiteFooter({ onAsk }) {
+  return (
+    <footer className="site-footer">
+      <span className="sf-logo">ana.</span>
+      <nav className="sf-links" aria-label="footer">
+        <button className="sf-link" onClick={() => onAsk && onAsk("who are you")}>about me →</button>
+        <a className="sf-link" href="mailto:anacristinafellipelli@gmail.com">email ↗</a>
+        <a className="sf-link" href="https://www.linkedin.com/in/ana-fellipelli/" target="_blank" rel="noreferrer noopener">linkedin ↗</a>
+        <button className="sf-link" onClick={() => onAsk && onAsk("how can i reach you?")}>contact →</button>
+      </nav>
+    </footer>
+  );
+}
+
 /* ---------- spec drawer (devtools easter egg) ---------- */
 function SpecDrawer({ spec }) {
   const [open, setOpen] = useStateL(false);
@@ -575,4 +590,5 @@ function colorizeJSON(json) {
 Object.assign(window, {
   Typewriter, ProjectCard, SpecDrawer, LAYOUTS, NextProjectFooter, PROJECT_NAV, JustifiedRow,
   SingleProject, Gallery, QualityShowcase, ThemedList, HonestList, About, Contact, OffTopic,
+  SiteFooter,
 });

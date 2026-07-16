@@ -889,7 +889,7 @@ function WeaveCase({ spec, onAsk }) {
             <div className="wv2-result"><div className="rn"><span className="tbd">TBD</span></div><div className="rl">teams adopting without designer support · the number is real, pending clearance to publish</div></div>
           </div>
 
-          <div className="wv2-context" style={{ marginBottom: 48 }}>
+          <div className="wv2-context" style={{ marginBottom: 48, gridTemplateColumns: "1fr" }}>
             <p>Three years on Weave taught me that the best systems are invisible: they enable the product without announcing themselves. When teams stop asking "how does this work?" and start shipping, the system is working. The documentation-first bet paid off in the quietest possible way: silence from the support channel.</p>
           </div>
 

@@ -191,20 +191,27 @@ function ComposedPage({ spec, onAsk }) {
     );
   }
 
+  /* every main page (work, about, contact) closes on the same footer */
+  const isGallery = spec.layout === "gallery" || isAbout || isContact;
   return (
-    <div className="canvas page-enter">
-      <DoodleLayer doodles={spec.doodles} active={introDone} />
-      {showSay && (
-        <React.Fragment>
-          <div className="ai-says"><span className="dotmark"></span>ana says:</div>
-          <div className="ai-intro">
-            <span className="ai-ghost" aria-hidden="true">{say}</span>
-            <span className="ai-live"><Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} /></span>
-          </div>
-        </React.Fragment>
+    <React.Fragment>
+      <div className="canvas page-enter">
+        <DoodleLayer doodles={spec.doodles} active={introDone} />
+        {showSay && (
+          <React.Fragment>
+            <div className="ai-says"><span className="dotmark"></span>ana says:</div>
+            <div className="ai-intro">
+              <span className="ai-ghost" aria-hidden="true">{say}</span>
+              <span className="ai-live"><Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} /></span>
+            </div>
+          </React.Fragment>
+        )}
+        <Body spec={spec} onAsk={onAsk} />
+      </div>
+      {isGallery && !spec._embedded && typeof SiteFooter !== "undefined" && (
+        <div className="hero-footer"><SiteFooter onAsk={onAsk} /></div>
       )}
-      <Body spec={spec} onAsk={onAsk} />
-    </div>
+    </React.Fragment>
   );
 }
 
@@ -224,10 +231,7 @@ function App() {
   if (!workSpecRef.current && typeof mockCompose === "function") {
     workSpecRef.current = mockCompose("show me your work");
   }
-  const aboutSpecRef = uR(null); // the about section rendered below the gallery
-  if (!aboutSpecRef.current && typeof mockCompose === "function") {
-    aboutSpecRef.current = { ...mockCompose("who are you"), _embedded: true };
-  }
+  /* the about section left the home scroll — a footer closes the page instead */
 
   /* push tweak values to CSS vars the folder layout reads */
   uE(() => {
@@ -582,10 +586,7 @@ function App() {
             {workSpecRef.current && <ComposedPage spec={workSpecRef.current} onAsk={submit} />}
           </div>
 
-          {/* keep scrolling — the about section follows in the same scroll */}
-          <div className="hero-about" id="about-preview">
-            {aboutSpecRef.current && <ComposedPage spec={aboutSpecRef.current} onAsk={submit} />}
-          </div>
+          {/* the gallery's ComposedPage appends the footer — the scroll ends there */}
         </React.Fragment>
       )}
 
