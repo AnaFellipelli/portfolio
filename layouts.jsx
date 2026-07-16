@@ -532,7 +532,7 @@ function SiteFooter({ onAsk }) {
         <button className="sf-link" onClick={() => onAsk && onAsk("who are you")}>about me →</button>
         <a className="sf-link" href="mailto:anacristinafellipelli@gmail.com">email ↗</a>
         <a className="sf-link" href="https://www.linkedin.com/in/ana-fellipelli/" target="_blank" rel="noreferrer noopener">linkedin ↗</a>
-        <button className="sf-link" onClick={() => onAsk && onAsk("how can i reach you?")}>contact →</button>
+        <button className="sf-link" onClick={() => onAsk && onAsk("are you open to work")}>contact →</button>
       </nav>
     </footer>
   );

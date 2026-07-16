@@ -164,7 +164,10 @@ function ComposedPage({ spec, onAsk }) {
      case pages stay quiet -- diving into the case IS the answer, and a text
      block up top fights the hero. about and contact render the answer INSIDE
      their own layouts (lead / flyer headline). one answer on screen, ever. */
-  const say = spec.answer || spec.intro;
+  /* the full gallery always keeps its curated opener (same copy as data.jsx's gallery entry) —
+     the AI answer only speaks on other pages */
+  const GALLERY_SAY = "every case page wears its project's skin. dive into each universe, and i'll tell you the messy parts if you ask.";
+  const say = spec.layout === "gallery" ? GALLERY_SAY : (spec.answer || spec.intro);
   const showSay = !isAbout && !isContact && !isCase && say;
 
   /* curated work answers (best/worst/themed): two columns — the AI's answer
@@ -542,7 +545,7 @@ function App() {
             <div className="hero-core">
               <div className={"hero-text" + (stage >= 5 ? " shown" : "")}>
                 <div className="hero-eyebrow">ai product designer</div>
-                <h1 className="hero-title">hi, i'm&nbsp;<em>ana </em></h1>
+                <h1 className="hero-title">hi, i'm&nbsp;<em>ana</em>&nbsp;</h1>
                 <p className="hero-sub">ask me anything.</p>
               </div>
 

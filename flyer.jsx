@@ -13,27 +13,38 @@ const FL_LINKEDIN_URL = "https://www.linkedin.com/in/ana-fellipelli/";
 const FL_LINKEDIN_LABEL = "linkedin.com/in/ana-fellipelli";
 
 const FLYER_CSS = `
-.flc{max-width:880px;margin:0 auto;padding-top:8px}
+.flc{max-width:1120px;margin:0 auto;padding-top:8px}
 .flc *{box-sizing:border-box}
+
+/* two columns: the AI's answer pinned left, contact right */
+.flc-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:72px;align-items:start}
+.flc-left{position:sticky;top:96px}
+@media(max-width:840px){
+  .flc-grid{grid-template-columns:1fr;gap:44px}
+  .flc-left{position:static}
+}
+
 .flc-status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
   font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
   border:1px solid rgba(107,78,255,.28);border-radius:999px;padding:6px 14px;
-  background:rgba(107,78,255,.06);margin-bottom:34px;width:fit-content}
+  background:rgba(107,78,255,.06);margin-bottom:30px;width:fit-content}
 .flc-status i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;
   font-style:normal;animation:flcpulse 2s ease-in-out infinite}
 @keyframes flcpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
 
+.flc-ai-label{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.flc-ai-label i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;font-style:normal}
 .flc-answer{font-family:"Bodoni Moda","Playfair Display",Georgia,serif;font-style:italic;font-weight:600;
-  font-size:clamp(19px,2vw,24px);line-height:1.6;color:var(--text);
-  max-width:620px;margin:0 0 46px}
+  font-size:clamp(19px,1.8vw,23px);line-height:1.6;color:var(--text);margin:0}
 .flc-answer .caret{display:inline-block;width:8px;height:.78em;background:var(--accent);
   vertical-align:-2px;margin-left:4px;border-radius:1px;animation:flcblink 1s steps(1) infinite}
 @keyframes flcblink{50%{opacity:0}}
 
 .flc-title{font-family:var(--display);font-weight:800;text-transform:lowercase;
-  letter-spacing:-0.045em;word-spacing:-0.06em;font-size:clamp(56px,9vw,110px);line-height:.95;
+  letter-spacing:-0.045em;word-spacing:-0.06em;font-size:clamp(48px,6.5vw,84px);line-height:.95;
   color:var(--text);margin:0 0 14px}
-.flc-sub{font-size:16px;color:var(--muted-2);margin:0 0 56px}
+.flc-sub{font-size:16px;color:var(--muted-2);margin:0 0 44px}
 
 .flc-rows{border-top:1px solid var(--border-strong,rgba(13,13,13,.14))}
 .flc-row{display:flex;align-items:center;gap:22px;width:100%;text-align:left;
@@ -92,18 +103,24 @@ function ContactFlyer({ spec }) {
     <div className="flc">
       <style>{FLYER_CSS}</style>
 
-      <div className="flc-status"><i aria-hidden="true"></i>são paulo · barcelona</div>
+      <div className="flc-grid">
 
-      {/* the AI's real answer when there is one, otherwise the page's own line */}
-      <p className="flc-answer">
-        {(spec && spec.answer) || "always open to the right thing."}
-        <span className="caret" aria-hidden="true"></span>
-      </p>
+        {/* left — the AI's answer to the standard question ("are you open to work") */}
+        <div className="flc-left">
+          <div className="flc-status"><i aria-hidden="true"></i>são paulo · barcelona</div>
+          <div className="flc-ai-label"><i aria-hidden="true"></i>ana says:</div>
+          <p className="flc-answer">
+            {(spec && spec.answer) || "always open to the right thing."}
+            <span className="caret" aria-hidden="true"></span>
+          </p>
+        </div>
 
-      <h1 className="flc-title">let's talk.</h1>
-      <p className="flc-sub">product design, design systems, and ai — tell me what you're building.</p>
+        {/* right — the contact itself */}
+        <div className="flc-right">
+          <h1 className="flc-title">let's talk.</h1>
+          <p className="flc-sub">product design, design systems, and ai — tell me what you're building.</p>
 
-      <div className="flc-rows">
+          <div className="flc-rows">
         <button
           type="button"
           className={"flc-row" + (copied ? " copied" : "")}
@@ -128,8 +145,10 @@ function ContactFlyer({ spec }) {
           <span className="flc-hint">opens profile</span>
           <span className="flc-arr" aria-hidden="true">↗</span>
         </a>
-      </div>
+          </div>
+        </div>
 
+      </div>
     </div>
   );
 }
