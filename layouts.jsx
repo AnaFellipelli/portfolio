@@ -374,7 +374,7 @@ function About({ spec }) {
             <span className="ana-av" aria-hidden="true"></span>
             <span className="ana-says-label">ana says:</span>
           </div>
-          <p className="about-lead">born in são paulo, started in ballet, ended up designing with ai. five years in, still learning.</p>
+          <p className="about-lead">{(spec && spec.answer) || "born in são paulo, started in ballet, ended up designing with ai. five years in, still learning."}</p>
           <ul className="about-values">
             <li>systems thinker</li>
             <li>ai-native</li>

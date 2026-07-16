@@ -161,9 +161,10 @@ function ComposedPage({ spec, onAsk }) {
   const isCase = spec.layout === "case-study" || spec.layout === "single-project" || (spec.layout && spec.layout.endsWith("-case"));
   const isContact = spec.layout === "contact";
   /* the real AI answer when the backend sent one, otherwise the flavor intro.
-     case pages normally stay quiet, but a real answer earns the "ana says" slot. */
+     case and contact pages normally stay quiet, but a real answer earns the slot --
+     that's where "why should we hire you" gets its actual pitch. */
   const say = spec.answer || spec.intro;
-  const showSay = !isAbout && !isContact && say && (!isCase || !!spec.answer);
+  const showSay = !isAbout && say && ((!isCase && !isContact) || !!spec.answer);
   return (
     <div className="canvas page-enter">
       <DoodleLayer doodles={spec.doodles} active={introDone} />
