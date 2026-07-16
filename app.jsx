@@ -545,7 +545,7 @@ function App() {
             <div className="hero-core">
               <div className={"hero-text" + (stage >= 5 ? " shown" : "")}>
                 <div className="hero-eyebrow">ai product designer</div>
-                <h1 className="hero-title">hi, i'm&nbsp;<em>ana</em>&nbsp;</h1>
+                <h1 className="hero-title">hi, i'm&nbsp;<em>ana </em>&nbsp;</h1>
                 <p className="hero-sub">ask me anything.</p>
               </div>
 
