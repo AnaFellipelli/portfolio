@@ -149,7 +149,7 @@ function FolderItem({ item }) {
   );
 }
 
-function FolderCard({ id, onAsk }) {
+function FolderCard({ id, onAsk, showDesc }) {
   const p = PROJECTS[id];
   const [open, setOpen] = useStateF(false);
   const [diving, setDiving] = useStateF(false);
@@ -295,6 +295,7 @@ function FolderCard({ id, onAsk }) {
             <span className="fl-tag" key={"p" + i}>{pf}</span>
           ))}
         </div>
+        {showDesc && p.desc && <p className="fl-desc">{p.desc}</p>}
       </div>
     </div>
   );

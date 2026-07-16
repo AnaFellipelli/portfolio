@@ -148,7 +148,7 @@ body.contact-mode .page-enter{overflow:visible !important}
 }
 `;
 
-function ContactFlyer() {
+function ContactFlyer({ spec }) {
   const [pulled, setPulled] = useStateFly({});
   const [tearing, setTearing] = useStateFly({});
   const [copied, setCopied] = useStateFly(null);
@@ -229,8 +229,9 @@ function ContactFlyer() {
           <span className="fl-status-dot" aria-hidden="true"></span>
           available · são paulo
         </div>
+        {/* the AI's real answer takes the headline slot when there is one */}
         <p className="fl-answer">
-          always open to the right thing.
+          {(spec && spec.answer) || "always open to the right thing."}
           <span className="fl-caret" aria-hidden="true"></span>
         </p>
         <p className="fl-context">staff or principal product design. ai-first companies preferred.</p>

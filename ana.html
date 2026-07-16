@@ -369,6 +369,28 @@
   }
   .ai-intro .caret { color: var(--accent); font-style: normal; }
 
+  /* two-column work answer: the AI reply pinned left, folders scrolling right */
+  .canvas-wide { max-width: 1300px; }
+  .work-split {
+    display: grid; grid-template-columns: minmax(300px, 5fr) 7fr;
+    gap: 24px 64px; align-items: start;
+  }
+  .work-say { position: sticky; top: 120px; }
+  .work-say .ai-intro { font-size: clamp(19px, 2vw, 26px); margin-bottom: 0; max-width: none; }
+  .work-body .page-head { margin-top: 0; }
+  .work-body .folder-grid { grid-template-columns: repeat(2, 1fr); }
+  .work-body .folder-grid > .folder-cell:nth-child(3n + 2) { margin-top: 0; }
+  .work-body .folder-grid > .folder-cell:nth-child(2n) { margin-top: 44px; }
+  .work-body .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .fl-desc { font-size: 13px; line-height: 1.55; color: var(--muted-2); margin: 10px 0 0; max-width: 36ch; }
+  @media (max-width: 960px) {
+    .work-split { grid-template-columns: 1fr; }
+    .work-say { position: static; }
+    .work-say .ai-intro { margin-bottom: 28px; }
+    .work-body .folder-grid { grid-template-columns: 1fr; }
+    .work-body .folder-grid > .folder-cell:nth-child(2n) { margin-top: 0; }
+  }
+
   /* loading dots */
   .loader { min-height: 60vh; display: grid; place-items: center; }
   .pulse-dots { display: flex; gap: 12px; }

@@ -232,14 +232,19 @@ function QualityShowcase({ spec, onAsk }) {
 
 /* ---------- 4. themed-list ---------- */
 function ThemedList({ spec, onAsk }) {
+  /* the physical folders (folders.jsx) are the site's signature — use them
+     here too when they're loaded, with each project's description below */
+  const useFolders = typeof FolderCard !== "undefined";
   return (
     <div>
       <p className="page-sub mono" style={{ marginTop: 0, marginBottom: 18 }}>{spec.subtitle}</p>
       <div className="page-head">
         <h1 className="page-title med" dangerouslySetInnerHTML={{ __html: emph(spec.title) }} />
       </div>
-      <div className="grid grid-3" style={{ marginTop: 32 }}>
-        {spec.items.map((id) => <ProjectCard key={id} id={id} onAsk={onAsk} />)}
+      <div className={useFolders ? "folder-grid" : "grid grid-3"} style={{ marginTop: 32 }}>
+        {spec.items.map((id) => useFolders
+          ? <FolderCard key={id} id={id} onAsk={onAsk} showDesc />
+          : <ProjectCard key={id} id={id} onAsk={onAsk} />)}
       </div>
     </div>
   );

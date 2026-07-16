@@ -161,10 +161,34 @@ function ComposedPage({ spec, onAsk }) {
   const isCase = spec.layout === "case-study" || spec.layout === "single-project" || (spec.layout && spec.layout.endsWith("-case"));
   const isContact = spec.layout === "contact";
   /* the real AI answer when the backend sent one, otherwise the flavor intro.
-     case and contact pages normally stay quiet, but a real answer earns the slot --
-     that's where "why should we hire you" gets its actual pitch. */
+     case pages normally stay quiet, but a real answer earns the slot. about and
+     contact render the answer INSIDE their own layouts (lead / flyer headline),
+     so they never get the top block -- one answer on screen, ever. */
   const say = spec.answer || spec.intro;
-  const showSay = !isAbout && say && ((!isCase && !isContact) || !!spec.answer);
+  const showSay = !isAbout && !isContact && say && (!isCase || !!spec.answer);
+
+  /* work-browsing layouts: two columns — the AI's answer stays pinned on the
+     left while the folders with the projects scroll on the right */
+  const isWork = spec.layout === "gallery" || spec.layout === "themed-list" || spec.layout === "quality-showcase";
+  if (isWork && showSay) {
+    return (
+      <div className="canvas canvas-wide page-enter">
+        <DoodleLayer doodles={spec.doodles} active={introDone} />
+        <div className="work-split">
+          <aside className="work-say">
+            <div className="ai-says"><span className="dotmark"></span>ana says:</div>
+            <div className="ai-intro">
+              <Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} />
+            </div>
+          </aside>
+          <div className="work-body">
+            <Body spec={spec} onAsk={onAsk} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="canvas page-enter">
       <DoodleLayer doodles={spec.doodles} active={introDone} />
