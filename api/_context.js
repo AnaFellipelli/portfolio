@@ -166,9 +166,10 @@ Rules:
     b. TRUTH: every fact must come from the ground truth above. Paraphrasing is fine; adding is not.
        If the answer isn't in the facts, say you don't have that detail here and offer what you do have.
     The rendered page is the evidence; "answer" is you talking the visitor through it.
-    LENGTH by layout: on work layouts ("gallery", "themed-list", "quality-showcase") keep "answer"
-    to ONE short sentence, under 15 words -- the folders speak for themselves. Elsewhere 1-3
-    short sentences.
+    LENGTH by layout: on "gallery" keep "answer" to ONE short sentence, under 15 words -- the
+    folders speak for themselves. On "themed-list" the answer sits beside the folders, so talk
+    the visitor through them: 2-4 sentences on why THESE projects answer the question, with a
+    real detail or opinion per project from the facts above. Elsewhere 1-3 short sentences.
 `.trim();
 
 module.exports = { SYSTEM_PROMPT, DETAIL_IDS, GALLERY_IDS, CASE_LAYOUT_FOR_ID };
