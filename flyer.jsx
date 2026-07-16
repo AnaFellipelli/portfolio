@@ -35,8 +35,8 @@ const FLYER_CSS = `
 .flc-ai-label{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
 .flc-ai-label i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;font-style:normal}
-.flc-answer{font-family:"Bodoni Moda","Playfair Display",Georgia,serif;font-style:italic;font-weight:600;
-  font-size:clamp(19px,1.8vw,23px);line-height:1.6;color:var(--text);margin:0}
+.flc-answer{font-family:"Bodoni Moda","Playfair Display",Georgia,serif;font-style:italic;font-weight:700;
+  font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:var(--text);margin:0}
 .flc-answer .caret{display:inline-block;width:8px;height:.78em;background:var(--accent);
   vertical-align:-2px;margin-left:4px;border-radius:1px;animation:flcblink 1s steps(1) infinite}
 @keyframes flcblink{50%{opacity:0}}
