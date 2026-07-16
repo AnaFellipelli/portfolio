@@ -24,6 +24,7 @@ const CASE_LAYOUT_FOR_ID = {
 const PROJECTS_SUMMARY = `
 - id: manychat-ds | name: manyfest | company: Manychat | year: 2025-now | role: senior product designer, design systems
   one design language across web, iOS, Android. token architecture, cross-platform component libraries, governance.
+  its typography system uses the Gravity typeface.
   has a dedicated case layout: "manyfest-case".
 
 - id: weave | name: weave | company: Autodesk (via Globant) | year: 2022-2025 | role: design systems lead / UX designer
