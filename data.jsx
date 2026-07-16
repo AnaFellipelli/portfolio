@@ -130,7 +130,7 @@ const PROJECTS = {
     stamp: true,
     items: [
       { kind: "photo",  label: "cover", caption: "manyfest ds", src: "manyfest-cover.png", w: 2000, h: 1144, pos: "12% 38%", zoom: 1.35 },
-      { kind: "device", label: "agents", caption: "chat bubbles · light + dark", src: "manyfest-bubble.png", w: 606, h: 960, pos: "50% 18%", zoom: 1.5 },
+      { kind: "screen", label: "agents", caption: "chat bubbles · light + dark", src: "manyfest-bubble.png", w: 606, h: 960, pos: "50% 18%", zoom: 1.5 },
       { kind: "screen", label: "components", caption: "button · 144 variants", src: "manyfest-buttons.png", w: 1616, h: 2048, pos: "45% 20%", zoom: 2.8 },
       { kind: "sticker", label: "manychat", caption: "manychat", dy: 66 },
       { kind: "note",   label: "wip",    caption: "shipping right now" },
