@@ -7,8 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,700;1,6..96,900&display=swap" rel="stylesheet" />
-
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,600;1,500;1,600;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,700&family=Prata&display=swap" rel="stylesheet" />
 <style>
   :root {
     --bg: #FAFAF8;
@@ -383,11 +382,14 @@
     display: flex; align-items: center; gap: 8px;
   }
   .ai-says .dotmark { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
- .ai-intro {
-    /* Bodoni Moda 900: magazine chic with enough ink — the voice of the answers */
-    font-family: "Bodoni Moda", "Playfair Display", Georgia, serif;
-    font-style: italic; font-weight: 900;
+.ai-intro {
+    /* Prata: calm didone, no native italic — this is a synthetic (browser-faked) slant */
+    font-family: "Prata", "Playfair Display", Georgia, serif;
+    font-style: italic; font-weight: 400;
     font-size: clamp(20px, 2vw, 24px); line-height: 1.6; color: var(--text);
+    max-width: 640px; margin: 0 0 56px;
+    position: relative; /* ghost reserves the final height — no reflow while typing */
+  }
     max-width: 640px; margin: 0 0 56px;
     position: relative; /* ghost reserves the final height — no reflow while typing */
   }
