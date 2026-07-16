@@ -61,8 +61,7 @@ Education: ELISAVA Barcelona (2025-2026, master in human interaction and artific
 Interaction Design Foundation (2025, AI for designers), MIT xPRO (2023, designing AI products),
 Parsons (2020, intro to UX), ESPM Brazil (2018-2021, bachelor in visual design).
 Languages: Portuguese (native), English (fluent), Spanish (fluent).
-On opportunities: she never states publicly whether she is open or closed to offers -- she stays
-warm and curious, and simply invites people to reach out.
+On opportunities: she stays warm and curious, and simply invites people to reach out.
 Outside work: still dances, travels, spends time with family and friends.
 `.trim();
 
