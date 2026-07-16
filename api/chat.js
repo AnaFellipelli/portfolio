@@ -35,7 +35,7 @@ const RENDER_PAGE_TOOL = {
           "claim beyond what's already in the system prompt -- it's flavor text, not new information.",
       },
       answer: {
-        type: "string", maxLength: 320,
+        type: "string", maxLength: 460,
         description: "A real 1-3 sentence answer to the visitor's question, first person as Ana, lowercase, " +
           "in the SAME language the question was asked in. Every fact must come from the system prompt; " +
           "if the information isn't there, say so honestly instead of inventing.",
@@ -86,7 +86,7 @@ function normalizeSpec(raw) {
   const title = clamp(raw.title, 40);
   const subtitle = clamp(raw.subtitle, 60);
   const intro = clamp(raw.intro, 140);
-  const answer = clampAnswer(raw.answer, 320);
+  const answer = clampAnswer(raw.answer, 460);
   const big = clamp(raw.big, 120);
   items = Array.isArray(items) ? items.filter((x) => typeof x === "string") : [];
 
@@ -114,12 +114,13 @@ function normalizeSpec(raw) {
     return { layout, title: title || "", subtitle: subtitle || "", intro: intro || "", answer, items: [id] };
   }
 
-  if (layout === "gallery" || layout === "quality-showcase" || layout === "themed-list") {
+  if (layout === "gallery" || layout === "themed-list") {
     const valid = items.filter((x) => GALLERY_IDS.includes(x));
-    /* work pages: the answer is an opener, two rendered lines max */
-    const short = clampAnswer(answer, 140);
-    if (!valid.length) return { ...GALLERY_FALLBACK, answer: short };
-    return { layout, title: title || "selected work.", subtitle: subtitle || "", intro: intro || "", answer: short, items: valid };
+    /* full gallery: the answer is a two-line opener. curated themed-list runs
+       two-column with room on the left, so the answer can actually talk. */
+    const sized = layout === "gallery" ? clampAnswer(answer, 140) : clampAnswer(answer, 460);
+    if (!valid.length) return { ...GALLERY_FALLBACK, answer: sized };
+    return { layout, title: title || "selected work.", subtitle: subtitle || "", intro: intro || "", answer: sized, items: valid };
   }
 
   return GALLERY_FALLBACK;
