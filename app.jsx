@@ -161,11 +161,11 @@ function ComposedPage({ spec, onAsk }) {
   const isCase = spec.layout === "case-study" || spec.layout === "single-project" || (spec.layout && spec.layout.endsWith("-case"));
   const isContact = spec.layout === "contact";
   /* the real AI answer when the backend sent one, otherwise the flavor intro.
-     case pages normally stay quiet, but a real answer earns the slot. about and
-     contact render the answer INSIDE their own layouts (lead / flyer headline),
-     so they never get the top block -- one answer on screen, ever. */
+     case pages stay quiet -- diving into the case IS the answer, and a text
+     block up top fights the hero. about and contact render the answer INSIDE
+     their own layouts (lead / flyer headline). one answer on screen, ever. */
   const say = spec.answer || spec.intro;
-  const showSay = !isAbout && !isContact && say && (!isCase || !!spec.answer);
+  const showSay = !isAbout && !isContact && !isCase && say;
 
   /* work-browsing layouts: two columns — the AI's answer stays pinned on the
      left while the folders with the projects scroll on the right */
