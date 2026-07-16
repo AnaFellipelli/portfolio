@@ -32,8 +32,8 @@ body.contact-mode .page-enter{overflow:visible !important}
 @keyframes flpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
 .fl-answer{font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
   font-size:clamp(30px,4vw,48px);line-height:1.2;color:#201d2b;max-width:13ch;margin:0 0 24px}
-.fl-answer.long{font-family:'Archivo',system-ui,sans-serif;font-style:normal;font-weight:450;
-  font-size:clamp(16px,1.5vw,20px);line-height:1.65;max-width:38ch}
+.fl-answer.long{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:450;
+  font-size:clamp(18px,1.7vw,22px);line-height:1.6;max-width:36ch}
 .fl-caret{display:inline-block;width:8px;height:.78em;background:#6B4EFF;vertical-align:-2px;
   margin-left:4px;border-radius:1px;animation:flblink 1s steps(1) infinite}
 @keyframes flblink{50%{opacity:0}}
