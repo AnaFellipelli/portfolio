@@ -195,13 +195,13 @@ function ComposedPage({ spec, onAsk }) {
   }
 
   /* every main page (work, about, contact) closes on the same footer */
- const isGallery = spec.layout === "gallery" || isAbout || isContact;
+const isGallery = spec.layout === "gallery" || isAbout || isContact;
   return (
     <React.Fragment>
       <div className="canvas page-enter">
         <DoodleLayer doodles={spec.doodles} active={introDone} />
         {spec.layout === "gallery" && (
-          <div className="page-head">
+          <div className="page-head" style={{ marginBottom: 40 }}>
             <h1 className="page-title med" dangerouslySetInnerHTML={{ __html: emph(spec.title) }} />
           </div>
         )}
