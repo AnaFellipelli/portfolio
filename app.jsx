@@ -179,7 +179,8 @@ function ComposedPage({ spec, onAsk }) {
           <aside className="work-say">
             <div className="ai-says"><span className="dotmark"></span>ana says:</div>
             <div className="ai-intro">
-              <Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} />
+              <span className="ai-ghost" aria-hidden="true">{say}</span>
+              <span className="ai-live"><Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} /></span>
             </div>
           </aside>
           <div className="work-body">
@@ -197,7 +198,8 @@ function ComposedPage({ spec, onAsk }) {
         <React.Fragment>
           <div className="ai-says"><span className="dotmark"></span>ana says:</div>
           <div className="ai-intro">
-            <Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} />
+            <span className="ai-ghost" aria-hidden="true">{say}</span>
+            <span className="ai-live"><Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} /></span>
           </div>
         </React.Fragment>
       )}
