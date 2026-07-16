@@ -922,11 +922,11 @@ function MnfstCase({ spec, onAsk }) {
       <section className="mnf-sec cream mnf-grid-bg" id="mnf-story">
         <div className="mnf-wrap">
           <span className="mnf-chip">the story · 01</span>
-          <h2 className="mnf-h2">Built with agents in the pipeline from day one.</h2>
+          <h2 className="mnf-h2">Built live, against two moving targets.</h2>
 
           <div className="mnf-context">
-            <p>Manychat was building two new AI-native products across web, iOS, and Android simultaneously, with AI at the center of the experience rather than layered on top. Neither product could ship on a legacy component library. They needed conversational patterns, AI-specific molecules, and a visual language coherent across three platforms from day one.</p>
-            <p>Manyfest is the system that makes that possible. And we made a second bet on top of the first: if agents were going to generate and review component code, the system had to be designed for that from the first release instead of retrofitted later. Every guideline, token decision, and file structure had to work for two audiences at once: humans and agents.</p>
+            <p>The real challenge: Manyfest is a system for two AI-native products that were being created live — designed and engineered at the same time as the system itself, across web, iOS, and Android. No legacy library to lean on, no settled patterns, almost no context. The system couldn't be specced once and shipped; it had to be a living, evolving process that moved in step with every product decision.</p>
+            <p>And the target moved twice, because the brand was evolving too. Manychat was rebranding how it communicates while the products took shape — and the system's whole goal was to pull the products closer to that brand. Absorbing change without fracturing became the real work. On top of it, the second bet: agents in the pipeline from day one, so every guideline and token decision had to serve two audiences at once — humans and agents.</p>
           </div>
 
           <div className="mnf-stats">

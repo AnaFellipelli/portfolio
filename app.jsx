@@ -160,14 +160,18 @@ function ComposedPage({ spec, onAsk }) {
   const isAbout = spec.layout === "about";
   const isCase = spec.layout === "case-study" || spec.layout === "single-project" || (spec.layout && spec.layout.endsWith("-case"));
   const isContact = spec.layout === "contact";
+  /* the real AI answer when the backend sent one, otherwise the flavor intro.
+     case pages normally stay quiet, but a real answer earns the "ana says" slot. */
+  const say = spec.answer || spec.intro;
+  const showSay = !isAbout && !isContact && say && (!isCase || !!spec.answer);
   return (
     <div className="canvas page-enter">
       <DoodleLayer doodles={spec.doodles} active={introDone} />
-      {!isAbout && !isCase && !isContact && (
+      {showSay && (
         <React.Fragment>
           <div className="ai-says"><span className="dotmark"></span>ana says:</div>
           <div className="ai-intro">
-            <Typewriter text={spec.intro} speed={25} onDone={() => setIntroDone(true)} />
+            <Typewriter text={say} speed={25} onDone={() => setIntroDone(true)} />
           </div>
         </React.Fragment>
       )}
