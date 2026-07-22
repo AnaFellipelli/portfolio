@@ -52,6 +52,7 @@ const KIND_SIZE = {
   screen: { w: 84,  h: 162 },
   proto:  { w: 86,  h: 170 },
   tablet: { w: 158, h: 112 },
+  wordmark: { w: 128, h: 34 },
   shot:   { w: 130, h: 150 },
   device: { w: 90,  h: 176 },
   logo:   { w: 86,  h: 138 },
@@ -96,6 +97,14 @@ function FolderItem({ item }) {
     return (
       <div className="fi fi-polaroid">
         <span className="fi-pol-pic"><img src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
+      </div>
+    );
+  }
+
+  if (kind === "wordmark") {
+    return (
+      <div className="fi fi-wordmark">
+        <img src={item.src} alt={item.caption || ""} loading="lazy" />
       </div>
     );
   }

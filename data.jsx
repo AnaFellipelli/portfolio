@@ -19,8 +19,8 @@ const PROJECTS = {
     casePreview: true,
     items: [
       { kind: "shot",   label: "autocomplete", caption: "suggested values", src: "weave-autocomplete.png", w: 795, h: 528, pos: "0% 15%", zoom: 1.3 },
-      { kind: "shot",   label: "skeleton",     caption: "components + loading states", src: "weave-skeleton-2.png", w: 2201, h: 1184, pos: "92% 55%", zoom: 2 },
       { kind: "tablet", label: "mobile",       caption: "autocad on ipad", src: "weave-ipad.png", w: 900, h: 638, fit: "contain" },
+      { kind: "shot",   label: "skeleton",     caption: "components + loading states", src: "weave-skeleton-2.png", w: 2201, h: 1184, pos: "92% 55%", zoom: 2 },
       { kind: "sticker", label: "autocad",     caption: "autocad", src: "badge-acad.png", dy: 62 },
       { kind: "sticker", label: "fusion",      caption: "fusion", src: "badge-fusion.png", dy: 74 },
       { kind: "note",   label: "note",         caption: "three rewrites. worth it." },
@@ -152,11 +152,12 @@ const PROJECTS = {
     tags: ["AI", "pose estimation"],
     palette: "clay",
     items: [
-      { kind: "photo",  label: "demo",       caption: "the app, staged", src: "releve-1.jpg", w: 1920, h: 1080, pos: "12% 45%", zoom: 1.2 },
-      { kind: "proto",  label: "home",       caption: "technique score · streaks", src: "releve-m1.png", w: 712, h: 1706 },
-      { kind: "proto",  label: "review",     caption: "correction timeline", src: "releve-m2.png", w: 724, h: 1674 },
       { kind: "shot",   label: "the app",    caption: "analysis · live corrections", src: "releve-4.jpg", w: 1920, h: 1080, pos: "50% 40%", zoom: 1.15 },
+      { kind: "photo",  label: "demo",       caption: "the app, staged", src: "releve-1.jpg", w: 1920, h: 1080, pos: "12% 45%", zoom: 1.2 },
+      { kind: "proto",  label: "review",     caption: "correction timeline", src: "releve-m2.png", w: 724, h: 1674 },
+      { kind: "proto",  label: "home",       caption: "technique score · streaks", src: "releve-m1.png", w: 712, h: 1706 },
       { kind: "note",   label: "note",       caption: "precision is a form of care" },
+      { kind: "wordmark", label: "elisava",  caption: "elisava", src: "elisava.png", dy: 48 },
     ],
   },
   "canal": {
