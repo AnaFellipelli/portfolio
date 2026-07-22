@@ -8,9 +8,11 @@
 const { SYSTEM_PROMPT, DETAIL_IDS, GALLERY_IDS, CASE_LAYOUT_FOR_ID } = require("./_context");
 
 const MODEL = "claude-haiku-4-5-20251001";
-// lite alias: the full "gemini-flash-latest" free tier caps at ~20 requests/day,
-// while flash-lite's daily quota is far higher -- and a page-spec doesn't need more
-const GEMINI_MODEL = "gemini-flash-lite-latest";
+// pinned to the explicit ID: alias "gemini-flash-lite-latest" now points to
+// gemini-3.5-flash-lite (released 21 jul 2026), which broke silently by
+// rejecting `temperature` and `thinkingBudget`. pin so future alias updates
+// don't take the site down again.
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
 const MAX_QUESTION_LENGTH = 400;
 
 const RENDER_PAGE_TOOL = {
@@ -187,11 +189,13 @@ async function askGemini(question, apiKey, retried) {
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [{ role: "user", parts: [{ text: question }] }],
       generationConfig: {
-        temperature: 0.6, // enough for personality; the schema + rules keep routing honest
+        // temperature/top_p/top_k are deprecated on gemini 3.x and return 400.
+        // determinism comes from the response schema + system prompt instead.
         maxOutputTokens: 1024,
-        // flash is a thinking model by default; a page-spec doesn't need it, and
-        // thinking silently eats the whole token budget (finishReason MAX_TOKENS)
-        thinkingConfig: { thinkingBudget: 0 },
+        // flash-lite defaults to thinking_level "minimal", but set it explicitly
+        // so the intent survives a future default change. thinking_budget was
+        // replaced by thinking_level on 3.x (sending the old field returns 400).
+        thinkingConfig: { thinkingLevel: "minimal" },
         responseMimeType: "application/json",
         responseSchema: GEMINI_SCHEMA,
       },
