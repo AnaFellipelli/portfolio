@@ -51,6 +51,7 @@ const SLOT = [
 const KIND_SIZE = {
   screen: { w: 84,  h: 162 },
   proto:  { w: 86,  h: 170 },
+  tablet: { w: 158, h: 112 },
   shot:   { w: 130, h: 150 },
   device: { w: 90,  h: 176 },
   logo:   { w: 86,  h: 138 },
@@ -102,7 +103,11 @@ function FolderItem({ item }) {
   if (kind === "sticker") {
     return (
       <div className="fi fi-sticker">
-        <span className="fi-sticker-mark"><ManychatMark /></span>
+        <span className="fi-sticker-mark">
+          {item.src
+            ? <img src={item.src} alt={item.caption || ""} loading="lazy" />
+            : <ManychatMark />}
+        </span>
       </div>
     );
   }
@@ -140,7 +145,7 @@ function FolderItem({ item }) {
   /* proto — the capture already carries its own frame / status bar, so add
      zero chrome: just the image, its corners, and a shadow. `fit: "contain"`
      is for transparent PNGs with a full device bezel baked into the art. */
-  if (kind === "proto") {
+  if (kind === "proto" || kind === "tablet") {
     return (
       <div className={"fi fi-proto" + (item.fit === "contain" ? " contain" : "")}>
         <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} />
