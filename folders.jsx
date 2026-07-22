@@ -274,7 +274,7 @@ function FolderCard({ id, onAsk, showDesc }) {
           {/* peeking artefacts */}
           <div className="f-items">
             {items.map((it, i) => {
-              const slot = SLOT[i] || SLOT[SLOT.length - 1];
+              const slot = SLOT[it.slot != null ? it.slot : i] || SLOT[SLOT.length - 1];
               const sz = KIND_SIZE[it.kind] || KIND_SIZE.shot;
               const iStyle = {
                 left: slot.left,
