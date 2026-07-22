@@ -50,6 +50,7 @@ const SLOT = [
 
 const KIND_SIZE = {
   screen: { w: 84,  h: 162 },
+  proto:  { w: 86,  h: 170 },
   shot:   { w: 130, h: 150 },
   device: { w: 90,  h: 176 },
   logo:   { w: 86,  h: 138 },
@@ -132,6 +133,17 @@ function FolderItem({ item }) {
           ? <span className="fi-crop"><img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} /></span>
           : <span className="fi-screen"></span>}
         <span className="fi-cap">{item.caption}</span>
+      </div>
+    );
+  }
+
+  /* proto — the capture already carries its own frame / status bar, so add
+     zero chrome: just the image, its corners, and a shadow. `fit: "contain"`
+     is for transparent PNGs with a full device bezel baked into the art. */
+  if (kind === "proto") {
+    return (
+      <div className={"fi fi-proto" + (item.fit === "contain" ? " contain" : "")}>
+        <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} />
       </div>
     );
   }
