@@ -107,7 +107,6 @@ function ContactFlyer({ spec }) {
 
         {/* left — the AI's answer to the standard question ("are you open to work") */}
         <div className="flc-left">
-          <div className="flc-status"><i aria-hidden="true"></i>são paulo · barcelona</div>
           <div className="flc-ai-label"><i aria-hidden="true"></i>ana says:</div>
           <p className="flc-answer">
             {(spec && spec.answer) || "always open to the right thing."}
