@@ -35,7 +35,7 @@ const FLYER_CSS = `
 .flc-ai-label{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
 .flc-ai-label i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;font-style:normal}
-.flc-answer{font-family:"Unna","Playfair Display",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:0.015em;
+.flc-answer{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:0.005em;
   font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:var(--text);margin:0}
 .flc-answer .caret{display:inline-block;width:8px;height:.78em;background:var(--accent);
   vertical-align:-2px;margin-left:4px;border-radius:1px;animation:flcblink 1s steps(1) infinite}
