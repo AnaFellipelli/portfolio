@@ -186,18 +186,6 @@ function FolderItem({ item }) {
   );
 }
 
-/* canonical open-query per project id — mirrors app.jsx ROUTE_TO_Q.
-   the display name can carry punctuation/accents ("(r)elevē") that the
-   chat model misroutes, so folder clicks use a clean, blessed phrase. */
-const FOLDER_OPEN_Q = {
-  weave: "open the full weave case",
-  "manychat-ds": "tell me about manyfest",
-  releve: "tell me about releve",
-  canal: "tell me about canal",
-  baw: "tell me about baw",
-  espm: "tell me about espm",
-};
-
 function FolderCard({ id, onAsk, showDesc }) {
   const p = PROJECTS[id];
   const [open, setOpen] = useStateF(false);
@@ -271,11 +259,10 @@ function FolderCard({ id, onAsk, showDesc }) {
         style={style}
         onClick={() => {
           if (diving) return;
-          const openQ = FOLDER_OPEN_Q[id] || ("tell me about " + tabName);
-          if (isCase) { dive(openQ); return; }
-          if (canHover) { dive(openQ); return; }
+          if (isCase) { dive("open the full weave case"); return; }
+          if (canHover) { dive("tell me about " + tabName); return; }
           if (!open) { setOpen(true); return; }
-          dive(openQ);
+          dive("tell me about " + tabName);
         }}
         onMouseLeave={() => { if (!diving) setOpen(false); }}
       >
@@ -287,7 +274,7 @@ function FolderCard({ id, onAsk, showDesc }) {
           {/* peeking artefacts */}
           <div className="f-items">
             {items.map((it, i) => {
-              const slot = SLOT[i] || SLOT[SLOT.length - 1];
+              const slot = SLOT[it.slot != null ? it.slot : i] || SLOT[SLOT.length - 1];
               const sz = KIND_SIZE[it.kind] || KIND_SIZE.shot;
               const iStyle = {
                 left: slot.left,
@@ -355,11 +342,6 @@ function FolderCard({ id, onAsk, showDesc }) {
 function FolderGallery({ spec, onAsk }) {
   return (
     <div>
-      <div className="page-head">
-        <h1 className="page-title med" dangerouslySetInnerHTML={{ __html: emph(spec.title) }} />
-        <p className="page-sub">{spec.subtitle}</p>
-      </div>
-      <p className="folder-hint">hover to peek · click to open a folder</p>
       <div className="folder-grid">
         {spec.items.map((id) => (
           <FolderCard key={id} id={id} onAsk={onAsk} />
