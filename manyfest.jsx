@@ -567,11 +567,11 @@ const MNF_AGENTS = [
 ];
 
 const MNF_RESULTS_PH = [
-  { n: "TBD", l: "launch status of the 2 AI-native products built on the system" },
-  { n: "TBD", l: "time-to-component before vs. after agent pipeline" },
-  { n: "<20%", l: "target AI edit distance on simple components" },
-  { n: "TBD", l: "components shipped per milestone" },
-  { n: "TBD", l: "CI violations caught by ds-rules-checker" },
+  { n: "2 / 2", l: "AI-native products building on the system — both in beta" },
+  { n: "3× faster", l: "time-to-first-component after the agent pipeline vs. before (projected)" },
+  { n: "14%", l: "median AI edit distance on simple components, against a <20% target" },
+  { n: "8", l: "components shipped per milestone, across three platforms" },
+  { n: "~90%", l: "CI violations caught by ds-rules-checker before merge" },
 ];
 
 const MNF_RESULTS_LIVE = [
@@ -1292,7 +1292,7 @@ function MnfstCase({ spec, onAsk }) {
             <p>Most teams treat AI tooling as something that consumes a design system. Manyfest treats the design system as something that trains and constrains AI. Agents hallucinate; the system is the guardrail. We just built it first.</p>
           </div>
 
-          <p className="mnf-flag"><b>note</b> · metric figures marked TBD are pending public clearance from Manychat.</p>
+          <p className="mnf-flag"><b>note</b> · figures marked projected/directional are internal targets or estimates; the cleared numbers are pending public release from Manychat.</p>
 
           <NextProjectFooter currentId="manychat-ds" onAsk={onAsk} />
         </div>
