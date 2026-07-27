@@ -226,6 +226,28 @@ const __RLV_STYLE = `
     box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 90px rgba(91,63,232,0.18); }
   .rl-phone iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
 
+  /* ── live-prototype loading + fallback (Render free tier can cold-start ~50s) ── */
+  .rl-phone-load { position: absolute; inset: 0; z-index: 2; display: flex;
+    flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    text-align: center; padding: 0 34px; background: #050505; }
+  .rl-phone-spin { width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid rgba(240,240,240,0.14); border-top-color: #fcac9e;
+    animation: rlSpin 0.9s linear infinite; }
+  @keyframes rlSpin { to { transform: rotate(360deg); } }
+  .rl-phone-msg { font-family: var(--mono); font-size: 12.5px; line-height: 1.6;
+    letter-spacing: 0.02em; color: rgba(240,240,240,0.82); margin: 0; max-width: 26ch; }
+  .rl-phone-open { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #fcac9e; text-decoration: none;
+    border: 1px solid rgba(252,172,158,0.4); border-radius: 999px; padding: 9px 18px;
+    transition: background .2s ease, border-color .2s ease; }
+  .rl-phone-open:hover { background: rgba(252,172,158,0.12); border-color: #fcac9e; }
+  .rl-proto-fallback { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(240,240,240,0.5); text-decoration: none;
+    border-bottom: 1px solid rgba(240,240,240,0.25); padding-bottom: 1px;
+    transition: color .2s ease, border-color .2s ease; }
+  .rl-proto-fallback:hover { color: #fcac9e; border-color: #fcac9e; }
+  @media (prefers-reduced-motion: reduce){ .rl-phone-spin { animation: none; } }
+
   /* ── process — four beats ── */
   .rl-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
   @media (max-width: 960px){ .rl-process { grid-template-columns: repeat(2, 1fr); } }
@@ -328,8 +350,12 @@ const RLV_OWN = [
 ];
 
 /* iphone shell at true ratio — scales down as one object to fit the viewport */
+const RLV_PROTO_URL = "https://releve-gvuu.onrender.com/";
+
 function RlvPhone() {
   const [ps, setPs] = useStateRlv(1);
+  const [loaded, setLoaded] = useStateRlv(false);
+  const [slow, setSlow] = useStateRlv(false);
   useEffectRlv(() => {
     const fit = () => setPs(Math.min(
       1,
@@ -338,12 +364,32 @@ function RlvPhone() {
     ));
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    /* Render's free tier sleeps when idle; warn the visitor if the first paint is slow */
+    const t = setTimeout(() => setSlow(true), 4500);
+    return () => { window.removeEventListener("resize", fit); clearTimeout(t); };
   }, []);
   return (
     <div className="rl-phone-fit" style={{ width: Math.round(393 * ps), height: Math.round(820 * ps) }}>
       <div className="rl-phone" style={{ transform: "scale(" + ps + ")" }}>
-        <iframe src="https://releve-gvuu.onrender.com/" title="(r)elevē live prototype · ballet correction app" loading="lazy"></iframe>
+        <iframe
+          src={RLV_PROTO_URL}
+          title="(r)elevē live prototype · ballet correction app"
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+        ></iframe>
+        {!loaded && (
+          <div className="rl-phone-load" aria-live="polite">
+            <span className="rl-phone-spin" aria-hidden="true"></span>
+            <p className="rl-phone-msg">
+              {slow
+                ? "waking the live server — it runs on a free tier and can take up to a minute after a nap."
+                : "loading the live prototype…"}
+            </p>
+            <a className="rl-phone-open" href={RLV_PROTO_URL} target="_blank" rel="noopener noreferrer">
+              open in a new tab ↗
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -442,7 +488,10 @@ function RlvCase({ spec, onAsk }) {
           <figure className="rl-proto" id="rl-proto" style={{ margin: 0 }}>
             <span className="rl-proto-kicker">live prototype · demo mode, click through it</span>
             <RlvPhone />
-            <figcaption className="rl-cap">prototype · live build · upload → analysis → timestamped corrections</figcaption>
+            <figcaption className="rl-cap">
+              prototype · live build · upload → analysis → timestamped corrections ·{" "}
+              <a className="rl-proto-fallback" href={RLV_PROTO_URL} target="_blank" rel="noopener noreferrer">open in a new tab ↗</a>
+            </figcaption>
           </figure>
         </div>
       </section>
@@ -500,6 +549,21 @@ function RlvCase({ spec, onAsk }) {
             A solo capstone: design, engine, data and front-end were mine. Calibration
             leaned on a RAD teacher (the 5–10° head rule is hers), ELISAVA advisors framed
             the research, and six dancers lent their demi-pliés to the testing sessions.
+          </p>
+
+          <span className="rl-chip">in hindsight · 05</span>
+          <h2 className="rl-h2" style={{ fontSize: "clamp(32px, 4.5vw, 64px)" }}>
+            Next time, <em>I'd start with the UX.</em>
+          </h2>
+          <p className="rl-lede" style={{ marginBottom: 0 }}>
+            The self-aware part: on this project my energy went into the AI and into learning
+            to build across the whole stack, from the MediaPipe pipeline to the Flask backend to
+            the React front-end. That's where the hard problems were, and I'm proud of how the
+            engine turned out. But it meant the UX rode in the back seat. If I picked (r)elevē
+            back up, I'd spend that same intensity on the experience: a first-run that teaches a
+            dancer how to film themselves, a calmer path from upload to result, and correction
+            cards tested for whether a tired dancer actually reads them at the barre. The
+            engineering earned the trust; the UX is where I'd earn the habit.
           </p>
 
           <NextProjectFooter currentId="releve" onAsk={onAsk} />
