@@ -50,9 +50,6 @@ const SLOT = [
 
 const KIND_SIZE = {
   screen: { w: 84,  h: 162 },
-  proto:  { w: 86,  h: 170 },
-  tablet: { w: 158, h: 112 },
-  wordmark: { w: 128, h: 34 },
   shot:   { w: 130, h: 150 },
   device: { w: 90,  h: 176 },
   logo:   { w: 86,  h: 138 },
@@ -101,22 +98,10 @@ function FolderItem({ item }) {
     );
   }
 
-  if (kind === "wordmark") {
-    return (
-      <div className="fi fi-wordmark">
-        <img src={item.src} alt={item.caption || ""} loading="lazy" />
-      </div>
-    );
-  }
-
   if (kind === "sticker") {
     return (
       <div className="fi fi-sticker">
-        <span className="fi-sticker-mark">
-          {item.src
-            ? <img src={item.src} alt={item.caption || ""} loading="lazy" />
-            : <ManychatMark />}
-        </span>
+        <span className="fi-sticker-mark"><ManychatMark /></span>
       </div>
     );
   }
@@ -151,17 +136,6 @@ function FolderItem({ item }) {
     );
   }
 
-  /* proto — the capture already carries its own frame / status bar, so add
-     zero chrome: just the image, its corners, and a shadow. `fit: "contain"`
-     is for transparent PNGs with a full device bezel baked into the art. */
-  if (kind === "proto" || kind === "tablet") {
-    return (
-      <div className={"fi fi-proto" + (item.fit === "contain" ? " contain" : "")}>
-        <img className="fi-img" src={item.src} alt={item.caption || ""} loading="lazy" style={artStyle(item)} />
-      </div>
-    );
-  }
-
   if (kind === "screen") {
     return (
       <div className="fi fi-screen-paper">
@@ -185,6 +159,18 @@ function FolderItem({ item }) {
     </div>
   );
 }
+
+/* canonical open-query per project id — mirrors app.jsx ROUTE_TO_Q.
+   the display name can carry punctuation/accents ("(r)elevē") that the
+   chat model misroutes, so folder clicks use a clean, blessed phrase. */
+const FOLDER_OPEN_Q = {
+  weave: "open the full weave case",
+  "manychat-ds": "tell me about manyfest",
+  releve: "tell me about releve",
+  canal: "tell me about canal",
+  baw: "tell me about baw",
+  espm: "tell me about espm",
+};
 
 function FolderCard({ id, onAsk, showDesc }) {
   const p = PROJECTS[id];
@@ -259,10 +245,11 @@ function FolderCard({ id, onAsk, showDesc }) {
         style={style}
         onClick={() => {
           if (diving) return;
-          if (isCase) { dive("open the full weave case"); return; }
-          if (canHover) { dive("tell me about " + tabName); return; }
+          const openQ = FOLDER_OPEN_Q[id] || ("tell me about " + tabName);
+          if (isCase) { dive(openQ); return; }
+          if (canHover) { dive(openQ); return; }
           if (!open) { setOpen(true); return; }
-          dive("tell me about " + tabName);
+          dive(openQ);
         }}
         onMouseLeave={() => { if (!diving) setOpen(false); }}
       >
@@ -274,7 +261,7 @@ function FolderCard({ id, onAsk, showDesc }) {
           {/* peeking artefacts */}
           <div className="f-items">
             {items.map((it, i) => {
-              const slot = SLOT[it.slot != null ? it.slot : i] || SLOT[SLOT.length - 1];
+              const slot = SLOT[i] || SLOT[SLOT.length - 1];
               const sz = KIND_SIZE[it.kind] || KIND_SIZE.shot;
               const iStyle = {
                 left: slot.left,
@@ -342,6 +329,11 @@ function FolderCard({ id, onAsk, showDesc }) {
 function FolderGallery({ spec, onAsk }) {
   return (
     <div>
+      <div className="page-head">
+        <h1 className="page-title med" dangerouslySetInnerHTML={{ __html: emph(spec.title) }} />
+        <p className="page-sub">{spec.subtitle}</p>
+      </div>
+      <p className="folder-hint">hover to peek · click to open a folder</p>
       <div className="folder-grid">
         {spec.items.map((id) => (
           <FolderCard key={id} id={id} onAsk={onAsk} />
