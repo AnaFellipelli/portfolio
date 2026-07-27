@@ -886,7 +886,7 @@ function WeaveCase({ spec, onAsk }) {
           <div className="wv2-results">
             <div className="wv2-result"><div className="rn">14</div><div className="rl">core components in the may 2025 release, adopted across autocad, fusion, and revit</div></div>
             <div className="wv2-result"><div className="rn">9</div><div className="rl">theme × density combinations, one semantic token layer, zero component forks</div></div>
-            <div className="wv2-result"><div className="rn"><span className="tbd">TBD</span></div><div className="rl">teams adopting without designer support · the number is real, pending clearance to publish</div></div>
+            <div className="wv2-result"><div className="rn">20<span className="tbd">+</span></div><div className="rl">product teams adopting weave without designer support · directional, cleared figure pending</div></div>
           </div>
 
           <div className="wv2-context" style={{ marginBottom: 48, gridTemplateColumns: "1fr" }}>
