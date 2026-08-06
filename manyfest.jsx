@@ -492,10 +492,10 @@ const __MNF_STYLE = `
   .mnf-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
   @media (max-width: 760px){ .mnf-results-grid { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 480px){ .mnf-results-grid { grid-template-columns: 1fr; } }
-  .mnf-result-ph { border: 1.5px dashed rgba(13,13,13,0.35); border-radius: 14px; padding: 22px 20px;
+  .mnf-result-ph { border: 1.5px solid rgba(13,13,13,0.35); border-radius: 14px; padding: 22px 20px;
     display: flex; flex-direction: column; gap: 10px; background: #fffdf6; }
   .mnf-result-ph .rn { font-family: var(--display); font-weight: 900; letter-spacing: -0.02em;
-    font-size: clamp(26px, 3.5vw, 40px); line-height: 1; opacity: .55; }
+    font-size: clamp(26px, 3.5vw, 40px); line-height: 1; }
   .mnf-result-ph .rl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
     text-transform: uppercase; opacity: .6; line-height: 1.5; }
   .mnf-results-live { display: flex; flex-direction: column; gap: 10px; margin-bottom: 64px; }
@@ -567,11 +567,14 @@ const MNF_AGENTS = [
 ];
 
 const MNF_RESULTS_PH = [
-  { n: "TBD", l: "launch status of the 2 AI-native products built on the system" },
-  { n: "TBD", l: "time-to-component before vs. after agent pipeline" },
+  { n: "209", l: "design tokens in the Figma library, every one carrying intent metadata, not just a value, so AI agents know when and why to use it" },
+  { n: "23", l: "components delivered in Figma, atoms and molecules, each library-ready with a written guideline before engineering starts" },
+  { n: "20", l: "components live in beta on Web, full coverage of the core UI toolkit" },
+  { n: "10", l: "components in beta on iOS, with Android now in motion" },
+  { n: "3", l: "platforms kept in sync: token and icon sync runs from Figma to code on Web, iOS and Android" },
+  { n: "~3 days", l: "median time to ship a simple component through the agent pipeline" },
+  { n: "12", l: "components shipped to beta in ~23 business days at current pace" },
   { n: "<20%", l: "target AI edit distance on simple components" },
-  { n: "TBD", l: "components shipped per milestone" },
-  { n: "TBD", l: "CI violations caught by ds-rules-checker" },
 ];
 
 const MNF_RESULTS_LIVE = [
@@ -1291,8 +1294,6 @@ function MnfstCase({ spec, onAsk }) {
             <div className="k">why this matters beyond manychat</div>
             <p>Most teams treat AI tooling as something that consumes a design system. Manyfest treats the design system as something that trains and constrains AI. Agents hallucinate; the system is the guardrail. We just built it first.</p>
           </div>
-
-          <p className="mnf-flag"><b>note</b> · metric figures marked TBD are pending public clearance from Manychat.</p>
 
           <NextProjectFooter currentId="manychat-ds" onAsk={onAsk} />
         </div>
