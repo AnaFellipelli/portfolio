@@ -569,7 +569,7 @@ const MNF_AGENTS = [
 const MNF_RESULTS_PH = [
   { n: "209", l: "design tokens in the Figma library, every one carrying intent metadata, not just a value, so AI agents know when and why to use it" },
   { n: "23", l: "components delivered in Figma, atoms and molecules, each library-ready with a written guideline before engineering starts" },
-  { n: "3", l: "platforms kept in sync via Figma to code token and icon sync: 20 components live in beta on Web, 10 on iOS, Android now in motion" },
+  { n: "30+", l: "components in beta across 3 platforms kept in sync via Figma to code token and icon sync: 20 on Web, 10 on iOS, Android now in motion" },
   { n: "~3 days", l: "median time to ship a simple component through the agent pipeline" },
   { n: "12", l: "components shipped to beta in ~23 business days at current pace" },
   { n: "<20%", l: "target AI edit distance on simple components" },
