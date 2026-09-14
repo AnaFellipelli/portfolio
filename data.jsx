@@ -19,9 +19,9 @@ const PROJECTS = {
     casePreview: true,
     items: [
       { kind: "shot",   label: "autocomplete", caption: "suggested values", src: "weave-autocomplete.png", w: 795, h: 528, pos: "0% 15%", zoom: 1.3 },
-      { kind: "shot",   label: "skeleton",     caption: "components + loading states", src: "weave-skeleton-2.png", w: 2201, h: 1184, pos: "92% 55%", zoom: 2 },
-      { kind: "sticker", label: "autocad",     caption: "autocad", src: "badge-acad.png", dy: 62 },
-      { kind: "sticker", label: "fusion",      caption: "fusion", src: "badge-fusion.png", dy: 40, slot: 5 },
+      { kind: "shot",   label: "skeleton",     caption: "components + loading states", src: "weave-skeleton-2.png", w: 2201, h: 1184, pos: "92% 55%", zoom: 2, slot: 2 },
+      { kind: "sticker", label: "autocad",     caption: "autocad", src: "badge-acad.png", dy: 62, slot: 3 },
+      { kind: "sticker", label: "fusion",      caption: "fusion", src: "badge-fusion.png", dy: 24, slot: 5 },
     ],
   },
   "panel": {
