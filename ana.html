@@ -112,12 +112,12 @@
     pointer-events: none;
   }
   /* frosted scrim so content scrolling under the nav stays legible.
-     no mask here — iOS Safari breaks backdrop-filter when masked. */
+     blur only, no tint — it adapts to whatever background each page has.
+     no mask either: iOS Safari breaks backdrop-filter when masked. */
   .topbar::before {
     content: ""; position: absolute; inset: 0; z-index: -1;
-    background: linear-gradient(180deg, rgba(250,250,248,0.85), rgba(250,250,248,0.55));
-    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(13,13,13,0.05);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    backdrop-filter: blur(18px) saturate(1.15);
     pointer-events: none;
   }
   .topbar > * { pointer-events: auto; }
@@ -901,6 +901,11 @@
     /* the whole block (folder + label) centers; the text inside stays left-aligned */
     .folder-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
     .folder-grid > .folder-cell { margin-top: 0 !important; }
+    /* the folder scales from its top-left on desktop, which shoves it left
+       on a single column — scale from the top-center instead */
+    .folder { transform-origin: 50% 0; }
+    /* keep the label's left edge flush with the scaled folder's left edge */
+    .folder-label { padding: 0 calc((100% - 100% * var(--fld-scale, 1)) / 2); }
   }
 
   .folder-cell { display: flex; flex-direction: column; }
