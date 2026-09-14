@@ -230,6 +230,7 @@ function App() {
   const [inputValue, setInputValue] = uS("");
   const [spec, setSpec] = uS(null);
   const [phIdx, setPhIdx] = uS(0);
+  const [menuOpen, setMenuOpen] = uS(false);
   const timers = uR([]);
   const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const reqId = uR(0);
@@ -307,7 +308,7 @@ function App() {
       }
       const vw = window.innerWidth;
       const endW = Math.min(340, vw * 0.52);
-      const links = document.querySelector(".nav-right > div:last-child");
+      const links = document.querySelector(".nav-right .nav-links");
       endGeom = { w: endW, top: 26, left: (links ? links.getBoundingClientRect().left : vw - 38) - 26 - endW };
     };
 
@@ -534,13 +535,31 @@ function App() {
               />
             </div>
           )}
-          <div style={{ opacity: stage >= 7 || mode !== "hero" ? 1 : 0, transition: "opacity .6s ease", display: "flex", gap: 26 }}>
+          <div className="nav-links" style={{ opacity: stage >= 7 || mode !== "hero" ? 1 : 0, transition: "opacity .6s ease", display: "flex", gap: 26 }}>
             <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "gallery" ? " active" : "")} onClick={() => submit("show me your work")}>work</button>
             <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "about" ? " active" : "")} onClick={() => submit("who are you")}>about</button>
             <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "contact" ? " active" : "")} onClick={() => submit("are you open to work")}>contact</button>
           </div>
+          <button
+            className={"nav-burger" + (menuOpen ? " open" : "")}
+            aria-label="menu"
+            aria-expanded={menuOpen}
+            style={{ opacity: stage >= 7 || mode !== "hero" ? 1 : 0, transition: "opacity .6s ease" }}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </div>
+
+      {/* mobile nav overlay — tap anywhere to dismiss */}
+      {menuOpen && (
+        <div className="mobile-menu" onClick={() => setMenuOpen(false)}>
+          <button className="mm-link" onClick={() => { setMenuOpen(false); submit("show me your work"); }}>work</button>
+          <button className="mm-link" onClick={() => { setMenuOpen(false); submit("who are you"); }}>about</button>
+          <button className="mm-link" onClick={() => { setMenuOpen(false); submit("are you open to work"); }}>contact</button>
+        </div>
+      )}
 
       {/* main stage */}
       {mode === "hero" && (
