@@ -290,8 +290,19 @@ const __MNF_STYLE = `
 
   /* ── in the wild: ManyMe screens on the system ── */
   .mnf-shots { display: flex; gap: 18px; overflow-x: auto; padding: 4px 4px 22px;
-    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; scrollbar-color: rgba(13,13,13,0.25) transparent; }
   .mnf-shot { flex: 0 0 auto; width: clamp(200px, 21vw, 264px); scroll-snap-align: start; margin: 0; }
+  /* mobile: strip bleeds edge-to-edge so screens aren't clipped by the column padding */
+  @media (max-width: 1100px){
+    .mnf-shots { margin-left: calc(-1 * clamp(24px, 5vw, 72px)); margin-right: calc(-1 * clamp(24px, 5vw, 72px));
+      padding-left: clamp(24px, 5vw, 72px); padding-right: clamp(24px, 5vw, 72px);
+      scroll-padding-left: clamp(24px, 5vw, 72px); }
+  }
+  @media (max-width: 480px){
+    .mnf-shot { width: min(72vw, 240px); }
+    .mnf-shot:hover img { transform: none; } /* no hover lift on touch */
+  }
   .mnf-shot img { width: 100%; height: auto; display: block; border-radius: 18px;
     border: 1.5px solid rgba(13,13,13,0.18);
     box-shadow: 0 18px 36px -26px rgba(13,13,13,0.5);
