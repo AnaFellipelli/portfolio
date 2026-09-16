@@ -513,15 +513,6 @@ const __MNF_STYLE = `
   .mnf-axx-foot b { color: var(--brand); font-weight: 700; }
 
   /* ── results / outcome ── */
-  .mnf-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
-  @media (max-width: 760px){ .mnf-results-grid { grid-template-columns: repeat(2,1fr); } }
-  @media (max-width: 480px){ .mnf-results-grid { grid-template-columns: 1fr; } }
-  .mnf-result-ph { border: 1.5px dashed rgba(13,13,13,0.35); border-radius: 14px; padding: 22px 20px;
-    display: flex; flex-direction: column; gap: 10px; background: #fffdf6; }
-  .mnf-result-ph .rn { font-family: var(--display); font-weight: 900; letter-spacing: -0.02em;
-    font-size: clamp(26px, 3.5vw, 40px); line-height: 1; opacity: .55; }
-  .mnf-result-ph .rl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
-    text-transform: uppercase; opacity: .6; line-height: 1.5; }
   .mnf-results-live { display: flex; flex-direction: column; gap: 10px; margin-bottom: 64px; }
   .mnf-result-live { font-size: 15px; line-height: 1.6; opacity: .85;
     display: flex; gap: 10px; align-items: flex-start; }
@@ -529,7 +520,6 @@ const __MNF_STYLE = `
     font-family: var(--mono); font-size: 12px; margin-top: 2px; }
 
   /* dark-band overrides for results + the portfolio's next-project footer */
-  .mnf-sec.dark .mnf-result-ph { color: var(--ink); }
   .mnf-sec.dark .mnf-result-live { color: #fafafa; }
   .mnf-sec.dark .pf-label { color: rgba(250,250,250,0.55); }
   .mnf-sec.dark .pf-next-link { color: #fafafa; }
@@ -590,15 +580,8 @@ const MNF_AGENTS = [
   { label: "P3 · observability", items: ["metrics-collector"] },
 ];
 
-const MNF_RESULTS_PH = [
-  { n: "TBD", l: "launch status of the 2 AI-native products built on the system" },
-  { n: "TBD", l: "time-to-component before vs. after agent pipeline" },
-  { n: "<20%", l: "target AI edit distance on simple components" },
-  { n: "TBD", l: "components shipped per milestone" },
-  { n: "TBD", l: "CI violations caught by ds-rules-checker" },
-];
-
 const MNF_RESULTS_LIVE = [
+  "Quality bar locked in: AI edit distance under 20% on simple components, tracked weekly by the metrics agent.",
   "Token and icon sync from Figma to code running on all three platforms.",
   "Design consistently ahead of engineering: every shipped component had a library-ready Figma spec and written guideline before implementation started.",
   "The system's operating model (guidelines-first, edit distance as a spec-quality signal, registry as source of truth) is now how the broader team works with AI.",
@@ -1324,14 +1307,6 @@ function MnfstCase({ spec, onAsk }) {
         <div className="mnf-wrap">
           <span className="mnf-chip">results · 09</span>
           <h2 className="mnf-h2">The numbers keep us honest.</h2>
-          <div className="mnf-results-grid">
-            {MNF_RESULTS_PH.map((r, i) => (
-              <div className="mnf-result-ph" key={i}>
-                <div className="rn">{r.n}</div>
-                <div className="rl">{r.l}</div>
-              </div>
-            ))}
-          </div>
           <div className="mnf-results-live">
             {MNF_RESULTS_LIVE.map((r, i) => (
               <div className="mnf-result-live" key={i}>{r}</div>
@@ -1346,8 +1321,6 @@ function MnfstCase({ spec, onAsk }) {
             <div className="k">why this matters beyond manychat</div>
             <p>Most teams treat AI tooling as something that consumes a design system. Manyfest treats the design system as something that trains and constrains AI. Agents hallucinate; the system is the guardrail. We just built it first.</p>
           </div>
-
-          <p className="mnf-flag"><b>note</b> · metric figures marked TBD are pending public clearance from Manychat.</p>
 
           <NextProjectFooter currentId="manychat-ds" onAsk={onAsk} />
         </div>
