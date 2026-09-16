@@ -288,6 +288,20 @@ const __MNF_STYLE = `
     animation: mnfSpin .8s linear infinite; }
   @keyframes mnfSpin { to { transform: rotate(360deg); } }
 
+  /* ── in the wild: ManyMe screens on the system ── */
+  .mnf-shots { display: flex; gap: 18px; overflow-x: auto; padding: 4px 4px 22px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .mnf-shot { flex: 0 0 auto; width: clamp(200px, 21vw, 264px); scroll-snap-align: start; margin: 0; }
+  .mnf-shot img { width: 100%; height: auto; display: block; border-radius: 18px;
+    border: 1.5px solid rgba(13,13,13,0.18);
+    box-shadow: 0 18px 36px -26px rgba(13,13,13,0.5);
+    transition: transform .3s var(--ease-out); }
+  .mnf-shot:hover img { transform: translateY(-5px); }
+  .mnf-shot figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.55; }
+  .mnf-shots-foot { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
+    opacity: .6; line-height: 1.8; margin: 6px 0 0; }
+
   /* ── color + typography sections (mirroring /color and /typography) ── */
   .mnf-chip.sm { font-size: 10px; padding: 6px 11px; margin-bottom: 18px; }
   .mnf-count { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
@@ -492,10 +506,10 @@ const __MNF_STYLE = `
   .mnf-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
   @media (max-width: 760px){ .mnf-results-grid { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 480px){ .mnf-results-grid { grid-template-columns: 1fr; } }
-  .mnf-result-ph { border: 1.5px solid rgba(13,13,13,0.35); border-radius: 14px; padding: 22px 20px;
+  .mnf-result-ph { border: 1.5px dashed rgba(13,13,13,0.35); border-radius: 14px; padding: 22px 20px;
     display: flex; flex-direction: column; gap: 10px; background: #fffdf6; }
   .mnf-result-ph .rn { font-family: var(--display); font-weight: 900; letter-spacing: -0.02em;
-    font-size: clamp(26px, 3.5vw, 40px); line-height: 1; }
+    font-size: clamp(26px, 3.5vw, 40px); line-height: 1; opacity: .55; }
   .mnf-result-ph .rl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
     text-transform: uppercase; opacity: .6; line-height: 1.5; }
   .mnf-results-live { display: flex; flex-direction: column; gap: 10px; margin-bottom: 64px; }
@@ -567,12 +581,11 @@ const MNF_AGENTS = [
 ];
 
 const MNF_RESULTS_PH = [
-  { n: "209", l: "design tokens in the Figma library, every one carrying intent metadata, not just a value, so AI agents know when and why to use it" },
-  { n: "23", l: "components delivered in Figma, atoms and molecules, each library-ready with a written guideline before engineering starts" },
-  { n: "30+", l: "components in beta across 3 platforms kept in sync via Figma to code token and icon sync: 20 on Web, 10 on iOS, Android now in motion" },
-  { n: "~3 days", l: "median time to ship a simple component through the agent pipeline" },
-  { n: "12", l: "components shipped to beta in ~23 business days at current pace" },
+  { n: "TBD", l: "launch status of the 2 AI-native products built on the system" },
+  { n: "TBD", l: "time-to-component before vs. after agent pipeline" },
   { n: "<20%", l: "target AI edit distance on simple components" },
+  { n: "TBD", l: "components shipped per milestone" },
+  { n: "TBD", l: "CI violations caught by ds-rules-checker" },
 ];
 
 const MNF_RESULTS_LIVE = [
@@ -639,6 +652,16 @@ const MNF_SCALE_ROWS = [
   ["body/md", "Body medium", "s", 16, "16 / 1.55"],
   ["body/sm", "Body small", "s", 14, "14 / 1.5"],
   ["mono/sm", "EYEBROW", "m", 12, "12 / 1 / 0.24em"],
+];
+
+/* ── in the wild — ManyMe iOS explorations, exported from the DS explorations file ── */
+const MNF_SHOTS = [
+  ["manyme-onboarding.png", "onboarding · display voice, first screen", "ManyMe iOS onboarding screen: full-bleed photo, display headline, Google and Apple sign-in buttons"],
+  ["manyme-channels.png", "channel connect · list rows + connect actions", "ManyMe iOS screen asking what channel to start with: Instagram, Facebook, and TikTok rows"],
+  ["manyme-clipon.png", "cross-channel sheet · bottom sheet pattern", "ManyMe iOS bottom sheet suggesting connecting Facebook alongside Instagram"],
+  ["manyme-vault.png", "my vault · status tokens at work", "ManyMe iOS My Vault screen showing analysed posts, followers, audience, and voice cards"],
+  ["manyme-preview.png", "message preview · dark surfaces", "ManyMe iOS dark chat screen previewing drafted replies to a brand conversation"],
+  ["manyme-insights.png", "loading insights · dark canvas", "ManyMe iOS dark loading screen with the ManyMe monogram and Ask ManyMe input"],
 ];
 
 /* the pillars — reference-site cards, opened in place as an accordion */
@@ -894,6 +917,7 @@ function MnfstCase({ spec, onAsk }) {
         <button onClick={() => MnfScrollTo("mnf-color")}>color</button>
         <button onClick={() => MnfScrollTo("mnf-type")}>typography</button>
         <button onClick={() => MnfScrollTo("mnf-components")}>components</button>
+        <button onClick={() => MnfScrollTo("mnf-wild")}>in the wild</button>
         <button onClick={() => MnfScrollTo("mnf-agents")}>agents</button>
         <button onClick={() => MnfScrollTo("mnf-access")}>accessibility</button>
         <button onClick={() => MnfScrollTo("mnf-results")}>results</button>
@@ -1157,10 +1181,29 @@ function MnfstCase({ spec, onAsk }) {
         </div>
       </section>
 
+      {/* ── in the wild — ManyMe screens built on the system ── */}
+      <section className="mnf-sec cream mnf-grid-bg" id="mnf-wild">
+        <div className="mnf-wrap">
+          <span className="mnf-chip">in the wild · 06</span>
+          <h2 className="mnf-h2">The system, shipped.</h2>
+          <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented on this page — explorations from the iOS vision work.</p>
+
+          <div className="mnf-shots">
+            {MNF_SHOTS.map(([src, cap, alt]) => (
+              <figure className="mnf-shot" key={src}>
+                <img src={src} alt={alt} loading="lazy" width="450" height="920" />
+                <figcaption>{cap}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="mnf-shots-foot">exported straight from the ManyMe · DS explorations Figma file · scroll sideways for more →</p>
+        </div>
+      </section>
+
       {/* ── ownership + agents ── */}
       <section className="mnf-sec dark" id="mnf-agents">
         <div className="mnf-wrap">
-          <span className="mnf-chip">the pipeline · 06</span>
+          <span className="mnf-chip">the pipeline · 07</span>
           <h2 className="mnf-h2">What I own.</h2>
           <div className="mnf-own">
             {MNF_OWN.map((f, i) => (
@@ -1194,7 +1237,7 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── accessibility — every rule below is lifted from the component specs ── */}
       <section className="mnf-sec cream mnf-grid-bg" id="mnf-access">
         <div className="mnf-wrap">
-          <span className="mnf-chip">accessibility · 07</span>
+          <span className="mnf-chip">accessibility · 08</span>
           <h2 className="mnf-h2">Written into every spec.</h2>
           <p className="mnf-sec-sub">None of this is aspirational: each rule is written into the component specs, codified in ADRs, and checked by an agent in the pipeline. Try them, tab through this page.</p>
 
@@ -1268,7 +1311,7 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── results + outcome ── */}
       <section className="mnf-sec dark" id="mnf-results">
         <div className="mnf-wrap">
-          <span className="mnf-chip">results · 08</span>
+          <span className="mnf-chip">results · 09</span>
           <h2 className="mnf-h2">The numbers keep us honest.</h2>
           <div className="mnf-results-grid">
             {MNF_RESULTS_PH.map((r, i) => (
@@ -1292,6 +1335,8 @@ function MnfstCase({ spec, onAsk }) {
             <div className="k">why this matters beyond manychat</div>
             <p>Most teams treat AI tooling as something that consumes a design system. Manyfest treats the design system as something that trains and constrains AI. Agents hallucinate; the system is the guardrail. We just built it first.</p>
           </div>
+
+          <p className="mnf-flag"><b>note</b> · metric figures marked TBD are pending public clearance from Manychat.</p>
 
           <NextProjectFooter currentId="manychat-ds" onAsk={onAsk} />
         </div>
