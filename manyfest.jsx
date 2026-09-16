@@ -303,9 +303,8 @@ const __MNF_STYLE = `
     .mnf-shot { width: min(72vw, 240px); }
     .mnf-shot:hover img { transform: none; } /* no hover lift on touch */
   }
-  .mnf-shot img { width: 100%; height: auto; display: block; border-radius: 18px;
-    border: 1.5px solid rgba(13,13,13,0.18);
-    box-shadow: 0 18px 36px -26px rgba(13,13,13,0.5);
+  .mnf-shot img { width: 100%; height: auto; display: block;
+    filter: drop-shadow(0 18px 26px rgba(13,13,13,0.28)); /* hugs the phone silhouette */
     transition: transform .3s var(--ease-out); }
   .mnf-shot:hover img { transform: translateY(-5px); }
   .mnf-shot figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
@@ -1202,7 +1201,7 @@ function MnfstCase({ spec, onAsk }) {
           <div className="mnf-shots">
             {MNF_SHOTS.map(([src, cap, alt]) => (
               <figure className="mnf-shot" key={src}>
-                <img src={src} alt={alt} loading="lazy" width="450" height="920" />
+                <img src={src} alt={alt} loading="lazy" width="436" height="904" />
                 <figcaption>{cap}</figcaption>
               </figure>
             ))}
