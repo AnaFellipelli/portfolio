@@ -1307,6 +1307,16 @@ function MnfstCase({ spec, onAsk }) {
         <div className="mnf-wrap">
           <span className="mnf-chip">results · 09</span>
           <h2 className="mnf-h2">The numbers keep us honest.</h2>
+
+          {/* all figures verified against #manyfest release announcements and
+              #manyme weekly updates, sep 2026 — no invented numbers */}
+          <div className="mnf-stats" style={{ background: "#fffdf6" }}>
+            <div className="mnf-stat"><div className="n">v0.5</div><div className="l">ManyMe live on TestFlight + web, in testers' hands</div></div>
+            <div className="mnf-stat"><div className="n">22</div><div className="l">platform releases in six weeks, aug–sep 2026</div></div>
+            <div className="mnf-stat"><div className="n">10</div><div className="l">components in Android's first release, day one</div></div>
+            <div className="mnf-stat"><div className="n">20<span className="acc">+</span></div><div className="l">components live on web, Button through Modal</div></div>
+          </div>
+
           <div className="mnf-results-live">
             {MNF_RESULTS_LIVE.map((r, i) => (
               <div className="mnf-result-live" key={i}>{r}</div>
