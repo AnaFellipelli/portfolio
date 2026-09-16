@@ -288,17 +288,19 @@ const __MNF_STYLE = `
     animation: mnfSpin .8s linear infinite; }
   @keyframes mnfSpin { to { transform: rotate(360deg); } }
 
-  /* ── in the wild: ManyMe screens on the system ── */
-  .mnf-shots { display: flex; gap: 18px; overflow-x: auto; padding: 4px 4px 22px;
+  /* ── in the wild: ManyMe screens on the system ──
+     the scroller sits OUTSIDE .mnf-wrap and spans the full viewport, so phones
+     run off the right edge instead of clipping at the content column. the inset
+     aligns the first phone with the column's left edge; generous vertical
+     padding keeps drop-shadows inside the scroll box instead of being cut. */
+  .mnf-shots { --shots-inset: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px));
+    display: flex; gap: 18px; overflow-x: auto;
+    padding: 16px var(--shots-inset) 58px var(--shots-inset);
     scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--shots-inset);
     scrollbar-width: thin; scrollbar-color: rgba(13,13,13,0.25) transparent; }
+  @media (max-width: 1100px){ .mnf-shots { --shots-inset: clamp(24px, 5vw, 72px); } }
   .mnf-shot { flex: 0 0 auto; width: clamp(200px, 21vw, 264px); scroll-snap-align: start; margin: 0; }
-  /* mobile: strip bleeds edge-to-edge so screens aren't clipped by the column padding */
-  @media (max-width: 1100px){
-    .mnf-shots { margin-left: calc(-1 * clamp(24px, 5vw, 72px)); margin-right: calc(-1 * clamp(24px, 5vw, 72px));
-      padding-left: clamp(24px, 5vw, 72px); padding-right: clamp(24px, 5vw, 72px);
-      scroll-padding-left: clamp(24px, 5vw, 72px); }
-  }
   @media (max-width: 480px){
     .mnf-shot { width: min(72vw, 240px); }
     .mnf-shot:hover img { transform: none; } /* no hover lift on touch */
@@ -309,8 +311,6 @@ const __MNF_STYLE = `
   .mnf-shot:hover img { transform: translateY(-5px); }
   .mnf-shot figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
     text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.55; }
-  .mnf-shots-foot { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
-    opacity: .6; line-height: 1.8; margin: 6px 0 0; }
 
   /* ── color + typography sections (mirroring /color and /typography) ── */
   .mnf-chip.sm { font-size: 10px; padding: 6px 11px; margin-bottom: 18px; }
@@ -1197,17 +1197,18 @@ function MnfstCase({ spec, onAsk }) {
           <span className="mnf-chip">in the wild · 06</span>
           <h2 className="mnf-h2">The system, shipped.</h2>
           <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented on this page — explorations from the iOS vision work.</p>
-
-          <div className="mnf-shots">
-            {MNF_SHOTS.map(([src, cap, alt]) => (
-              <figure className="mnf-shot" key={src}>
-                <img src={src} alt={alt} loading="lazy" width="436" height="904" />
-                <figcaption>{cap}</figcaption>
-              </figure>
-            ))}
-          </div>
-          <p className="mnf-shots-foot">exported straight from the ManyMe · DS explorations Figma file · scroll sideways for more →</p>
         </div>
+
+        {/* full-bleed: outside the wrap so the strip overflows the right edge */}
+        <div className="mnf-shots">
+          {MNF_SHOTS.map(([src, cap, alt]) => (
+            <figure className="mnf-shot" key={src}>
+              <img src={src} alt={alt} loading="lazy" width="436" height="904" />
+              <figcaption>{cap}</figcaption>
+            </figure>
+          ))}
+        </div>
+
       </section>
 
       {/* ── ownership + agents ── */}
