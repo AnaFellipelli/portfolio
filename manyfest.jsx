@@ -161,20 +161,20 @@ const __MNF_STYLE = `
   .mnf-pal-h:first-child { margin-top: 0; padding-top: 0; border-top: none; }
   .mnf-sw-row { display: flex; flex-wrap: wrap; gap: 12px; }
   .mnf-sw { width: 116px; }
-  .mnf-sw .c { height: 44px; border-radius: 8px; border: 1px solid rgba(13,13,13,0.12); }
+  .mnf-sw .c { height: 44px; border-radius: 8px; border: 1px solid rgba(13,13,13,0.32); }
   .mnf-sw .n { font-family: var(--mono); font-size: 9px; margin-top: 7px; opacity: .8; }
   .mnf-sw .x { font-family: var(--mono); font-size: 8.5px; opacity: .5; margin-top: 2px; }
   .mnf-status-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
   @media (max-width: 860px){ .mnf-status-grid { grid-template-columns: repeat(2, 1fr); } }
   .mnf-status .pair { display: flex; height: 44px; border-radius: 8px; overflow: hidden;
-    border: 1px solid rgba(13,13,13,0.12); }
+    border: 1px solid rgba(13,13,13,0.32); }
   .mnf-status .pair span { flex: 1; }
   .mnf-toks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
   @media (max-width: 720px){ .mnf-toks { grid-template-columns: repeat(2, 1fr); } }
   .mnf-tok-name { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
     text-transform: uppercase; opacity: .7; margin-bottom: 10px; }
   .mnf-ramp { display: flex; border-radius: 10px; overflow: hidden; height: 46px;
-    border: 1px solid rgba(13,13,13,0.1); }
+    border: 1px solid rgba(13,13,13,0.32); }
   .mnf-ramp span { flex: 1; }
   .mnf-tok-hex { font-family: var(--mono); font-size: 9px; opacity: .65; margin-top: 8px; }
   .mnf-focus-line { margin-top: 22px; display: flex; align-items: center; gap: 12px;
@@ -336,9 +336,10 @@ const __MNF_STYLE = `
   .mnf-fam-h span { font-family: var(--mono); font-size: 10px; opacity: .55; }
   .mnf-fam-row { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
   @media (max-width: 900px){ .mnf-fam-row { grid-template-columns: repeat(5, 1fr); } }
+  /* the border delimits the preview: without it #0F0F0E and #FFFFFF have no edge */
   .mnf-prim { border-radius: 10px; min-height: 76px; padding: 9px 9px 8px;
     display: flex; flex-direction: column; justify-content: space-between;
-    border: 1px solid rgba(13,13,13,0.08); }
+    border: 1px solid rgba(13,13,13,0.32); }
   .mnf-prim b { font-size: 12.5px; font-weight: 700; }
   .mnf-prim i { font-family: var(--mono); font-size: 7.5px; font-style: normal; opacity: .85; }
 
@@ -359,7 +360,7 @@ const __MNF_STYLE = `
     padding: 8px 14px 8px 8px; border: 1px solid rgba(13,13,13,0.12); background: #fff; }
   .mnf-sem-chip.dk { background: #0f0f0e; color: #fafafa; border-color: transparent; }
   .mnf-sem-chip .dot { width: 24px; height: 24px; border-radius: 8px;
-    border: 1px solid rgba(13,13,13,0.15); flex: none; }
+    border: 1px solid rgba(13,13,13,0.32); flex: none; }
   .mnf-sem-chip b { font-family: var(--mono); font-size: 10px; }
   .mnf-sem-chip i { font-family: var(--mono); font-size: 8.5px; opacity: .6; font-style: normal; }
   .mnf-map-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -541,26 +542,6 @@ const __MNF_STYLE = `
   .mnf-type-stage .mnf-proto-ph { min-height: 420px; }
   .mnf-type-stage-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
 
-  /* ── the component inventory: the whole library at a glance ── */
-  .mnf-inv { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
-    gap: 14px; margin: 0 0 44px; }
-  .mnf-inv-card { border: 1px solid rgba(244,240,230,0.18); border-radius: 14px;
-    padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px;
-    background: rgba(244,240,230,0.03); transition: border-color .2s ease, transform .2s var(--ease-out); }
-  .mnf-inv-card:hover { border-color: rgba(180,138,222,0.55); transform: translateY(-2px); }
-  .mnf-inv-card.is-ref { border-color: #b48ade; background: rgba(128,64,207,0.12); }
-  .mnf-inv-name { font-family: var(--display); font-weight: 800; font-size: 17px;
-    letter-spacing: -0.01em; margin: 0; }
-  .mnf-inv-note { font-size: 12.5px; line-height: 1.5; opacity: .65; margin: 0; }
-  .mnf-inv-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center;
-    gap: 6px; flex-wrap: wrap; }
-  .mnf-plat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
-    text-transform: uppercase; border: 1px solid rgba(244,240,230,0.3);
-    border-radius: 5px; padding: 3px 7px; opacity: .8; }
-  .mnf-plat.on { border-color: #b48ade; color: #b48ade; opacity: 1; }
-  .mnf-inv-legend { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
-    opacity: .55; line-height: 1.8; margin: 0 0 30px; }
-  .mnf-inv-legend b { color: #b48ade; font-weight: 700; }
 
   /* ── visual-design proto slots — the design work itself, inside the panels ── */
   .mnf-proto { margin: 30px 0 0; }
@@ -693,20 +674,6 @@ const MNF_SHOTS = [
   ["manyme-vault.png", "my vault · status tokens at work", "ManyMe iOS My Vault screen showing analysed posts, followers, audience, and voice cards"],
   ["manyme-preview.png", "message preview · dark surfaces", "ManyMe iOS dark chat screen previewing drafted replies to a brand conversation"],
   ["manyme-insights.png", "loading insights · dark canvas", "ManyMe iOS dark loading screen with the ManyMe monogram and Ask ManyMe input"],
-];
-
-/* the component inventory. platforms marked here are the ones the sequencing decision
-   names explicitly (shared first, then iOS-specific, then web-specific); Button is the
-   reference component the whole pipeline was calibrated against.
-   TODO(ana): paste the rest of the library and I'll fill the grid out. */
-const MNF_COMPONENTS = [
-  { n: "Button", note: "The reference component: the pipeline, standards and release gates were all calibrated against it first.", p: ["web", "ios", "android"], ref: true },
-  { n: "Modal", note: "Web-specific pattern, shipped after the shared contract hardened.", p: ["web"] },
-  { n: "Tables", note: "Web-specific: density and row behavior live here.", p: ["web"] },
-  { n: "Toggle", note: "Web-specific control, built on the shared focus and touch-target rules.", p: ["web"] },
-  { n: "BottomSheet", note: "iOS-specific pattern from the ManyMe vision work.", p: ["ios"] },
-  { n: "ChatInputArea", note: "iOS-specific: the input surface the AI conversation runs through.", p: ["ios"] },
-  { n: "ResultCarousel", note: "iOS-specific: how generated results get browsed.", p: ["ios"] },
 ];
 
 /* the pillars — reference-site cards, opened in place as an accordion */
@@ -964,10 +931,6 @@ function MnfstCase({ spec, onAsk }) {
           </span>
         </div>
 
-        <div className="mnf-proto-duo">
-          <MnfProto src="mnf-proto-foundations.png" cap="spacing + radius on a composed screen" alt="Manyfest screen showing the spacing and radius foundations in use" />
-          <MnfProto src="mnf-proto-responsive.png" cap="the same view across breakpoints" alt="Manyfest layout shown at mobile, tablet, and desktop breakpoints" />
-        </div>
       </div>
     ),
     voice: (
@@ -1159,15 +1122,7 @@ function MnfstCase({ spec, onAsk }) {
             {colOpen.sem ? "close the roles" : "open the roles"} <span className="arr">→</span>
           </button>
           <div className={"mnf-acc" + (colOpen.sem ? " open" : "")} aria-hidden={!colOpen.sem}>
-          <div className="mnf-sem-cols"><span>token</span><span>☀ light mode</span><span>☾ dark mode</span></div>
-          <div className="mnf-sem-group"><b>surface</b><span>the floor everything sits on</span></div>
-          {MNF_SEM_SURFACE.map(([token, desc, light, lightMap, dark, darkMap]) => (
-            <div className="mnf-sem-row" key={token}>
-              <div className="t"><b>{token}</b><p>{desc}</p></div>
-              <span className="mnf-sem-chip"><span className="dot" style={{ background: light }}></span><b>{light}</b><i>→ {lightMap}</i></span>
-              <span className="mnf-sem-chip dk"><span className="dot" style={{ background: dark }}></span><b>{dark}</b><i>→ {darkMap}</i></span>
-            </div>
-          ))}
+          {/* surface roles live in the modes block above; repeating them here was redundant */}
           {MNF_SEM_GROUPS.map(([group, rows]) => (
             <div key={group}>
               <div className="mnf-sem-group"><b>{group}</b><span>{rows.length} roles · light mode, each mapped to its primitive</span></div>
@@ -1239,30 +1194,8 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── components — live render on dark ── */}
       <section className="mnf-sec dark" id="mnf-components">
         <div className="mnf-wrap">
-          <span className="mnf-chip">components · 06</span><span className="mnf-count">20+ web · 10 android</span>
-          <h2 className="mnf-h2">The library, and the one it was calibrated on.</h2>
-          <p className="mnf-sec-sub">Shared cross-platform components shipped first, then the platform-specific ones, so the token and API contract hardened before divergence was allowed to exist.</p>
-
-          <div className="mnf-inv">
-            {MNF_COMPONENTS.map((c) => (
-              <div className={"mnf-inv-card" + (c.ref ? " is-ref" : "")} key={c.n}>
-                <h4 className="mnf-inv-name">{c.n}</h4>
-                <p className="mnf-inv-note">{c.note}</p>
-                <div className="mnf-inv-foot">
-                  {["web", "ios", "android"].map((plat) => (
-                    <span className={"mnf-plat" + (c.p.indexOf(plat) > -1 ? " on" : "")} key={plat}>{plat}</span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mnf-inv-legend">
-            <b>highlighted</b> platforms are where that component ships · Button carries the
-            reference border: every standard, agent and release gate was proven on it before
-            the pipeline ran on anything else.
-          </p>
-
-          <h3 className="mnf-h3" style={{ margin: "0 0 18px" }}>Button, rendered live.</h3>
+          <span className="mnf-chip">components · 06</span>
+          <h2 className="mnf-h2">Button. Rendered live.</h2>
           <p className="mnf-live-note">
             The matrix below is live HTML, built from the variables in the Manyfest Figma file.
             Hover it, press it, tab through it.
