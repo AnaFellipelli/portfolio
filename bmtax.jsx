@@ -106,10 +106,14 @@ const __BMT_STYLE = `
      logo_icon.png, so the arms keep their real pointed tips: an earlier hand-drawn
      polygon filled the corners instead, which is what made it read as a fat bowtie. ── */
   .bt-hero { position: relative; background: var(--paper); color: var(--ink);
-    overflow: hidden; padding: 104px 0 0; }
+    overflow: hidden; padding: 88px 0 0; }
   .bt-hero .bt-wrap { position: relative; }
-  .bt-xband { position: relative; height: min(78vh, 720px); min-height: 460px;
-    margin-top: 26px; }
+  /* the band is WIDE (21:10, matching the shipped hero). the ✕ mask is stretched to
+     fill it, so the band's aspect ratio is what sets the arm angle: a taller band
+     makes the arms climb too steeply and the mark stops reading as the logo. */
+  .bt-xband { position: relative; width: 100%; aspect-ratio: 21 / 10;
+    max-height: 76vh; min-height: 340px; margin-top: 0; }
+  @supports not (aspect-ratio: 1) { .bt-xband { height: 48vw; } }
   /* masked with the brand's own icon (logo_icon.png, white ✕ on transparent), so the
      bar weight and the angles are the real mark rather than a polygon I guessed at.
      stretched to the band the way the shipped hero stretches it. */
@@ -141,7 +145,8 @@ const __BMT_STYLE = `
   .bt-back { position: relative; z-index: 2; font-family: var(--mono); font-size: 10.5px;
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
     background: transparent; border: 1px solid rgba(41,46,52,0.35);
-    padding: 9px 16px; cursor: pointer; transition: background .2s ease; }
+    padding: 9px 16px; cursor: pointer; margin-bottom: 14px;
+    transition: background .2s ease; }
   .bt-back:hover { background: rgba(41,46,52,0.08); }
   .bt-eyebrow { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--mint); margin-bottom: 18px; }

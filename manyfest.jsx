@@ -16,15 +16,6 @@ const __MNF_STYLE = `
   /* a transformed ancestor would hijack the rail's position:fixed */
   body.mnf-mode .page-enter { animation: none !important; }
 
-  /* header protection: pure backdrop blur (no bar), and the logo + nav
-     invert against whatever passes underneath via blend mode */
-  body.mnf-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    z-index: 0; /* keep the blur BEHIND the menu items */
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   /* lift the actual header items above the blur layer */
   body.mnf-mode .topbar > * { position: relative; z-index: 1; }
   /* items adapt to the band currently under the header (scroll-driven) */
@@ -45,7 +36,7 @@ const __MNF_STYLE = `
     --card-color: #8040cf;          /* action/brand */
     --card-type: #3232b8;           /* status/info */
     --card-found: #eae8e2;          /* action/secondary */
-    --card-voice: #bf2810;          /* action/destructive */
+    --card-voice: #d11ac9;          /* pink/500 — the destructive red read as an error here */
     font-family: var(--sans); color: var(--ink); }
 
   .mnf-grid-bg {
@@ -533,6 +524,44 @@ const __MNF_STYLE = `
     margin: 0 0 48px; }
   .mnf-flag b { font-weight: 700; }
 
+  /* ── modes: the light/dark contract, surface roles side by side ── */
+  .mnf-modes { border-top: 1.5px solid rgba(13,13,13,0.25); }
+  .mnf-modes-cols { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 14px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    opacity: .6; padding: 12px 0; border-bottom: 1px solid rgba(13,13,13,0.12); }
+  .mnf-modes-row { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid rgba(13,13,13,0.1); align-items: center; }
+  @media (max-width: 800px){ .mnf-modes-cols { display: none; }
+    .mnf-modes-row { grid-template-columns: 1fr; gap: 8px; } }
+  .mnf-modes-row .t b { font-family: var(--mono); font-size: 11px; }
+  .mnf-modes-row .t p { font-size: 12.5px; line-height: 1.5; opacity: .65; margin: 3px 0 0; }
+
+  /* ── typography: a reserved frame for type doing its job in the product ── */
+  .mnf-type-stage { margin: 64px 0 0; }
+  .mnf-type-stage .mnf-proto-ph { min-height: 420px; }
+  .mnf-type-stage-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
+
+  /* ── the component inventory: the whole library at a glance ── */
+  .mnf-inv { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+    gap: 14px; margin: 0 0 44px; }
+  .mnf-inv-card { border: 1px solid rgba(244,240,230,0.18); border-radius: 14px;
+    padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px;
+    background: rgba(244,240,230,0.03); transition: border-color .2s ease, transform .2s var(--ease-out); }
+  .mnf-inv-card:hover { border-color: rgba(180,138,222,0.55); transform: translateY(-2px); }
+  .mnf-inv-card.is-ref { border-color: #b48ade; background: rgba(128,64,207,0.12); }
+  .mnf-inv-name { font-family: var(--display); font-weight: 800; font-size: 17px;
+    letter-spacing: -0.01em; margin: 0; }
+  .mnf-inv-note { font-size: 12.5px; line-height: 1.5; opacity: .65; margin: 0; }
+  .mnf-inv-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center;
+    gap: 6px; flex-wrap: wrap; }
+  .mnf-plat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+    text-transform: uppercase; border: 1px solid rgba(244,240,230,0.3);
+    border-radius: 5px; padding: 3px 7px; opacity: .8; }
+  .mnf-plat.on { border-color: #b48ade; color: #b48ade; opacity: 1; }
+  .mnf-inv-legend { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
+    opacity: .55; line-height: 1.8; margin: 0 0 30px; }
+  .mnf-inv-legend b { color: #b48ade; font-weight: 700; }
+
   /* ── visual-design proto slots — the design work itself, inside the panels ── */
   .mnf-proto { margin: 30px 0 0; }
   .mnf-proto-frame { border: 1px solid rgba(13,13,13,0.15); border-radius: 12px;
@@ -664,6 +693,20 @@ const MNF_SHOTS = [
   ["manyme-vault.png", "my vault · status tokens at work", "ManyMe iOS My Vault screen showing analysed posts, followers, audience, and voice cards"],
   ["manyme-preview.png", "message preview · dark surfaces", "ManyMe iOS dark chat screen previewing drafted replies to a brand conversation"],
   ["manyme-insights.png", "loading insights · dark canvas", "ManyMe iOS dark loading screen with the ManyMe monogram and Ask ManyMe input"],
+];
+
+/* the component inventory. platforms marked here are the ones the sequencing decision
+   names explicitly (shared first, then iOS-specific, then web-specific); Button is the
+   reference component the whole pipeline was calibrated against.
+   TODO(ana): paste the rest of the library and I'll fill the grid out. */
+const MNF_COMPONENTS = [
+  { n: "Button", note: "The reference component: the pipeline, standards and release gates were all calibrated against it first.", p: ["web", "ios", "android"], ref: true },
+  { n: "Modal", note: "Web-specific pattern, shipped after the shared contract hardened.", p: ["web"] },
+  { n: "Tables", note: "Web-specific: density and row behavior live here.", p: ["web"] },
+  { n: "Toggle", note: "Web-specific control, built on the shared focus and touch-target rules.", p: ["web"] },
+  { n: "BottomSheet", note: "iOS-specific pattern from the ManyMe vision work.", p: ["ios"] },
+  { n: "ChatInputArea", note: "iOS-specific: the input surface the AI conversation runs through.", p: ["ios"] },
+  { n: "ResultCarousel", note: "iOS-specific: how generated results get browsed.", p: ["ios"] },
 ];
 
 /* the pillars — reference-site cards, opened in place as an accordion */
@@ -839,7 +882,6 @@ function MnfstCase({ spec, onAsk }) {
           </span>
         </div>
 
-        <MnfProto src="mnf-proto-type.png" cap="the two voices on a real screen · gravity display over rooftop body" alt="Manyfest screen showing the display typeface paired with body copy" />
       </div>
     ),
     found: (
@@ -936,7 +978,6 @@ function MnfstCase({ spec, onAsk }) {
           <div className="mnf-voice-card vk"><h4>Warm, but sharp.</h4><p>We have a sense of humor. We're also serious about the work. Both can be true.</p></div>
         </div>
 
-        <MnfProto src="mnf-proto-voice.png" cap="the voice in product copy · empty states, errors, onboarding" alt="Manyfest screens showing the voice and tone principles applied to product copy" />
       </div>
     ),
   };
@@ -1068,9 +1109,30 @@ function MnfstCase({ spec, onAsk }) {
           <h2 className="mnf-h2">Color is dynamic. It creates tension. But also agreement.</h2>
           <p className="mnf-sec-sub">Eight roles, two layers. Primitives hold the raw values; semantic tokens give them a job, so every surface feels unmistakably us, loud where it counts, calm where it has to.</p>
 
+          {/* ── modes first: it's the architecture, the swatch tables are the appendix ── */}
+          <div className="mnf-sub-head"><span className="mnf-chip sm">modes · light + dark</span><span className="mnf-count">2 modes</span></div>
+          <h3 className="mnf-h3">Two modes, one contract.</h3>
+          <p className="mnf-sub-p">Primitives never move: the seven ramps are fixed values. What changes per mode is the semantic layer, the roles that point at them. A product asks for color/surface/default and gets white in light, neutral/800 in dark, without knowing which mode it's in. That indirection is the whole reason a component can be built once and shipped into both.</p>
+
+          <div className="mnf-modes">
+            <div className="mnf-modes-cols"><span>surface role</span><span>☀ light</span><span>☾ dark</span></div>
+            {MNF_SEM_SURFACE.map(([token, desc, light, lightMap, dark, darkMap]) => (
+              <div className="mnf-modes-row" key={token}>
+                <div className="t"><b>{token}</b><p>{desc}</p></div>
+                <span className="mnf-sem-chip"><span className="dot" style={{ background: light }}></span><b>{light}</b><i>→ {lightMap}</i></span>
+                <span className="mnf-sem-chip dk"><span className="dot" style={{ background: dark }}></span><b>{dark}</b><i>→ {darkMap}</i></span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mnf-proto-duo" style={{ marginTop: 34 }}>
+            <MnfProto src="mnf-proto-mode-light.png" cap="the same screen · light mode" alt="A Manyfest screen in light mode" tall />
+            <MnfProto src="mnf-proto-mode-dark.png" cap="the same screen · dark mode" alt="The same Manyfest screen in dark mode" tall />
+          </div>
+
           <div className="mnf-sub-head"><span className="mnf-chip sm">primitives · color</span><span className="mnf-count">66 tokens</span></div>
           <h3 className="mnf-h3">Color Primitives.</h3>
-          <p className="mnf-sub-p">The raw values: 66 tokens across seven families. Every semantic role maps back to one of these.</p>
+          <p className="mnf-sub-p">Seven families, ten steps each. The fixed values every role points at.</p>
           <button className="mnf-acc-btn" onClick={() => setColOpen((s) => ({ ...s, prims: !s.prims }))} aria-expanded={colOpen.prims}>
             {colOpen.prims ? "close the tokens" : "open the 66 tokens"} <span className="arr">→</span>
           </button>
@@ -1088,12 +1150,11 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           ))}
 
-          <MnfProto src="mnf-proto-primitives.png" cap="the ramps chosen against real ui, not swatch grids" alt="Manyfest primitive color ramps shown applied to real interface elements" />
           </div>
 
           <div className="mnf-sub-head"><span className="mnf-chip sm">semantic · color</span><span className="mnf-count">37 × 2 modes</span></div>
           <h3 className="mnf-h3">Color Semantic.</h3>
-          <p className="mnf-sub-p">37 tokens × 2 modes. Primitives map to roles, and roles are how surfaces communicate state, action, and tone consistently across every product.</p>
+          <p className="mnf-sub-p">37 roles × 2 modes: how a surface says state, action, and tone without naming a color.</p>
           <button className="mnf-acc-btn" onClick={() => setColOpen((s) => ({ ...s, sem: !s.sem }))} aria-expanded={colOpen.sem}>
             {colOpen.sem ? "close the roles" : "open the roles"} <span className="arr">→</span>
           </button>
@@ -1121,10 +1182,6 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           ))}
 
-          <div className="mnf-proto-duo">
-            <MnfProto src="mnf-proto-semantic-light.png" cap="roles at work · light mode" alt="Manyfest interface showing semantic color roles in light mode" />
-            <MnfProto src="mnf-proto-semantic-dark.png" cap="same roles, same screen · dark mode" alt="The same Manyfest interface showing semantic color roles in dark mode" />
-          </div>
           </div>
         </div>
       </section>
@@ -1165,16 +1222,47 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           </div>
 
-          <p style={{ fontFamily: "var(--mono)", fontSize: 9.5, opacity: .55, marginTop: 20 }}>
-          </p>
+          {/* the reserved stage: type doing its job in the product, not on a specimen sheet.
+              the frame holds its height before the export lands so the layout never jumps. */}
+          <div className="mnf-type-stage">
+            <div className="mnf-type-stage-head">
+              <span className="mnf-chip sm" style={{ marginBottom: 0 }}>type in the ui</span>
+            </div>
+            <MnfProto src="mnf-proto-type-ui.png"
+              cap="the scale at work · display headline, body copy, mono data, all on one screen"
+              alt="A Manyfest product screen showing the display, body and mono type styles working together"
+              tall />
+          </div>
         </div>
       </section>
 
       {/* ── components — live render on dark ── */}
       <section className="mnf-sec dark" id="mnf-components">
         <div className="mnf-wrap">
-          <span className="mnf-chip">components · 06</span>
-          <h2 className="mnf-h2">Button. Rendered live.</h2>
+          <span className="mnf-chip">components · 06</span><span className="mnf-count">20+ web · 10 android</span>
+          <h2 className="mnf-h2">The library, and the one it was calibrated on.</h2>
+          <p className="mnf-sec-sub">Shared cross-platform components shipped first, then the platform-specific ones, so the token and API contract hardened before divergence was allowed to exist.</p>
+
+          <div className="mnf-inv">
+            {MNF_COMPONENTS.map((c) => (
+              <div className={"mnf-inv-card" + (c.ref ? " is-ref" : "")} key={c.n}>
+                <h4 className="mnf-inv-name">{c.n}</h4>
+                <p className="mnf-inv-note">{c.note}</p>
+                <div className="mnf-inv-foot">
+                  {["web", "ios", "android"].map((plat) => (
+                    <span className={"mnf-plat" + (c.p.indexOf(plat) > -1 ? " on" : "")} key={plat}>{plat}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mnf-inv-legend">
+            <b>highlighted</b> platforms are where that component ships · Button carries the
+            reference border: every standard, agent and release gate was proven on it before
+            the pipeline ran on anything else.
+          </p>
+
+          <h3 className="mnf-h3" style={{ margin: "0 0 18px" }}>Button, rendered live.</h3>
           <p className="mnf-live-note">
             The matrix below is live HTML, built from the variables in the Manyfest Figma file.
             Hover it, press it, tab through it.
