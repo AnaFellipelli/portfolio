@@ -1881,23 +1881,46 @@
        (no integrity attr on these two: swap in unpkg's published sha384 if you want SRI back) -->
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <!-- framer-motion removed: it was downloaded on every visit but never actually used -->
+  <!-- framer-motion removed: it was downloaded on every visit but never actually used.
+       @babel/standalone is no longer loaded either: the app ships precompiled. -->
 
-  <script type="text/babel" src="data.jsx"></script>
-  <script type="text/babel" src="doodles.jsx"></script>
-  <script type="text/babel" src="stickers.jsx"></script>
-  <script type="text/babel" src="layouts.jsx"></script>
-  <script type="text/babel" src="folders.jsx"></script>
-  <script type="text/babel" src="weave.jsx"></script>
-  <script type="text/babel" src="manyfest.jsx"></script>
-  <script type="text/babel" src="releve.jsx"></script>
-  <script type="text/babel" src="espm.jsx"></script>
-  <script type="text/babel" src="canal.jsx"></script>
-  <script type="text/babel" src="baw.jsx"></script>
-  <script type="text/babel" src="bmtax.jsx"></script>
-  <script type="text/babel" src="flyer.jsx"></script>
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="app.jsx"></script>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       The app used to ship as .jsx and get compiled in the visitor's browser.
+       That cost 2.8MB for @babel/standalone plus ~950ms of blocking compile on
+       EVERY page load, measured. Now build-jsx.js precompiles each .jsx to a
+       plain .js sibling and we load those: no Babel, no compile, same code.
+
+       AFTER EDITING ANY .jsx, RUN:   node build-jsx.js
+       (then upload the .js files it rewrites)
+
+       Escape hatch: open any URL with ?dev=1 and this loader goes back to the
+       old behavior, pulling Babel and the raw .jsx. If a .js is ever stale or
+       missing, ?dev=1 always renders the real source.
+       ══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    window.__SRC = ["data", "doodles", "stickers", "layouts", "folders", "weave",
+      "manyfest", "releve", "espm", "canal", "baw", "bmtax", "flyer",
+      "tweaks-panel", "app"];
+    (function () {
+      var dev = /[?&]dev\b/.test(location.search);
+      if (dev) {
+        /* dev: document.write keeps these parser-inserted, which is the only way
+           @babel/standalone reliably picks up type="text/babel" scripts */
+        document.write('<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"><\/script>');
+        window.__SRC.forEach(function (n) {
+          document.write('<script type="text/babel" src="' + n + '.jsx"><\/script>');
+        });
+        return;
+      }
+      /* prod: async=false on a dynamically inserted script preserves execution
+         order, so the dependency chain (data -> layouts -> cases -> app) holds */
+      window.__SRC.forEach(function (n) {
+        var el = document.createElement("script");
+        el.src = n + ".js";
+        el.async = false;
+        document.head.appendChild(el);
+      });
+    })();
+  </script>
 </body>
 </html>

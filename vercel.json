@@ -1,5 +1,21 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/ana.html" }
+  ],
+  "headers": [
+    {
+      "comment": "the compiled app: cached for a day, then revalidated. long enough that a visitor clicking through six case pages pays the download once, short enough that a manual upload goes live the same day.",
+      "source": "/(.*)\\.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "comment": "images and video never change under the same filename, so they can cache hard",
+      "source": "/(.*)\\.(png|jpg|jpeg|webp|mp4|woff2)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
   ]
 }

@@ -138,13 +138,6 @@ const __WV2_STYLE = `
   body.wv-mode .atmosphere, body.wv-mode .grain { display: none; }
   body.wv-mode { background: #f5f5f5; /* surface.level200 · lightGray */ }
 
-  /* header protection: backdrop blur only (no bar); items adapt to the band below */
-  body.wv-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   body.wv-mode .topbar > * { position: relative; z-index: 1; }
   body.wv-mode .topbar .logo { color: #3c3c3c; transition: color .3s ease; } /* text.default */
   body.wv-mode .nav-link { color: rgba(60,60,60,0.7); transition: color .3s ease; }
@@ -438,6 +431,30 @@ const __WV2_STYLE = `
   .wv2-sec.darkgray .wv2-acc-btn:focus-visible, .wv2-sec.darkblue .wv2-acc-btn:focus-visible,
   .wv2-sec.deep .wv2-acc-btn:focus-visible { box-shadow: 0 0 0 2px #1a1f25, 0 0 0 4px #38abdf; }
 
+  /* ── the documentation band ── */
+  .wv2-docs { margin-top: 58px; }
+  .wv2-docs .wv2-wrap { max-width: 1280px; margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px) !important; }
+  .wv2-docs-head { margin-bottom: 14px; }
+  .wv2-docs-lede { font-size: 15.5px; line-height: 1.65; opacity: .85; margin: 0 0 30px; }
+  .wv2-docs-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-top: 26px; }
+  @media (max-width: 860px){ .wv2-docs-trio { grid-template-columns: 1fr; } }
+  .wv2-shot { margin: 0; }
+  .wv2-shot.wide { max-width: 1600px; margin: 0 auto;
+    padding: 0 clamp(16px, 3vw, 40px); }
+  .wv2-shot-frame { border: 1px solid rgba(60,60,60,0.16); border-radius: 4px;
+    overflow: hidden; line-height: 0; background: #fff; }
+  .wv2-shot-frame img { width: 100%; height: auto; display: block; }
+  .wv2-shot-ph { border: 1.5px dashed rgba(60,60,60,0.28); border-radius: 4px;
+    min-height: 200px; display: grid; place-items: center; padding: 26px; text-align: center;
+    font-family: var(--wv-mono); font-size: 10.5px; letter-spacing: 0.08em; line-height: 2;
+    opacity: .6; }
+  .wv2-shot.wide .wv2-shot-ph { min-height: 340px; }
+  .wv2-shot figcaption { font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.6; }
+  .wv2-chip.sm { font-size: 10px; padding: 6px 11px; }
+
   /* ── deep dives ── */
   .wv2-deep { border-top: 1px solid rgba(60,60,60,0.15); padding: 44px 0 28px; }
   .wv2-deep-head { display: grid; grid-template-columns: 74px 1fr auto; gap: 24px; align-items: baseline; }
@@ -535,6 +552,26 @@ function WvScrollTo(id) {
 }
 
 /* one component deep dive — header always visible, dense material behind "open →" */
+/* a weave figure: shows the export when it's in the folder, and a labeled frame
+   while it isn't, so the band keeps its shape mid-upload */
+function WvShot({ src, cap, alt, wide }) {
+  const [missing, setMissing] = useStateWv(false);
+  return (
+    <figure className={"wv2-shot" + (wide ? " wide" : "")}>
+      {missing ? (
+        <div className="wv2-shot-ph" role="img" aria-label={alt}>
+          <span>export pending<br /><b>{src}</b></span>
+        </div>
+      ) : (
+        <div className="wv2-shot-frame">
+          <img src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
+        </div>
+      )}
+      <figcaption>{cap}</figcaption>
+    </figure>
+  );
+}
+
 function WvDeep({ id, index, open, onToggle, onReveal }) {
   const p = PROJECTS[id];
   const ref = useRefWv(null);
@@ -850,6 +887,37 @@ function WeaveCase({ spec, onAsk }) {
               open={deepOpen instanceof Set ? deepOpen.has(id) : deepOpen === id}
               onToggle={toggleDeep} onReveal={revealDeep} />
           ))}
+        </div>
+
+        {/* ── the documentation itself. the case claims engineers shipped without a
+            designer in the room; this is the artifact that made that true, so the
+            whole spread goes in at full bleed (the volume IS the argument) and the
+            readable crops sit under it. ── */}
+        <div className="wv2-docs">
+          <div className="wv2-wrap" style={{ padding: 0 }}>
+            <div className="wv2-docs-head">
+              <span className="wv2-chip sm">the documentation</span>
+            </div>
+            <p className="wv2-docs-lede">
+              One component's spec: anatomy, surface, resizing, grippers, content, header,
+              footer, tabs, and every placement (floating, docked, fixed, side, dock, tables
+              and tiles inside panels). This is what "no designer required in the room" looks
+              like as an artifact.
+            </p>
+          </div>
+          <WvShot src="weave-doc-panel-spread.png" wide
+            cap="panel · the full specification page, as delivered to engineering"
+            alt="The complete Panel documentation page: dozens of annotated artboards covering anatomy, states and placements" />
+          <div className="wv2-wrap" style={{ padding: 0 }}>
+            <div className="wv2-docs-trio">
+              <WvShot src="weave-doc-anatomy.png" cap="anatomy · every part named and measured"
+                alt="The Panel anatomy artboard, with each region numbered and described" />
+              <WvShot src="weave-doc-docking.png" cap="docking · the behavior written as steps"
+                alt="The Panel docking documentation, showing the drag-to-dock behavior step by step" />
+              <WvShot src="weave-doc-tabs.png" cap="tabs · parent, content, horizontal, vertical"
+                alt="The Panel tabs documentation covering parent tabs, content tabs and their orientations" />
+            </div>
+          </div>
         </div>
       </section>
 
