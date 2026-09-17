@@ -198,7 +198,7 @@ const __BAW_STYLE = `
     font-size: 15px; margin: 0 0 8px; }
   .bw-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .75; }
   .bw-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
-    margin: 0; line-height: 1.7; max-width: 88ch; }
+    margin: 0; line-height: 1.7; max-width: none; }
 
   /* portfolio footer on the dark band */
   .bw-sec.dark .pf-label { color: rgba(241,241,241,0.55); }
@@ -310,7 +310,7 @@ function BawCase({ spec, onAsk }) {
             <a className="bw-cta" href={p.liveUrl || "https://www.bawclothing.com.br/"}
               target="_blank" rel="noopener noreferrer" aria-label="open the live baw store">
               <span className="track" aria-hidden="true">
-                {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the store ↗</span>)}
+                {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the live store ↗</span>)}
               </span>
             </a>
           </div>

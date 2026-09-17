@@ -253,7 +253,7 @@ const __RLV_STYLE = `
     font-size: 15.5px; margin: 0 0 8px; }
   .rl-own-item p { font-size: 14px; line-height: 1.6; margin: 0; color: var(--dim); }
   .rl-collab { font-family: var(--rl-mono); font-size: 11.5px; color: var(--dim);
-    margin: 0; line-height: 1.7; max-width: 88ch; }
+    margin: 0; line-height: 1.7; max-width: none; }
 
   /* in hindsight — two columns so the band fills the page instead of a lonely left rail */
   .rl-hind { border-top: 1px solid var(--line-hi); margin-top: 8px; padding-top: 52px; margin-bottom: 20px;

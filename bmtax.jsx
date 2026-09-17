@@ -84,12 +84,12 @@ const __BMT_STYLE = `
   .bt-sec.paper { background: var(--paper); }
   .bt-sec.white { background: #fff; }
   .bt-sec.dark { background: var(--coal); color: var(--paper); }
-  /* the hairlines are the page's grid: they sit ON the content column's own edges,
-     so copy stops at a rule instead of being sliced by one. */
+  /* the hairlines are the page's grid: they sit in the GUTTERS, 44px outside the
+     content column, so they frame the copy instead of slicing through a headline. */
   .bt-sec .rule-v { position: absolute; top: 0; bottom: 0; width: 1px;
     background: var(--hair); pointer-events: none; }
-  .bt-sec .rule-v.at-text-start { left: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px)); }
-  .bt-sec .rule-v.at-text-end { right: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 9vw, 150px)); }
+  .bt-sec .rule-v.at-text-start { left: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px) - 44px); }
+  .bt-sec .rule-v.at-text-end { right: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 9vw, 150px) - 44px); }
   @media (max-width: 1100px){
     .bt-sec .rule-v.at-text-start { left: clamp(24px, 5vw, 72px); }
     .bt-sec .rule-v.at-text-end { right: clamp(24px, 5vw, 72px); }
@@ -108,41 +108,57 @@ const __BMT_STYLE = `
   .bt-lede { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; max-width: 56ch;
     margin: 0 0 54px; opacity: .85; }
 
-  /* ── hero — mirrors the landing page: one centered stack, the ✕ blown up behind it ── */
-  .bt-hero { position: relative; background: var(--coal); color: var(--paper);
-    overflow: hidden; padding: 130px 0 104px; }
+  /* ── hero — the site's own device: the ✕ is a WINDOW, not a glyph. four paper
+     triangles cut into a full-bleed block, the media shows through the ✕, and the
+     copy sits in the crossing. clip-path traces the ✕ from the top-left corner
+     clockwise; the arms run into all four corners exactly like bmtax.com.br. ── */
+  .bt-hero { position: relative; background: var(--paper); color: var(--ink);
+    overflow: hidden; padding: 104px 0 0; }
   .bt-hero .bt-wrap { position: relative; }
-  /* the mark, full blown and laid OVER the words, the way the shipped site frames its
-     hero with the ✕. mix-blend-mode keeps the copy readable through the stroke. */
-  .bt-xmark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    font-family: var(--bmt-grot); font-weight: 700; line-height: 1;
-    font-size: min(118vh, 96vw); color: var(--mint); opacity: .5;
-    mix-blend-mode: hard-light;
-    pointer-events: none; user-select: none; z-index: 3;
-    animation: btXin 1.2s var(--ease-out) both; }
-  @keyframes btXin { from { transform: translate(-50%, -50%) scale(.82); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1); opacity: .5; } }
-
-  /* the centered stack itself */
-  .bt-hero-core { position: relative; z-index: 1; max-width: 62ch; margin: 0 auto;
-    text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .bt-back { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--paper); background: rgba(239,239,239,0.08);
-    border: 1px solid rgba(239,239,239,0.4); padding: 9px 16px; cursor: pointer;
-    margin-bottom: 44px; transition: background .2s ease; }
-  .bt-back:hover { background: rgba(239,239,239,0.2); }
-  .bt-eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.32em;
-    text-transform: uppercase; color: var(--mint); margin-bottom: 30px; }
+  .bt-xband { position: relative; height: min(78vh, 720px); min-height: 460px;
+    margin-top: 26px; }
+  .bt-xwin { position: absolute; inset: 0; overflow: hidden; background: var(--coal);
+    clip-path: polygon(
+      0% 0%, 20% 0%, 50% 30%, 80% 0%, 100% 0%,
+      100% 20%, 70% 50%, 100% 80%, 100% 100%,
+      80% 100%, 50% 70%, 20% 100%, 0% 100%,
+      0% 80%, 30% 50%, 0% 20%);
+    animation: btXin 1.1s var(--ease-out) both; }
+  @keyframes btXin { from { transform: scale(1.04); opacity: 0; }
+    to { transform: scale(1); opacity: 1; } }
+  /* the media filling the ✕; the gradient is what shows if no export is in yet */
+  .bt-xwin .bt-xmedia { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block; }
+  .bt-xwin .bt-xfallback { position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 74% 18%, rgba(22,222,208,0.34), transparent 60%),
+      radial-gradient(90% 80% at 18% 88%, rgba(41,46,52,0.9), transparent 62%),
+      linear-gradient(140deg, #14171a, #23282d 58%, #101214); }
+  /* the copy block sits in the crossing, on its own scrim so it stays readable */
+  .bt-hero-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 2; width: min(46ch, 78%); text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+    padding: clamp(20px, 3vw, 34px) clamp(18px, 3vw, 32px);
+    background: rgba(24,24,24,0.52);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    color: var(--paper); }
+  .bt-back { position: relative; z-index: 2; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
+    background: transparent; border: 1px solid rgba(41,46,52,0.35);
+    padding: 9px 16px; cursor: pointer; transition: background .2s ease; }
+  .bt-back:hover { background: rgba(41,46,52,0.08); }
+  .bt-eyebrow { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--mint); margin-bottom: 18px; }
   /* lowercase, light, one highlighted word: the landing hero's exact recipe,
      with the em's padding optically centered on the glyphs the same way */
   .bt-h1 { font-family: var(--bmt-grot); font-weight: 400; letter-spacing: -0.02em;
-    text-transform: lowercase; font-size: clamp(38px, 6.6vw, 82px); line-height: 1.16;
-    margin: 0 0 22px; max-width: 18ch; }
+    text-transform: lowercase; font-size: clamp(30px, 3.9vw, 54px); line-height: 1.14;
+    margin: 0 0 16px; max-width: 20ch; }
   .bt-h1 em { font-style: normal; font-weight: 700; background: var(--mint); color: var(--coal);
     display: inline-block; line-height: 1; padding: 0.1em 0.16em 0.16em;
     vertical-align: baseline; }
-  .bt-hero-sub { font-size: clamp(16px, 1.7vw, 19px); line-height: 1.62;
-    color: rgba(239,239,239,0.8); max-width: 56ch; margin: 0 0 36px; }
+  .bt-hero-sub { font-size: clamp(14px, 1.15vw, 16px); line-height: 1.6;
+    color: rgba(239,239,239,0.86); max-width: 48ch; margin: 0 0 26px; }
   .bt-cta { display: inline-flex; align-items: center; gap: 14px; text-decoration: none;
     font-family: var(--bmt-grot); font-weight: 700; font-size: 13px;
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--coal);
@@ -235,7 +251,7 @@ const __BMT_STYLE = `
   .bt-own-item h4 { font-family: var(--bmt-grot); font-weight: 700; font-size: 16px; margin: 0 0 8px; }
   .bt-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .75; }
   .bt-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
-    margin: 0; line-height: 1.7; max-width: 88ch; }
+    margin: 0; line-height: 1.7; max-width: none; }
 
   /* portfolio footer on the dark band */
   .bt-sec.dark .pf-label { color: rgba(239,239,239,0.55); }
@@ -247,7 +263,7 @@ const __BMT_STYLE = `
 
   /* motion asks permission — every animation here is transform/opacity-only */
   @media (prefers-reduced-motion: reduce) {
-    .bt-xmark { animation: none !important; }
+    .bt-xwin { animation: none !important; }
     .bmt * { transition-duration: 0.01ms !important; }
   }
 `;
@@ -309,6 +325,17 @@ function BmtImg({ src, alt, cap }) {
   );
 }
 
+/* what shows through the ✕: bmtax-hero.jpg when it's in the folder, otherwise the
+   gradient, so the hero reads properly either way */
+function BmtHeroMedia() {
+  const [missing, setMissing] = useStateBmt(false);
+  if (missing) return <div className="bt-xfallback" aria-hidden="true"></div>;
+  return (
+    <img className="bt-xmedia" src="bmtax-hero.jpg" alt=""
+      aria-hidden="true" onError={() => setMissing(true)} />
+  );
+}
+
 /* the motion, as a capture of the shipped site: plays muted on loop once visible,
    and falls back to a labeled placeholder until the recording is in the folder */
 function BmtVideo({ src, poster, cap }) {
@@ -342,7 +369,7 @@ function BmtaxCase({ spec, onAsk }) {
       for (const s of document.querySelectorAll(".bt-hero, .bt-sec")) {
         const r = s.getBoundingClientRect();
         if (r.top <= y && r.bottom >= y) {
-          invert = s.classList.contains("dark") || s.classList.contains("bt-hero");
+          invert = s.classList.contains("dark");
           break;
         }
       }
@@ -368,19 +395,22 @@ function BmtaxCase({ spec, onAsk }) {
         <button onClick={() => BmtScrollTo("bt-decisions")}>decisions</button>
       </nav>
 
-      {/* ── hero — the landing page's centered stack, with the ✕ full blown behind it ── */}
+      {/* ── hero — the ✕ as a window, the way the shipped site builds it ── */}
       <header className="bt-hero" id="bt-top">
-        <div className="bt-xmark" aria-hidden="true">✕</div>
         <div className="bt-wrap">
           <button className="bt-back" onClick={() => onAsk && onAsk("show me your work")}>← back to work</button>
+        </div>
+
+        <div className="bt-xband">
+          <div className="bt-xwin">
+            <BmtHeroMedia />
+          </div>
           <div className="bt-hero-core">
             <div className="bt-eyebrow">bm tax · estúdio brizza · 2024</div>
             <h1 className="bt-h1">tax intelligence, made <em>legible</em></h1>
             <p className="bt-hero-sub">
-              BMTax turns tax complexity into strategic decisions for large companies. Their website
-              had to do the same job in miniature: take an intimidating subject (ICMS credits,
-              tax reform, fiscal data) and make it feel precise, modern, and calm. I designed the
-              entire site: structure, every layout, and the motion.
+              A tax consultancy's website, end to end: structure, every layout, and the motion.
+              The job was to take an intimidating subject and make it feel precise and calm.
             </p>
             <div className="bt-hero-actions">
               <a className="bt-cta" href={p.liveUrl || "https://bmtax.com.br/"}

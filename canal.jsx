@@ -110,13 +110,13 @@ const __CNL_STYLE = `
     overflow: hidden; padding: 150px 0 96px; }
   /* the hero's campaign portrait: sits on the right, fades into the ink ground.
      replaces the old moving ghost tagline. drop canal-model.png in the folder. */
-  .cn-hero-model { position: absolute; top: 0; right: 0; bottom: 0; width: 42%;
-    pointer-events: none; user-select: none; overflow: hidden; }
+  .cn-hero-model { position: absolute; top: 0; right: 0; bottom: -56px; width: 44%;
+    pointer-events: none; user-select: none; overflow: visible; }
   @media (max-width: 1000px){ .cn-hero-model { display: none; } }
-  .cn-hero-model img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%;
-    display: block; opacity: .85;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 38%);
-    mask-image: linear-gradient(to right, transparent, #000 38%); }
+  /* no mask, no fade: the portrait sits as a hard-edged block that overflows its
+     column, the way the store's own mega menu runs the image past the panel edge. */
+  .cn-hero-model img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%;
+    display: block; }
   .cn-hero-model .cn-model-ph { width: 100%; height: 100%;
     border-left: 1px dashed rgba(255,255,255,0.18);
     display: grid; place-items: center; text-align: center; padding: 30px;
@@ -221,7 +221,7 @@ const __CNL_STYLE = `
     border-radius: 50%; background: var(--dot); margin-right: 10px; vertical-align: 1px; }
   .cn-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .72; }
   .cn-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
-    margin: 0; line-height: 1.7; max-width: 88ch; }
+    margin: 0; line-height: 1.7; max-width: none; }
 
   /* portfolio footer on the dark band */
   .cn-sec.dark .pf-label { color: rgba(255,255,255,0.55); }
@@ -240,7 +240,7 @@ const __CNL_STYLE = `
 
 const CNL_DECISIONS = [
   {
-    title: "The product is the point",
+    title: "Let the clothes do the talking",
     body: "Every layout decision starts from the same test: does this make the garment bigger or smaller? Imagery dominates the viewport on every screen. The mobile PDP opens as a full-bleed campaign photo with the interface compressed into a white panel at the thumb. The chrome never competes because the chrome is barely there: hairlines, white panels, tracked type."
   },
   {
@@ -364,7 +364,7 @@ function CanalCase({ spec, onAsk }) {
       <section className="cn-sec mist" id="cn-screens">
         <div className="cn-wrap">
           <span className="cn-chip">the screens · 01</span><span className="cn-count">6 captures</span>
-          <h2 className="cn-h2">The product is the point.</h2>
+          <h2 className="cn-h2">Let the clothes do the talking.</h2>
           <p className="cn-lede">
             Every image below is the designed storefront: mobile and desktop, framed as
             captured. The chrome stays black, white, and mist so the photography carries all
