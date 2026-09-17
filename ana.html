@@ -1902,24 +1902,51 @@
       "manyfest", "releve", "espm", "canal", "baw", "bmtax", "flyer",
       "tweaks-panel", "app"];
     (function () {
-      var dev = /[?&]dev\b/.test(location.search);
-      if (dev) {
-        /* dev: document.write keeps these parser-inserted, which is the only way
-           @babel/standalone reliably picks up type="text/babel" scripts */
-        document.write('<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"><\/script>');
-        window.__SRC.forEach(function (n) {
-          document.write('<script type="text/babel" src="' + n + '.jsx"><\/script>');
+      var SRC = window.__SRC;
+      var BABEL = "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js";
+
+      function loadScript(src) {
+        return new Promise(function (res, rej) {
+          var el = document.createElement("script");
+          el.src = src; el.async = false;
+          el.onload = res; el.onerror = function () { rej(new Error(src)); };
+          document.head.appendChild(el);
         });
-        return;
       }
-      /* prod: async=false on a dynamically inserted script preserves execution
-         order, so the dependency chain (data -> layouts -> cases -> app) holds */
-      window.__SRC.forEach(function (n) {
-        var el = document.createElement("script");
-        el.src = n + ".js";
-        el.async = false;
-        document.head.appendChild(el);
-      });
+
+      /* fast path: the precompiled .js, in order (async=false preserves it) */
+      function loadCompiled() {
+        return Promise.all(SRC.map(function (n) { return loadScript(n + ".js"); }));
+      }
+
+      /* fallback: compile the .jsx in the browser, exactly like the old build did.
+         sequential so each file's globals exist before the next one runs. */
+      function loadFromSource() {
+        return loadScript(BABEL).then(function () {
+          return SRC.reduce(function (chain, n) {
+            return chain.then(function () {
+              return fetch(n + ".jsx").then(function (r) { return r.text(); }).then(function (src) {
+                var code = Babel.transform(src, { presets: ["react"], filename: n + ".jsx" }).code;
+                var blob = new Blob([code], { type: "text/javascript" });
+                return loadScript(URL.createObjectURL(blob));
+              });
+            });
+          }, Promise.resolve());
+        });
+      }
+
+      var dev = /[?&]dev\b/.test(location.search);
+      if (dev) { loadFromSource(); return; }
+
+      /* is the compiled build actually deployed? if app.js isn't there (or any .js
+         fails), fall back to source so the site NEVER renders blank. */
+      fetch("app.js", { method: "HEAD" })
+        .then(function (r) { if (!r.ok) throw new Error("no build"); return loadCompiled(); })
+        .catch(function () {
+          console.warn("[ana] precompiled build missing or incomplete — " +
+            "falling back to in-browser compile. Run `node build-jsx.js` and upload the .js files.");
+          return loadFromSource();
+        });
     })();
   </script>
 </body>
