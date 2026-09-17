@@ -46,7 +46,7 @@ const PROJECTS_SUMMARY = `
 - id: baw | name: baw | company: BAW Clothing / Studio Brizza | year: 2024 | role: product designer
   streetwear e-commerce with a customized VTEX checkout. double diamond process. "loud, and it still converts."
 
-- id: bmtax | name: bm tax | company: BMTax / Estúdio Brizza | year: 2024 | role: product designer — full website UX/UI + motion
+- id: bmtax | name: bm tax | company: BMTax / Estúdio Brizza | year: 2024 | role: product designer, full website UX/UI + motion
   the entire website for a tax-intelligence consultancy (bmtax.com.br), desktop + mobile, PT/EN.
   visual system: exposed hairline grid, ink/off-white/coal, mint #16DED0 rationed to the ✕, numerals, and actions,
   Space Grotesk throughout (file styles: titulo 42 / subtitulo 24 / texto 16; mobile 32/18/14). she also designed
