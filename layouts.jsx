@@ -331,6 +331,15 @@ function About({ spec }) {
       impact: "scaled across autocad, fusion, and revit · token and component logic for 3 densities by 3 themes · 14 core components in the may 2025 release · standardized documentation and qa.",
     },
     {
+      role: "product designer · partnership", org: "studio brizza", date: "2022 to 2025",
+      bullets: [
+        "ongoing partnership with studio brizza, a brazilian design studio, owning product design on branded e-commerce projects alongside the studio's lead designer, who held art direction and brand.",
+        "designed canal's women's fashion e-commerce across three sprints: a business model canvas workshop before any screens, then homepage concept and full navigation to match the brand's new identity.",
+        "designed baw clothing's streetwear e-commerce on the double diamond, all the way through a customized vtex checkout: bold where the brand needed it, invisible where conversion demanded it.",
+      ],
+      impact: "two e-commerce experiences shipped, including bawclothing.com.br · business-first process: canvas and discovery before interface · brand-loud design that still converts.",
+    },
+    {
       role: "ux designer jr", org: "ericsson", date: "july 2021 to march 2022",
       bullets: [
         "designed and prototyped interfaces for ericsson's enterprise and telecom work, supporting clients like claro flex and são martinho.",

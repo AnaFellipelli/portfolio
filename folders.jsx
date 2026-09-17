@@ -36,6 +36,8 @@ const PROJECT_FOLDER_LOOK = {
     palette: { body: "#C9D2D7", front: "#B9C5CB", edge: "#A3B2BA", ink: "#3d4a52" } },
   "baw":         { hero: "#0d0d0d", /* bw --ink · buy-green tint */
     palette: { body: "#BFE3CB", front: "#ABD9BB", edge: "#8FC7A3", ink: "#2f5741" } },
+  "bmtax":       { hero: "#181818", /* bt --coal · mint tint */
+    palette: { body: "#BFE9E5", front: "#A9E1DC", edge: "#8CCFC9", ink: "#1f5a55" } },
 };
 
 /* fan layout per slot index — left edge, rotation, depth, vertical jitter */
@@ -46,6 +48,7 @@ const SLOT = [
   { left: "66%", rot: 10, dz: 5, dy: 3,  ty1: -32, ty2: -98 },
   { left: "40%", rot: 2,  dz: 1, dy: 18, ty1: -22, ty2: -78 },
   { left: "14%", rot: -5, dz: 6, dy: 34, ty1: -30, ty2: -110 },
+  { left: "78%", rot: 7,  dz: 2, dy: 24, ty1: -26, ty2: -88 },
 ];
 
 const KIND_SIZE = {

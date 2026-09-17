@@ -29,6 +29,7 @@ const ROUTE_TO_Q = {
   "/espm": "tell me about espm",
   "/canal": "tell me about canal",
   "/baw": "tell me about baw",
+  "/bmtax": "tell me about bmtax",
 };
 const LAYOUT_TO_ROUTE = {
   "gallery": "/work",
@@ -40,6 +41,7 @@ const LAYOUT_TO_ROUTE = {
   "canal-case": "/canal",
   "baw-case": "/baw",
   "espm-case": "/espm",
+  "bmtax-case": "/bmtax",
 };
 function specToRoute(spec) {
   if (!spec) return "";

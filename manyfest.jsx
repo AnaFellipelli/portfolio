@@ -521,6 +521,8 @@ const __MNF_STYLE = `
 
   /* dark-band overrides for results + the portfolio's next-project footer */
   .mnf-sec.dark .mnf-result-live { color: #fafafa; }
+  /* stats grid sits on the dark band but its cards are light — don't inherit the band's cream text */
+  .mnf-sec.dark .mnf-stats { color: var(--ink); border-color: transparent; }
   .mnf-sec.dark .pf-label { color: rgba(250,250,250,0.55); }
   .mnf-sec.dark .pf-next-link { color: #fafafa; }
   .mnf-sec.dark .pf-next-link:hover { color: #b48ade; }
