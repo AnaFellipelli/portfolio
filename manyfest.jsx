@@ -288,29 +288,32 @@ const __MNF_STYLE = `
     animation: mnfSpin .8s linear infinite; }
   @keyframes mnfSpin { to { transform: rotate(360deg); } }
 
-  /* ── in the wild: ManyMe screens on the system ──
-     the scroller sits OUTSIDE .mnf-wrap and spans the full viewport, so phones
-     run off the right edge instead of clipping at the content column. the inset
-     aligns the first phone with the column's left edge; generous vertical
-     padding keeps drop-shadows inside the scroll box instead of being cut. */
-  .mnf-shots { --shots-inset: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px));
-    display: flex; gap: 18px; overflow-x: auto;
-    padding: 16px var(--shots-inset) 58px var(--shots-inset);
-    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-    scroll-padding-left: var(--shots-inset);
-    scrollbar-width: thin; scrollbar-color: rgba(13,13,13,0.25) transparent; }
-  @media (max-width: 1100px){ .mnf-shots { --shots-inset: clamp(24px, 5vw, 72px); } }
-  .mnf-shot { flex: 0 0 auto; width: clamp(200px, 21vw, 264px); scroll-snap-align: start; margin: 0; }
-  @media (max-width: 480px){
-    .mnf-shot { width: min(72vw, 240px); }
-    .mnf-shot:hover img { transform: none; } /* no hover lift on touch */
-  }
+  /* ── the shipped work: the canal/baw rhythm ──
+     big composed figures stacked in a wide container OUTSIDE the text column,
+     instead of the old horizontal scroller that hid half the screens off-canvas. */
+  .mnf-wide { max-width: 1500px; margin: 0 auto;
+    padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
+    gap: clamp(40px, 6vw, 84px); }
+  .mnf-band { border: 1.5px solid rgba(13,13,13,0.14); border-radius: 14px;
+    overflow: hidden; line-height: 0; background: #fff; }
+  /* the hairline border has to invert on the dark bands or it disappears */
+  .mnf-sec.dark .mnf-band { border-color: rgba(244,240,230,0.22); }
+  .mnf-band img { width: 100%; height: auto; display: block; }
+  /* phones: three across, two rows, big enough to actually read */
+  .mnf-trio { display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 3.5vw, 48px); }
+  @media (max-width: 900px){ .mnf-trio { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px){ .mnf-trio { grid-template-columns: 1fr; } }
+  .mnf-shot { margin: 0; }
   .mnf-shot img { width: 100%; height: auto; display: block;
     filter: drop-shadow(0 18px 26px rgba(13,13,13,0.28)); /* hugs the phone silhouette */
     transition: transform .3s var(--ease-out); }
   .mnf-shot:hover img { transform: translateY(-5px); }
-  .mnf-shot figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
-    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.55; }
+  @media (max-width: 560px){ .mnf-shot:hover img { transform: none; } }
+  .mnf-shot figcaption, .mnf-band-cap { font-family: var(--mono); font-size: 9.5px;
+    letter-spacing: 0.12em; text-transform: uppercase; opacity: .6; margin-top: 12px;
+    line-height: 1.55; }
+  .mnf-band-cap { text-align: center; }
 
   /* ── color + typography sections (mirroring /color and /typography) ── */
   .mnf-chip.sm { font-size: 10px; padding: 6px 11px; margin-bottom: 18px; }
@@ -948,11 +951,11 @@ function MnfstCase({ spec, onAsk }) {
       <nav className="mnf-rail" aria-label="sections">
         <button onClick={() => MnfScrollTo("mnf-top")}>overview</button>
         <button onClick={() => MnfScrollTo("mnf-story")}>the story</button>
+        <button onClick={() => MnfScrollTo("mnf-wild")}>the work</button>
         <button onClick={() => MnfScrollTo("mnf-pillars")}>pillars</button>
         <button onClick={() => MnfScrollTo("mnf-color")}>color</button>
         <button onClick={() => MnfScrollTo("mnf-type")}>typography</button>
         <button onClick={() => MnfScrollTo("mnf-components")}>components</button>
-        <button onClick={() => MnfScrollTo("mnf-wild")}>in the wild</button>
         <button onClick={() => MnfScrollTo("mnf-agents")}>agents</button>
         <button onClick={() => MnfScrollTo("mnf-access")}>accessibility</button>
         <button onClick={() => MnfScrollTo("mnf-results")}>results</button>
@@ -968,13 +971,7 @@ function MnfstCase({ spec, onAsk }) {
           <span className="mnf-react" style={{ top: "56%", right: "3%", "--r": "-2deg", "--fd": "5.8s" }}>❤️ Made with love</span>
           <span className="mnf-react" style={{ bottom: "6%", right: "26%", "--r": "1deg", "--fd": "5.2s" }}>🥰 So good</span>
           <p className="mnf-hero-sub">Manyfest is the Manychat product design system: components, color, typography, and voice. Built AI-native for web, iOS, and Android, with agents in the pipeline from day one. I co-lead it.</p>
-          <button className="mnf-cta" onClick={() => MnfScrollTo("mnf-pillars")}>explore the system →</button>
-          <div className="mnf-hero-meta">
-            <span className="mnf-hero-chip"><b>role</b>Senior Product Designer, Design Systems</span>
-            <span className="mnf-hero-chip"><b>company</b>Manychat · 1.5M+ businesses</span>
-            <span className="mnf-hero-chip"><b>platforms</b>Web · iOS · Android</span>
-            <span className="mnf-hero-chip"><b>timeline</b>2025 to present</span>
-          </div>
+          <button className="mnf-cta" onClick={() => MnfScrollTo("mnf-wild")}>see the work →</button>
         </div>
       </header>
 
@@ -1010,10 +1007,37 @@ function MnfstCase({ spec, onAsk }) {
         </div>
       </section>
 
+      {/* ── 02 · the shipped work, up front: the canal/baw rhythm, big and stacked ── */}
+      <section className="mnf-sec cream mnf-grid-bg" id="mnf-wild">
+        <div className="mnf-wrap">
+          <span className="mnf-chip">the work, shipped · 02</span><span className="mnf-count">library + 6 screens</span>
+          <h2 className="mnf-h2">The system, shipped.</h2>
+          <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented further down this page. These are explorations from the iOS vision work.</p>
+        </div>
+
+        {/* wide container, outside the text column */}
+        <div className="mnf-wide">
+          <figure style={{ margin: 0 }}>
+            <div className="mnf-band">
+              <img src="manyfest-cover.png" alt="The Manyfest DS library cover: Manyfest DS, collection of foundations and components" loading="lazy" width="2000" height="1144" />
+            </div>
+            <figcaption className="mnf-band-cap">the library · manyfest ds · foundations and components</figcaption>
+          </figure>
+          <div className="mnf-trio">
+            {MNF_SHOTS.map(([src, cap, alt]) => (
+              <figure className="mnf-shot" key={src}>
+                <img src={src} alt={alt} loading="lazy" width="436" height="904" />
+                <figcaption>{cap}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── pillars (accordion) ── */}
       <section className="mnf-sec cream mnf-grid-bg" id="mnf-pillars">
         <div className="mnf-wrap">
-          <span className="mnf-chip">the pillars · 02</span>
+          <span className="mnf-chip">the pillars · 03</span>
           <h2 className="mnf-h2">The foundations of us.</h2>
           <p className="mnf-sec-sub">Four pillars hold the system together. Open one and everything expands right here, no page-hopping.</p>
           <div className="mnf-pillars">
@@ -1050,7 +1074,7 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── color — the full palette, mirroring /color ── */}
       <section className="mnf-sec cream mnf-grid-bg" id="mnf-color">
         <div className="mnf-wrap">
-          <span className="mnf-chip">color · 03</span>
+          <span className="mnf-chip">color · 04</span>
           <h2 className="mnf-h2">Color is dynamic. It creates tension. But also agreement.</h2>
           <p className="mnf-sec-sub">Eight roles, two layers. Primitives hold the raw values; semantic tokens give them a job, so every surface feels unmistakably us, loud where it counts, calm where it has to.</p>
 
@@ -1131,7 +1155,7 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── typography — mirroring /typography ── */}
       <section className="mnf-sec cream mnf-grid-bg mnf-type-sec" id="mnf-type">
         <div className="mnf-wrap">
-          <span className="mnf-chip">typography · 04</span>
+          <span className="mnf-chip">typography · 05</span>
           <h2 className="mnf-h2">Typography.</h2>
           <p className="mnf-sec-sub">Two voices in type: Manychat Gravity for display, Rooftop for body. Built so every headline lands and every paragraph reads.</p>
         </div>
@@ -1152,7 +1176,6 @@ function MnfstCase({ spec, onAsk }) {
           </div>
 
           <p style={{ fontFamily: "var(--mono)", fontSize: 9.5, opacity: .55, marginTop: 20 }}>
-            gravity and rooftop render as archivo / dm sans here unless the fonts are installed, same sizes, weights, and tracking.
           </p>
         </div>
       </section>
@@ -1160,11 +1183,11 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── components — live render on dark ── */}
       <section className="mnf-sec dark" id="mnf-components">
         <div className="mnf-wrap">
-          <span className="mnf-chip">components · 05</span>
+          <span className="mnf-chip">components · 06</span>
           <h2 className="mnf-h2">Button. Rendered live.</h2>
           <p className="mnf-live-note">
-            <strong>Not a screenshot.</strong> This matrix is live HTML built from the variables
-            in the Manyfest Figma file. Hover it, press it, tab through it.
+            The matrix below is live HTML, built from the variables in the Manyfest Figma file.
+            Hover it, press it, tab through it.
             {" "}<span className="tok">color/action/*</span>{" "}
             <span className="tok">radius/component/pill</span>{" "}
             <span className="tok">touch-target/sm·md·lg</span>{" "}
@@ -1220,26 +1243,16 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* ── in the wild — ManyMe screens built on the system ── */}
-      <section className="mnf-sec cream mnf-grid-bg" id="mnf-wild">
-        <div className="mnf-wrap">
-          <span className="mnf-chip">in the wild · 06</span>
-          <h2 className="mnf-h2">The system, shipped.</h2>
-          <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented on this page. These are explorations from the iOS vision work.</p>
+        {/* the same component in the file: the real variant matrix, composed big */}
+        <div className="mnf-wide" style={{ marginTop: "clamp(40px, 5vw, 72px)" }}>
+          <figure style={{ margin: 0 }}>
+            <div className="mnf-band">
+              <img src="manyfest-buttons.png" alt="The Button variant matrix in the Manyfest Figma file: three sizes across eight style rows and six state columns" loading="lazy" width="1616" height="2048" />
+            </div>
+            <figcaption className="mnf-band-cap">button in the file · three sizes · eight styles · six states</figcaption>
+          </figure>
         </div>
-
-        {/* full-bleed: outside the wrap so the strip overflows the right edge */}
-        <div className="mnf-shots">
-          {MNF_SHOTS.map(([src, cap, alt]) => (
-            <figure className="mnf-shot" key={src}>
-              <img src={src} alt={alt} loading="lazy" width="436" height="904" />
-              <figcaption>{cap}</figcaption>
-            </figure>
-          ))}
-        </div>
-
       </section>
 
       {/* ── ownership + agents ── */}

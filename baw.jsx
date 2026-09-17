@@ -120,32 +120,28 @@ const __BAW_STYLE = `
   .bw-back:hover { background: rgba(241,241,241,0.2); }
   .bw-eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.32em;
     text-transform: uppercase; color: var(--buy); margin-bottom: 30px; }
-  /* line-height was 0.9, which made the highlighted line's block overlap the lines
-     above and below it. 1.06 gives the inverted block room to sit on its own line. */
-  .bw-h1 { font-family: var(--baw-display); font-weight: 900; letter-spacing: -0.02em;
-    text-transform: uppercase; font-size: clamp(52px, 9.5vw, 150px); line-height: 1.06;
+  /* 0.9 made the highlight block collide with its neighbours; 1.06 was then too airy.
+     0.98 with the block's own padding baked in sits tight without touching. */
+  .bw-h1 { font-family: var(--baw-display); font-weight: 900; letter-spacing: -0.025em;
+    text-transform: uppercase; font-size: clamp(60px, 10.5vw, 168px); line-height: 0.98;
     margin: 0 0 42px; max-width: 11ch; }
   .bw-h1 .noise { background: var(--chalk); color: var(--ink);
-    padding: 0.04em 0.12em 0.06em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+    padding: 0.02em 0.1em 0.04em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .bw-hero-sub { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55;
     color: rgba(241,241,241,0.85); max-width: 54ch; margin: 0 0 44px; }
   /* hero CTA — same component as the PDP's COMPRAR band: a marquee in a green rectangle */
+  /* now an <a> to the live store: same green band, undecorated */
   .bw-cta { position: relative; display: inline-block; vertical-align: middle;
     width: min(420px, 100%); height: 58px; background: var(--buy); border: none;
-    cursor: pointer; overflow: hidden; transition: transform .2s var(--ease-out); }
+    cursor: pointer; overflow: hidden; text-decoration: none;
+    transition: transform .2s var(--ease-out); }
   .bw-cta:hover { transform: translateY(-2px); }
   .bw-cta:active { transform: scale(0.99); }
   .bw-cta .track { position: absolute; inset: 0; display: flex; align-items: center;
     white-space: nowrap; width: max-content; animation: bawTicker 14s linear infinite; }
   .bw-cta .track span { font-family: var(--baw-display); font-weight: 900; font-size: 19px;
     letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); padding: 0 26px; }
-  /* hero actions: the marquee cta plus a link out to the shipped store */
   .bw-hero-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-  .bw-live { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--chalk); text-decoration: none;
-    border-bottom: 1px solid rgba(241,241,241,0.45); padding-bottom: 3px;
-    transition: border-color .2s ease, color .2s ease; }
-  .bw-live:hover { color: var(--buy); border-color: var(--buy); }
   .bw-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
   .bw-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
     border: 1px solid rgba(241,241,241,0.35); color: rgba(241,241,241,0.85); }
@@ -309,22 +305,12 @@ function BawCase({ spec, onAsk }) {
             disciplined enough to sell, all the way through a customized VTEX checkout.
           </p>
           <div className="bw-hero-actions">
-            <button className="bw-cta" onClick={() => BawScrollTo("bw-screens")}
-              aria-label="enter the store">
+            <a className="bw-cta" href={p.liveUrl || "https://www.bawclothing.com.br/"}
+              target="_blank" rel="noopener noreferrer" aria-label="open the live baw store">
               <span className="track" aria-hidden="true">
-                {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the store →</span>)}
+                {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the store ↗</span>)}
               </span>
-            </button>
-            <a className="bw-live" href={p.liveUrl || "https://www.bawclothing.com.br/"}
-              target="_blank" rel="noopener noreferrer">
-              visit the live store <span aria-hidden="true">↗</span>
             </a>
-          </div>
-          <div className="bw-hero-meta">
-            <span className="bw-hero-chip"><b>role</b>{p.role || "product designer, with the lead designer"}</span>
-            <span className="bw-hero-chip"><b>company</b>baw clothing · studio brizza</span>
-            <span className="bw-hero-chip"><b>platforms</b>mobile · desktop · vtex</span>
-            <span className="bw-hero-chip"><b>timeline</b>3 sprints · shipped 2024</span>
           </div>
         </div>
       </header>

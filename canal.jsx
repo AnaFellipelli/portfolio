@@ -139,9 +139,11 @@ const __CNL_STYLE = `
   .cn-hero-sub { font-size: clamp(16px, 1.8vw, 20px); line-height: 1.6; font-weight: 400;
     color: rgba(255,255,255,0.82); max-width: 56ch; margin: 0 0 44px; }
   /* hero CTA — the store's signature SHOP NOW band, inverted for the ink ground */
-  .cn-cta { position: relative; display: inline-block; width: min(420px, 100%);
+  /* now an <a> to the live store: centered, undecorated, same silhouette */
+  .cn-cta { position: relative; display: inline-flex; align-items: center;
+    justify-content: center; width: min(420px, 100%);
     height: 58px; background: var(--paper); color: var(--ink); border: none;
-    cursor: pointer; font-family: var(--cnl-display); font-weight: 400;
+    cursor: pointer; text-decoration: none; font-family: var(--cnl-display); font-weight: 400;
     font-size: 15px; letter-spacing: 0.42em; text-transform: uppercase;
     text-indent: 0.42em; transition: transform .2s var(--ease-out); }
   .cn-cta::after { content: ""; position: absolute; top: -5px; right: -5px;
@@ -150,13 +152,7 @@ const __CNL_STYLE = `
   .cn-cta:hover { transform: translateY(-2px); }
   .cn-cta:active { transform: scale(0.99); }
   .cn-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
-  /* hero actions: the cta plus a link out to the shipped store */
   .cn-hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-  .cn-live { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--paper); text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.45); padding-bottom: 3px;
-    transition: border-color .2s ease, opacity .2s ease; }
-  .cn-live:hover { border-color: var(--paper); opacity: .8; }
   .cn-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
     border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
   .cn-hero-chip b { color: var(--paper); font-weight: 700; text-transform: uppercase;
@@ -339,7 +335,7 @@ function CanalCase({ spec, onAsk }) {
         <div className="cn-wrap">
           <button className="cn-back" onClick={() => onAsk && onAsk("show me your work")}>← back to work</button>
           <div className="cn-eyebrow">canal concept <span className="d">●</span> studio brizza · 2023</div>
-          <h1 className="cn-h1">Elegance, <span className="u">on the shelf.</span></h1>
+          <h1 className="cn-h1">Elegance,<br /><span className="u">on the shelf.</span></h1>
           <p className="cn-hero-sub">
             Canal is a Brazilian women's fashion brand known for elegant design and quality
             materials. The brand had evolved; its e-commerce, the highest-traffic touchpoint,
@@ -347,20 +343,10 @@ function CanalCase({ spec, onAsk }) {
             like the brand. Quietly, and in three sprints.
           </p>
           <div className="cn-hero-actions">
-            <button className="cn-cta" onClick={() => CnlScrollTo("cn-screens")}
-              aria-label="view the screens">
-              shop now
-            </button>
-            <a className="cn-live" href={p.liveUrl || "https://www.canal.com.br/"}
-              target="_blank" rel="noopener noreferrer">
-              visit the live store <span aria-hidden="true">↗</span>
+            <a className="cn-cta" href={p.liveUrl || "https://www.canal.com.br/"}
+              target="_blank" rel="noopener noreferrer" aria-label="open the live canal store">
+              shop now <span aria-hidden="true">↗</span>
             </a>
-          </div>
-          <div className="cn-hero-meta">
-            <span className="cn-hero-chip"><b>role</b>{p.role || "product designer, with the lead designer"}</span>
-            <span className="cn-hero-chip"><b>company</b>canal · studio brizza</span>
-            <span className="cn-hero-chip"><b>platforms</b>mobile · desktop</span>
-            <span className="cn-hero-chip"><b>timeline</b>3 sprints · shipped 2023</span>
           </div>
         </div>
       </header>
@@ -397,7 +383,7 @@ function CanalCase({ spec, onAsk }) {
           <div className="cn-duo">
             <figure className="cn-fig" style={{ margin: 0 }}>
               <div className="cn-shot bare"><img src="canal-1.png" alt="Mobile product page in a phone frame: full-bleed campaign photo of an olive dress, white panel with price, size row and the black SHOP NOW band" loading="lazy" /></div>
-              <figcaption className="cn-cap">pdp · mobile · photography full-bleed, the ui compressed to the thumb</figcaption>
+              <figcaption className="cn-cap">pdp · mobile · photography full-bleed<br />the ui compressed to the thumb</figcaption>
             </figure>
             <figure className="cn-fig" style={{ margin: 0 }}>
               <div className="cn-shot bare"><img src="canal-2.png" alt="Mobile navigation menu in a phone frame: accordion category tree with new in, roupas, essential expanded, jeans and outlet, hairline dividers" loading="lazy" /></div>

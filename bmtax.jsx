@@ -132,7 +132,7 @@ const __BMT_STYLE = `
     vertical-align: baseline; }
   .bt-hero-sub { font-size: clamp(16px, 1.7vw, 19px); line-height: 1.62;
     color: rgba(239,239,239,0.8); max-width: 56ch; margin: 0 0 36px; }
-  .bt-cta { display: inline-flex; align-items: center; gap: 14px;
+  .bt-cta { display: inline-flex; align-items: center; gap: 14px; text-decoration: none;
     font-family: var(--bmt-grot); font-weight: 700; font-size: 13px;
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--coal);
     background: var(--mint); border: none; border-radius: 4px; padding: 18px 26px;
@@ -144,11 +144,6 @@ const __BMT_STYLE = `
   /* hero actions: the cta plus a link out to the shipped site */
   .bt-hero-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
     justify-content: center; }
-  .bt-live { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--paper); text-decoration: none;
-    border-bottom: 1px solid rgba(239,239,239,0.45); padding-bottom: 3px;
-    transition: border-color .2s ease, color .2s ease; }
-  .bt-live:hover { color: var(--mint); border-color: var(--mint); }
   .bt-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px;
     justify-content: center; }
   .bt-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
@@ -371,19 +366,10 @@ function BmtaxCase({ spec, onAsk }) {
               entire site: structure, every layout, and the motion.
             </p>
             <div className="bt-hero-actions">
-              <button className="bt-cta" onClick={() => BmtScrollTo("bt-screens")}>
-                see the screens <span className="arr" aria-hidden="true">→</span>
-              </button>
-              <a className="bt-live" href={p.liveUrl || "https://bmtax.com.br/"}
+              <a className="bt-cta" href={p.liveUrl || "https://bmtax.com.br/"}
                 target="_blank" rel="noopener noreferrer">
-                visit the live site <span aria-hidden="true">↗</span>
+                visit the live site <span className="arr" aria-hidden="true">↗</span>
               </a>
-            </div>
-            <div className="bt-hero-meta">
-              <span className="bt-hero-chip"><b>role</b>{p.role || "product designer · full website ux/ui + motion"}</span>
-              <span className="bt-hero-chip"><b>client</b>bm tax · estúdio brizza</span>
-              <span className="bt-hero-chip"><b>platforms</b>desktop · mobile · pt/en</span>
-              <span className="bt-hero-chip"><b>shipped</b>2024 · bmtax.com.br</span>
             </div>
           </div>
         </div>

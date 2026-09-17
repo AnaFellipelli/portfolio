@@ -414,12 +414,6 @@ function RlvCase({ spec, onAsk }) {
           <button className="rl-cta" onClick={() => RlvScrollTo("rl-proto")} aria-label="open the live prototype">
             Open the live prototype <span className="arr">↓</span>
           </button>
-          <div className="rl-hero-meta">
-            <span className="rl-hero-chip"><b>role</b>designer + engineer · solo</span>
-            <span className="rl-hero-chip"><b>company</b>elisava</span>
-            <span className="rl-hero-chip"><b>platforms</b>web app · mobile-first</span>
-            <span className="rl-hero-chip"><b>timeline</b>capstone · 2026</span>
-          </div>
         </div>
       </header>
 

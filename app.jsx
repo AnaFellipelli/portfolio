@@ -223,6 +223,75 @@ const isGallery = spec.layout === "gallery" || isAbout || isContact;
 }
 
 /* ---------- app ---------- */
+/* ── work nav: hovering "work" drops the project list, each with its own folder
+   swatch, so you can jump between cases without going back to the gallery.
+   the folder colors come from PROJECT_FOLDER_LOOK (folders.jsx), so a project's
+   chip here matches the folder it has on the work page. ── */
+const WORK_NAV_IDS = ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"];
+
+function MiniFolder({ id }) {
+  const look = (typeof PROJECT_FOLDER_LOOK !== "undefined" && PROJECT_FOLDER_LOOK[id]) || {};
+  const pal = look.palette || {};
+  return (
+    <span className="wn-folder" aria-hidden="true">
+      <span className="wn-folder-tab" style={{ background: pal.edge || "#cfcbe6" }}></span>
+      <span className="wn-folder-body" style={{ background: pal.body || "#dedaf0" }}></span>
+      <span className="wn-folder-front" style={{ background: pal.front || "#cfcbe6" }}></span>
+    </span>
+  );
+}
+
+function WorkNavMenu({ submit, spec, mode }) {
+  const [open, setOpen] = uS(false);
+  const closeTimer = uR(null);
+
+  const show = () => { if (closeTimer.current) clearTimeout(closeTimer.current); setOpen(true); };
+  /* a small grace period so crossing the gap between label and panel doesn't close it */
+  const hide = () => { closeTimer.current = setTimeout(() => setOpen(false), 140); };
+  uE(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
+
+  const onGallery = mode === "browse" && spec && spec.layout === "gallery";
+  const currentId = spec && Array.isArray(spec.items) && spec.items.length === 1 ? spec.items[0] : null;
+
+  return (
+    <div className="wn" onMouseEnter={show} onMouseLeave={hide}>
+      <button
+        className={"nav-link" + (onGallery ? " active" : "")}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => { setOpen(false); submit("show me your work"); }}
+        onFocus={show}
+      >
+        work
+      </button>
+
+      <div className={"wn-panel" + (open ? " open" : "")} role="menu" aria-label="projects">
+        {WORK_NAV_IDS.map((id) => {
+          const p = (typeof PROJECTS !== "undefined" && PROJECTS[id]) || {};
+          const name = (p.name || id).replace(/\.$/, "");
+          return (
+            <button
+              key={id}
+              role="menuitem"
+              className={"wn-item" + (currentId === id ? " current" : "")}
+              onClick={() => { setOpen(false); submit("tell me about " + (id === "manychat-ds" ? "manyfest" : id)); }}
+            >
+              <MiniFolder id={id} />
+              <span className="wn-name">{name}</span>
+              {p.year ? <span className="wn-year">{p.year}</span> : null}
+            </button>
+          );
+        })}
+        <button role="menuitem" className="wn-item wn-all"
+          onClick={() => { setOpen(false); submit("show me your work"); }}>
+          <span className="wn-name">all work</span>
+          <span className="wn-year">→</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [mode, setMode] = uS("hero");          // hero | loading | browse
   const [stage, setStage] = uS(0);
@@ -535,7 +604,7 @@ function App() {
             </div>
           )}
           <div className="nav-links" style={{ opacity: stage >= 7 || mode !== "hero" ? 1 : 0, transition: "opacity .6s ease", display: "flex", gap: 26 }}>
-            <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "gallery" ? " active" : "")} onClick={() => submit("show me your work")}>work</button>
+            <WorkNavMenu submit={submit} spec={spec} mode={mode} />
             <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "about" ? " active" : "")} onClick={() => submit("who are you")}>about</button>
             <button className={"nav-link" + (mode === "browse" && spec && spec.layout === "contact" ? " active" : "")} onClick={() => submit("are you open to work")}>contact</button>
           </div>

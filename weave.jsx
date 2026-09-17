@@ -10,7 +10,7 @@
    Registers LAYOUTS["case-study"] (route #/weave) + alias "weave-case".
    ════════════════════════════════════════════════════════════ */
 
-const { useState: useStateWv, useEffect: useEffectWv } = React;
+const { useState: useStateWv, useEffect: useEffectWv, useRef: useRefWv } = React;
 
 /* ── hand-drawn circle (an ellipse, sketched) — used by the folder preview ── */
 function WvCircle() {
@@ -474,7 +474,8 @@ const __WV2_STYLE = `
   .wv2-own-item { border-top: 2px solid var(--awb-4); padding-top: 16px; }
   .wv2-own-item h4 { font-family: var(--wv-sans); font-weight: 600; font-size: 16.5px; margin: 0 0 9px; }
   .wv2-own-item p { font-size: 14px; line-height: 1.62; opacity: .82; margin: 0; }
-  .wv2-collab { font-size: 15px; line-height: 1.66; opacity: .85; max-width: 66ch; margin: 0; }
+  /* was capped at 66ch, which left a wide empty band on the right of the band */
+  .wv2-collab { font-size: 15px; line-height: 1.66; opacity: .85; max-width: none; margin: 0; }
 
   /* ── accessibility ── */
   .wv2-axx { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
@@ -533,13 +534,28 @@ function WvScrollTo(id) {
 }
 
 /* one component deep dive — header always visible, dense material behind "open →" */
-function WvDeep({ id, index, open, onToggle }) {
+function WvDeep({ id, index, open, onToggle, onReveal }) {
   const p = PROJECTS[id];
+  const ref = useRefWv(null);
+
+  /* each dive opens itself as it scrolls into view, so the content is there while
+     you read down the page. the pill still closes it, and once you've touched it
+     the observer is gone, so it never fights you. */
+  useEffectWv(() => {
+    const el = ref.current;
+    if (!el || !onReveal) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { onReveal(id); io.disconnect(); }
+    }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [id]);
+
   if (!p || !p.case) return null;
   const shots = (p.items || []).filter((it) => it.src);
   const prose = [["problem", p.case.problem], ["solution", p.case.solution], ["outcome", p.case.outcome]].filter(([, b]) => b);
   return (
-    <div className="wv2-deep">
+    <div className="wv2-deep" ref={ref}>
       <div className="wv2-deep-head">
         <span className="wv2-deep-idx">{String(index + 1).padStart(2, "0")}</span>
         <div>
@@ -580,7 +596,7 @@ function WvDeep({ id, index, open, onToggle }) {
 function WeaveCase({ spec, onAsk }) {
   const [theme, setTheme] = useStateWv("darkBlue");
   const [density, setDensity] = useStateWv("medium");
-  const [deepOpen, setDeepOpen] = useStateWv(null);
+  const [deepOpen, setDeepOpen] = useStateWv(() => new Set());
 
   useEffectWv(() => {
     document.body.classList.add("wv-mode");
@@ -624,7 +640,17 @@ function WeaveCase({ spec, onAsk }) {
     "--vp-rowh": D.rowH + "px", "--vp-headh": D.headH + "px", "--vp-sp": D.sp,
   };
 
-  const toggleDeep = (id) => setDeepOpen((cur) => (cur === id ? null : id));
+  /* a Set, not a single id: scrolling can leave several dives open at once */
+  const toggleDeep = (id) => setDeepOpen((cur) => {
+    const next = new Set(cur instanceof Set ? cur : []);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
+  const revealDeep = (id) => setDeepOpen((cur) => {
+    const set = cur instanceof Set ? cur : new Set();
+    if (set.has(id)) return set;
+    const next = new Set(set); next.add(id); return next;
+  });
 
   return (
     <div className="wv2">
@@ -671,12 +697,6 @@ function WeaveCase({ spec, onAsk }) {
             and engineers on it. I worked on its core for three years.
           </p>
           <button className="wv2-cta" onClick={() => WvScrollTo("wv2-story")}>enter the system ↓</button>
-          <div className="wv2-hero-meta">
-            <span className="wv2-hero-chip"><b>role</b>Product Designer, Design Systems</span>
-            <span className="wv2-hero-chip"><b>company</b>Globant for Autodesk</span>
-            <span className="wv2-hero-chip"><b>platforms</b>All Autodesk products · AutoCAD · Fusion · Revit · Inventor…</span>
-            <span className="wv2-hero-chip"><b>timeline</b>2022 to 2025</span>
-          </div>
         </div>
       </header>
 
@@ -826,7 +846,9 @@ function WeaveCase({ spec, onAsk }) {
             artifacts open in place. No subpages.
           </p>
           {WEAVE_DEEP_DIVES.map((id, i) => (
-            <WvDeep key={id} id={id} index={i} open={deepOpen === id} onToggle={toggleDeep} />
+            <WvDeep key={id} id={id} index={i}
+              open={deepOpen instanceof Set ? deepOpen.has(id) : deepOpen === id}
+              onToggle={toggleDeep} onReveal={revealDeep} />
           ))}
         </div>
       </section>
