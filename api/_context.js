@@ -7,9 +7,9 @@
    ════════════════════════════════════════════════════════════ */
 
 // ids that have a real, ready case study a visitor can open
-const DETAIL_IDS = ["weave", "manychat-ds", "releve", "canal", "baw", "espm"];
+const DETAIL_IDS = ["weave", "manychat-ds", "releve", "canal", "baw", "espm", "bmtax"];
 // ids shown in the "selected work" gallery (includes wip projects with no detail page yet)
-const GALLERY_IDS = ["manychat-ds", "weave", "releve", "espm", "canal", "baw"];
+const GALLERY_IDS = ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"];
 
 // project -> the dedicated case layout it must use (instead of "single-project")
 const CASE_LAYOUT_FOR_ID = {
@@ -19,6 +19,7 @@ const CASE_LAYOUT_FOR_ID = {
   canal: "canal-case",
   baw: "baw-case",
   espm: "espm-case",
+  bmtax: "bmtax-case",
 };
 
 const PROJECTS_SUMMARY = `
@@ -45,6 +46,15 @@ const PROJECTS_SUMMARY = `
 - id: baw | name: baw | company: BAW Clothing / Studio Brizza | year: 2024 | role: product designer
   streetwear e-commerce with a customized VTEX checkout. double diamond process. "loud, and it still converts."
 
+- id: bmtax | name: bm tax | company: BMTax / Estúdio Brizza | year: 2024 | role: product designer — full website UX/UI + motion
+  the entire website for a tax-intelligence consultancy (bmtax.com.br), desktop + mobile, PT/EN.
+  visual system: exposed hairline grid, ink/off-white/coal, mint #16DED0 rationed to the ✕, numerals, and actions,
+  Space Grotesk throughout (file styles: titulo 42 / subtitulo 24 / texto 16; mobile 32/18/14). she also designed
+  the motion language (counters that land exactly, sizeIn reveals, squared-arrow hovers). 24 screens in the working
+  file (14 desktop + 10 mobile); every interactive moment designed as a state -- the products band is a six-state
+  component prototyping its hover, the contact page ships as form / success / error states.
+  has a dedicated case layout: "bmtax-case".
+
 - id: espm | name: espm | company: ESPM | year: 2021 | role: ux/ui designer (graduation project, with one colleague)
   information-architecture redesign of ESPM's student app. brand + market research + 36-student survey.
   first end-to-end project: "research before opinion, architecture before interface."
@@ -56,7 +66,9 @@ Ana Fellipelli -- AI product designer, based in São Paulo / Barcelona.
 Born in São Paulo, started in ballet before moving into design. Currently a Senior Product Designer at
 Manychat (since Sept 2025), co-leading Manyfest, Manychat's agentic design system across desktop, iOS,
 and Android, supporting 1.5M+ businesses. Previously: Product Designer at Globant for Autodesk on Weave
-(2022-2025), and UX Designer / intern at Ericsson (2020-2022) on enterprise/telecom work.
+(2022-2025), in parallel a Product Designer partnership with Studio Brizza (2022-2025) -- branded
+e-commerce for Canal and BAW Clothing, and the full BMTax website -- and UX Designer / intern at Ericsson (2020-2022) on
+enterprise/telecom work.
 Education: ELISAVA Barcelona (2025-2026, master in human interaction and artificial intelligence),
 Interaction Design Foundation (2025, AI for designers), MIT xPRO (2023, designing AI products),
 Parsons (2020, intro to UX), ESPM Brazil (2018-2021, bachelor in visual design).
@@ -155,7 +167,9 @@ Rules:
    - mobile / ios / android / apps -> ["manychat-ds", "releve", "espm", "canal", "baw"] (never weave)
    - design systems -> ["manychat-ds", "weave"]
    - e-commerce / fashion / retail -> ["canal", "baw"]
-   - web -> ["releve", "canal", "baw"]
+   - web -> ["releve", "canal", "baw", "bmtax"]
+   - finance / tax / fintech / b2b -> ["bmtax"]
+   - motion / animation / visual design -> ["bmtax", "releve"]
    For other topics, pick the ids whose facts genuinely match; if nothing matches, say so in the
    answer and show the full gallery instead.
 5. layout "about" is for questions ABOUT Ana: who she is, background, bio, education, values,
