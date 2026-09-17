@@ -114,11 +114,36 @@
   /* frosted scrim so content scrolling under the nav stays legible.
      blur only, no tint — it adapts to whatever background each page has.
      no mask either: iOS Safari breaks backdrop-filter when masked. */
+  /* the scrim is off by default now: it only appears on the contact page, and only
+     once the page has actually scrolled, so it never dulls a hero at rest.
+     the bottom edge is feathered rather than cut, per the soft-edge rule below. */
   .topbar::before {
     content: ""; position: absolute; inset: 0; z-index: -1;
+    pointer-events: none; opacity: 0; transition: opacity .35s ease;
+    -webkit-mask-image: linear-gradient(#000 58%, transparent);
+    mask-image: linear-gradient(#000 58%, transparent);
+  }
+  body.contact-mode.is-scrolled .topbar::before {
+    opacity: 1;
     -webkit-backdrop-filter: blur(18px) saturate(1.15);
     backdrop-filter: blur(18px) saturate(1.15);
-    pointer-events: none;
+  }
+
+  /* ── soft edges, site-wide: images and video meet their container with a feathered
+     edge instead of a razor-straight cut. --soft-edge is the fade distance. ── */
+  .soft-edge, .about-badge {
+    --soft-edge: 22px;
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0, #000 var(--soft-edge),
+        #000 calc(100% - var(--soft-edge)), transparent 100%),
+      linear-gradient(to right, transparent 0, #000 var(--soft-edge),
+        #000 calc(100% - var(--soft-edge)), transparent 100%);
+    mask-image:
+      linear-gradient(to bottom, transparent 0, #000 var(--soft-edge),
+        #000 calc(100% - var(--soft-edge)), transparent 100%),
+      linear-gradient(to right, transparent 0, #000 var(--soft-edge),
+        #000 calc(100% - var(--soft-edge)), transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
   }
   .topbar > * { pointer-events: auto; }
   .logo {

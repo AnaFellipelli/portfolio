@@ -35,13 +35,6 @@ const __CNL_STYLE = `
   body.canal-mode .atmosphere, body.canal-mode .grain { display: none; }
   body.canal-mode { background: #f7f7f7; /* mist — store page floor, sampled canal-3 */ }
 
-  /* header protection: pure backdrop blur (no bar); items adapt to the band underneath */
-  body.canal-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   body.canal-mode .topbar > * { position: relative; z-index: 1; }
   body.canal-mode .topbar .logo { color: #000000; transition: color .3s ease; }
   body.canal-mode .nav-link { color: rgba(0,0,0,0.55); transition: color .3s ease; }
@@ -108,13 +101,12 @@ const __CNL_STYLE = `
   /* ── hero — the SHOP NOW band's surface, blown up to a full viewport ── */
   .cn-hero { position: relative; background: var(--ink); color: var(--paper);
     overflow: hidden; padding: 150px 0 96px; }
-  /* the hero's campaign portrait: sits on the right, fades into the ink ground.
-     replaces the old moving ghost tagline. drop canal-model.png in the folder. */
-  .cn-hero-model { position: absolute; top: 0; right: 0; bottom: -56px; width: 44%;
-    pointer-events: none; user-select: none; overflow: visible; }
-  @media (max-width: 1000px){ .cn-hero-model { display: none; } }
-  /* no mask, no fade: the portrait sits as a hard-edged block that overflows its
-     column, the way the store's own mega menu runs the image past the panel edge. */
+  /* the hero's campaign portrait: right-hand column, ending inside the section (never
+     bleeding into the band below) and starting past the copy so it never overlaps text.
+     edges are feathered, not cut. drop canal-model.png in the folder. */
+  .cn-hero-model { position: absolute; top: 96px; right: 0; bottom: 56px; width: 34%;
+    pointer-events: none; user-select: none; overflow: hidden; }
+  @media (max-width: 1180px){ .cn-hero-model { display: none; } }
   .cn-hero-model img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%;
     display: block; }
   .cn-hero-model .cn-model-ph { width: 100%; height: 100%;
@@ -123,6 +115,10 @@ const __CNL_STYLE = `
     font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
     text-transform: uppercase; line-height: 2.1; color: rgba(255,255,255,0.32); }
   .cn-hero .cn-wrap { position: relative; }
+  /* the hero copy is capped so it always clears the portrait column */
+  @media (min-width: 1181px){
+    .cn-hero .cn-h1, .cn-hero .cn-hero-sub, .cn-hero .cn-hero-actions { max-width: 60%; }
+  }
   .cn-back { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--paper); background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.4); padding: 9px 16px; cursor: pointer;
@@ -162,15 +158,6 @@ const __CNL_STYLE = `
   .cn-hero-chip b { color: var(--paper); font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.1em; font-size: 9px; margin-right: 6px; }
 
-  /* ── marquee divider — a hairlined ticker of the store's own vocabulary ── */
-  .cn-marquee-wrap { overflow: hidden; background: var(--paper); color: var(--ink);
-    padding: 15px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
-  .cn-marquee { display: flex; white-space: nowrap; width: max-content;
-    animation: cnlTicker 30s linear infinite; }
-  .cn-marquee-item { font-family: var(--cnl-display); font-weight: 400; font-size: 12px;
-    letter-spacing: 0.34em; text-transform: uppercase; padding-right: 10px; }
-  .cn-marquee-item .d { color: var(--dot); padding: 0 14px; }
-  @keyframes cnlTicker { to { transform: translateX(-50%); } }
 
   /* ── screens — the UI showcase: everything visible, composed big ── */
   .cn-wide { max-width: 1500px; margin: 0 auto;
@@ -233,7 +220,6 @@ const __CNL_STYLE = `
 
   /* motion asks permission — every animation on this page is transform-only */
   @media (prefers-reduced-motion: reduce) {
-    .cn-marquee { animation: none !important; }
     .cnlx * { transition-duration: 0.01ms !important; }
   }
 `;
@@ -274,22 +260,8 @@ function CnlModel() {
     );
   }
   return (
-    <img src="canal-model.png" alt="Canal campaign portrait" loading="lazy"
-      onError={() => setMissing(true)} />
-  );
-}
-
-function CnlMarquee({ items }) {
-  return (
-    <div className="cn-marquee" aria-hidden="true">
-      {[0, 1].map((half) => (
-        <span key={half} style={{ display: "flex" }}>
-          {items.map((t, i) => (
-            <span key={i} className="cn-marquee-item">{t}<span className="d">·</span></span>
-          ))}
-        </span>
-      ))}
-    </div>
+    <img className="soft-edge" src="canal-model.png" alt="Canal campaign portrait"
+      loading="lazy" onError={() => setMissing(true)} />
   );
 }
 
@@ -355,10 +327,6 @@ function CanalCase({ spec, onAsk }) {
         </div>
       </header>
 
-      {/* ── marquee divider — the storefront's vocabulary, hairlined ── */}
-      <div className="cn-marquee-wrap">
-        <CnlMarquee items={["canal concept", "para você", "compre junto", "new in", "essential", "frete grátis a partir de r$399,99", "parcele em até 10x sem juros"]} />
-      </div>
 
       {/* ── 01 · screens — the UI is the point: everything visible, composed big ── */}
       <section className="cn-sec mist" id="cn-screens">

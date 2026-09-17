@@ -29,13 +29,6 @@ const __BMT_STYLE = `
   body.bmt-mode .atmosphere, body.bmt-mode .grain { display: none; }
   body.bmt-mode { background: #efefef; /* paper — page floor, sampled live */ }
 
-  /* header protection: pure backdrop blur (no bar); items adapt to the band underneath */
-  body.bmt-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   body.bmt-mode .topbar > * { position: relative; z-index: 1; }
   body.bmt-mode .topbar .logo { color: #292e34; transition: color .3s ease; }
   body.bmt-mode .nav-link { color: rgba(41,46,52,0.6); transition: color .3s ease; }
@@ -108,22 +101,28 @@ const __BMT_STYLE = `
   .bt-lede { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; max-width: 56ch;
     margin: 0 0 54px; opacity: .85; }
 
-  /* ── hero — the site's own device: the ✕ is a WINDOW, not a glyph. four paper
-     triangles cut into a full-bleed block, the media shows through the ✕, and the
-     copy sits in the crossing. clip-path traces the ✕ from the top-left corner
-     clockwise; the arms run into all four corners exactly like bmtax.com.br. ── */
+  /* ── hero — the site's own device: the ✕ is a WINDOW, not a glyph. the media shows
+     through the brand mark and the copy sits in the crossing. the mark comes from
+     logo_icon.png, so the arms keep their real pointed tips: an earlier hand-drawn
+     polygon filled the corners instead, which is what made it read as a fat bowtie. ── */
   .bt-hero { position: relative; background: var(--paper); color: var(--ink);
     overflow: hidden; padding: 104px 0 0; }
   .bt-hero .bt-wrap { position: relative; }
   .bt-xband { position: relative; height: min(78vh, 720px); min-height: 460px;
     margin-top: 26px; }
+  /* masked with the brand's own icon (logo_icon.png, white ✕ on transparent), so the
+     bar weight and the angles are the real mark rather than a polygon I guessed at.
+     stretched to the band the way the shipped hero stretches it. */
   .bt-xwin { position: absolute; inset: 0; overflow: hidden; background: var(--coal);
-    clip-path: polygon(
-      0% 0%, 20% 0%, 50% 30%, 80% 0%, 100% 0%,
-      100% 20%, 70% 50%, 100% 80%, 100% 100%,
-      80% 100%, 50% 70%, 20% 100%, 0% 100%,
-      0% 80%, 30% 50%, 0% 20%);
+    -webkit-mask-image: url(logo_icon.png); mask-image: url(logo_icon.png);
+    -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
     animation: btXin 1.1s var(--ease-out) both; }
+  /* a soft vignette INSIDE the ✕ (so it stays masked): darkens the crossing where the
+     copy sits, with no hard box edge anywhere */
+  .bt-xwin::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(50% 60% at 50% 47%, rgba(10,12,13,0.88), rgba(10,12,13,0.5) 60%, transparent 82%); }
   @keyframes btXin { from { transform: scale(1.04); opacity: 0; }
     to { transform: scale(1); opacity: 1; } }
   /* the media filling the ✕; the gradient is what shows if no export is in yet */
@@ -136,12 +135,9 @@ const __BMT_STYLE = `
       linear-gradient(140deg, #14171a, #23282d 58%, #101214); }
   /* the copy block sits in the crossing, on its own scrim so it stays readable */
   .bt-hero-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    z-index: 2; width: min(46ch, 78%); text-align: center;
+    z-index: 2; width: min(44ch, 74%); text-align: center;
     display: flex; flex-direction: column; align-items: center;
-    padding: clamp(20px, 3vw, 34px) clamp(18px, 3vw, 32px);
-    background: rgba(24,24,24,0.52);
-    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-    color: var(--paper); }
+    color: var(--paper); text-shadow: 0 1px 24px rgba(10,12,13,0.55); }
   .bt-back { position: relative; z-index: 2; font-family: var(--mono); font-size: 10.5px;
     letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
     background: transparent; border: 1px solid rgba(41,46,52,0.35);
@@ -227,9 +223,15 @@ const __BMT_STYLE = `
 
   /* ── decisions (dark band) + ownership (bw pattern) ── */
   .bt-decisions { display: flex; flex-direction: column; margin-bottom: 72px; }
-  .bt-decision { display: grid; grid-template-columns: 90px 1fr; gap: 0 32px;
-    padding: 34px 0; border-top: 1px solid rgba(239,239,239,0.22); }
-  .bt-decision:last-child { border-bottom: 1px solid rgba(239,239,239,0.22); }
+  /* the dividers are full-bleed rules, not borders on the row: they run the whole
+     width of the band, edge to edge, instead of stopping at the text column. */
+  .bt-decision { position: relative; display: grid; grid-template-columns: 90px 1fr;
+    gap: 0 32px; padding: 34px 0; }
+  .bt-decision::before, .bt-decision:last-child::after {
+    content: ""; position: absolute; left: 50%; width: 100vw; transform: translateX(-50%);
+    height: 1px; background: rgba(239,239,239,0.22); pointer-events: none; }
+  .bt-decision::before { top: 0; }
+  .bt-decision:last-child::after { bottom: 0; }
   .bt-dec-num { font-family: var(--bmt-grot); font-weight: 700; letter-spacing: -0.04em;
     font-size: clamp(40px, 5vw, 66px); line-height: 1; color: rgba(22,222,208,0.35);
     user-select: none; padding-top: 4px; }

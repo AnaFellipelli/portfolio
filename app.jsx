@@ -292,6 +292,16 @@ function WorkNavMenu({ submit, spec, mode }) {
   );
 }
 
+/* body.is-scrolled: the contact page's header scrim keys off this, so the blur only
+   shows once the page has actually moved. cheap passive listener, no state churn. */
+(function () {
+  if (typeof window === "undefined" || window.__scrollFlagWired) return;
+  window.__scrollFlagWired = true;
+  const sync = () => document.body.classList.toggle("is-scrolled", window.scrollY > 12);
+  window.addEventListener("scroll", sync, { passive: true });
+  sync();
+})();
+
 function App() {
   const [mode, setMode] = uS("hero");          // hero | loading | browse
   const [stage, setStage] = uS(0);

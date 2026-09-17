@@ -33,13 +33,6 @@ const __BAW_STYLE = `
   body.baw-mode .atmosphere, body.baw-mode .grain { display: none; }
   body.baw-mode { background: #e8e8e8; /* concrete — page floor, sampled baw-2 */ }
 
-  /* header protection: pure backdrop blur (no bar); items adapt to the band underneath */
-  body.baw-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   body.baw-mode .topbar > * { position: relative; z-index: 1; }
   body.baw-mode .topbar .logo { color: #0d0d0d; transition: color .3s ease; }
   body.baw-mode .nav-link { color: rgba(13,13,13,0.6); transition: color .3s ease; }
