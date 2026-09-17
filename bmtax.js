@@ -113,18 +113,22 @@ const __BMT_STYLE = `
   .bt-hero { position: relative; background: var(--paper); color: var(--ink);
     overflow: hidden; padding: 88px 0 0; }
   .bt-hero .bt-wrap { position: relative; }
-  /* the band is WIDE (21:10, matching the shipped hero). the ✕ mask is stretched to
-     fill it, so the band's aspect ratio is what sets the arm angle: a taller band
-     makes the arms climb too steeply and the mark stops reading as the logo. */
-  .bt-xband { position: relative; width: 100%; aspect-ratio: 21 / 10;
-    max-height: 76vh; min-height: 340px; margin-top: 0; }
-  @supports not (aspect-ratio: 1) { .bt-xband { height: 48vw; } }
+  /* the band is FULL HEIGHT, and that is what makes the mark work. the ✕ is sized by
+     width (see below), so the band's height decides how much of it you see: a short
+     band crops it into a horizontal mass, a full-height one shows the whole crossing
+     with the arms running off all four edges. */
+  .bt-xband { position: relative; width: 100%; height: calc(100vh - 88px);
+    min-height: 520px; margin-top: 0; }
   /* masked with the brand's own icon (logo_icon.png, white ✕ on transparent), so the
      bar weight and the angles are the real mark rather than a polygon I guessed at.
-     stretched to the band the way the shipped hero stretches it. */
+     scaled by width and bleeding vertically, undistorted, like the shipped hero. */
   .bt-xwin { position: absolute; inset: 0; overflow: hidden; background: var(--coal);
     -webkit-mask-image: url(logo_icon.png); mask-image: url(logo_icon.png);
-    -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+    /* NEVER 100% 100%: that stretches the mark. the icon is square, so sizing it by
+       WIDTH keeps the arms at their true 45° and makes it bleed past the top and
+       bottom edges. paired with the full-height band above, the arms also reach the
+       left and right edges, so the ✕ bleeds on all four sides without distorting. */
+    -webkit-mask-size: 100% auto; mask-size: 100% auto;
     -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     -webkit-mask-position: center; mask-position: center;
     animation: btXin 1.1s var(--ease-out) both; }
@@ -574,6 +578,8 @@ function BmtaxCase({
     id: "bt-decisions"
   }, /*#__PURE__*/React.createElement("div", {
     className: "rule-v at-text-start"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "rule-v at-text-end"
   }), /*#__PURE__*/React.createElement("div", {
     className: "bt-wrap"
   }, /*#__PURE__*/React.createElement("span", {

@@ -114,19 +114,15 @@
   /* frosted scrim so content scrolling under the nav stays legible.
      blur only, no tint — it adapts to whatever background each page has.
      no mask either: iOS Safari breaks backdrop-filter when masked. */
-  /* the scrim is off by default now: it only appears on the contact page, and only
-     once the page has actually scrolled, so it never dulls a hero at rest.
-     the bottom edge is feathered rather than cut, per the soft-edge rule below. */
+  /* the scrim protects the nav on EVERY page, as it always did. the only change is
+     its bottom edge: masked into a fade so it meets the page softly instead of
+     ending on a straight cut. */
   .topbar::before {
-    content: ""; position: absolute; inset: 0; z-index: -1;
-    pointer-events: none; opacity: 0; transition: opacity .35s ease;
-    -webkit-mask-image: linear-gradient(#000 58%, transparent);
-    mask-image: linear-gradient(#000 58%, transparent);
-  }
-  body.contact-mode.is-scrolled .topbar::before {
-    opacity: 1;
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
     -webkit-backdrop-filter: blur(18px) saturate(1.15);
     backdrop-filter: blur(18px) saturate(1.15);
+    -webkit-mask-image: linear-gradient(to bottom, #000 52%, rgba(0,0,0,0.45) 78%, transparent);
+    mask-image: linear-gradient(to bottom, #000 52%, rgba(0,0,0,0.45) 78%, transparent);
   }
 
   /* ── soft edges, site-wide: images and video meet their container with a feathered

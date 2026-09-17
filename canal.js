@@ -273,7 +273,6 @@ function CnlModel() {
     }, /*#__PURE__*/React.createElement("span", null, "model image pending", /*#__PURE__*/React.createElement("br", null), "canal-model.png"));
   }
   return /*#__PURE__*/React.createElement("img", {
-    className: "soft-edge",
     src: "canal-model.png",
     alt: "Canal campaign portrait",
     loading: "lazy",
