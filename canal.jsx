@@ -9,7 +9,7 @@
    Registers LAYOUTS["canal-case"] → hash route #/canal (app.jsx).
    ════════════════════════════════════════════════════════════ */
 
-const { useEffect: useEffectCnl } = React;
+const { useEffect: useEffectCnl, useState: useStateCnl } = React;
 
 /* ── CANAL identity — sampled, not invented ──
    ink        #000000  (logotype + SHOP NOW band, sampled canal-1)
@@ -67,9 +67,12 @@ const __CNL_STYLE = `
   .cnlx :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   .cnlx .dark :focus-visible, .cnlx .cn-hero :focus-visible { outline-color: var(--dot); }
 
+  /* the left inset clears the fixed rail; the right inset was far smaller, which made
+     every band look pushed against the right edge. both are generous now. */
   .cn-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
-  @media (max-width: 1100px){ .cn-wrap { padding-left: clamp(24px, 5vw, 72px); } }
+    padding: 0 clamp(24px, 9vw, 150px) 0 clamp(24px, 15vw, 240px); }
+  @media (max-width: 1100px){ .cn-wrap { padding-left: clamp(24px, 5vw, 72px);
+    padding-right: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
   .cn-rail { position: fixed; left: 36px; top: 50%; transform: translateY(-50%);
@@ -105,12 +108,20 @@ const __CNL_STYLE = `
   /* ── hero — the SHOP NOW band's surface, blown up to a full viewport ── */
   .cn-hero { position: relative; background: var(--ink); color: var(--paper);
     overflow: hidden; padding: 150px 0 96px; }
-  .cn-ghost { position: absolute; top: 100px; left: 0; white-space: nowrap;
-    font-family: var(--cnl-display); font-weight: 200; text-transform: uppercase;
-    font-size: clamp(90px, 17vw, 240px); line-height: 1; letter-spacing: 0.14em;
-    color: rgba(255,255,255,0.055); pointer-events: none; user-select: none;
-    display: flex; width: max-content; animation: cnlGhost 70s linear infinite; }
-  @keyframes cnlGhost { to { transform: translateX(-50%); } }
+  /* the hero's campaign portrait: sits on the right, fades into the ink ground.
+     replaces the old moving ghost tagline. drop canal-model.png in the folder. */
+  .cn-hero-model { position: absolute; top: 0; right: 0; bottom: 0; width: 42%;
+    pointer-events: none; user-select: none; overflow: hidden; }
+  @media (max-width: 1000px){ .cn-hero-model { display: none; } }
+  .cn-hero-model img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%;
+    display: block; opacity: .85;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 38%);
+    mask-image: linear-gradient(to right, transparent, #000 38%); }
+  .cn-hero-model .cn-model-ph { width: 100%; height: 100%;
+    border-left: 1px dashed rgba(255,255,255,0.18);
+    display: grid; place-items: center; text-align: center; padding: 30px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; line-height: 2.1; color: rgba(255,255,255,0.32); }
   .cn-hero .cn-wrap { position: relative; }
   .cn-back { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--paper); background: rgba(255,255,255,0.06);
@@ -139,6 +150,13 @@ const __CNL_STYLE = `
   .cn-cta:hover { transform: translateY(-2px); }
   .cn-cta:active { transform: scale(0.99); }
   .cn-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
+  /* hero actions: the cta plus a link out to the shipped store */
+  .cn-hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .cn-live { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--paper); text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.45); padding-bottom: 3px;
+    transition: border-color .2s ease, opacity .2s ease; }
+  .cn-live:hover { border-color: var(--paper); opacity: .8; }
   .cn-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
     border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
   .cn-hero-chip b { color: var(--paper); font-weight: 700; text-transform: uppercase;
@@ -215,7 +233,7 @@ const __CNL_STYLE = `
 
   /* motion asks permission — every animation on this page is transform-only */
   @media (prefers-reduced-motion: reduce) {
-    .cn-ghost, .cn-marquee { animation: none !important; }
+    .cn-marquee { animation: none !important; }
     .cnlx * { transition-duration: 0.01ms !important; }
   }
 `;
@@ -226,20 +244,8 @@ const CNL_DECISIONS = [
     body: "Every layout decision starts from the same test: does this make the garment bigger or smaller? Imagery dominates the viewport on every screen. The mobile PDP opens as a full-bleed campaign photo with the interface compressed into a white panel at the thumb. The chrome never competes because the chrome is barely there: hairlines, white panels, tracked type."
   },
   {
-    title: "One color, and it isn't the brand's",
-    body: "The interface is black, white, and mist, sampled straight from the shipped screens. The only saturated pixel in the whole store is the pink cart-badge dot, and it exists to say one thing: something is waiting for you. Olive and terracotta live exclusively in the photography, so each collection recolors the store without touching the UI."
-  },
-  {
-    title: "Hierarchy comes from tracking",
-    body: "Canal's new identity speaks in thin, letter-spaced uppercase: S H O P  N O W, C O M P R E  J U N T O. The store's type system keeps that voice: hierarchy comes from spacing and scale, and nothing ever gets bolder. Even the sale tag is a quiet graphite rectangle, because a brand this composed doesn't shout about 50% off."
-  },
-  {
-    title: "Compre junto sells the whole look",
-    body: "The cross-sell module is built like an editorial pairing: two large portraits joined by a squared plus, one price for the assembled look. On desktop it becomes a three-look shelf with a single LEVE JUNTO panel. Merchandising framed as styling advice: the mechanic that raises average order value without a single urgency trick."
-  },
-  {
     title: "Navigation was validated before pixels",
-    body: "The full navigation workflow, mega menu columns on desktop and the accordion category tree on mobile, was mapped and validated with the client before high-fidelity design began. The taxonomy (roupas, essential, jeans, outlet, then fabric-level cuts like lã, alfaiataria, sarja) is how Canal's customer actually shops, so IA decisions were the cheapest ones to get right early."
+    body: "The full navigation workflow, mega menu columns on desktop and the accordion category tree on mobile, was mapped and validated with the client before high-fidelity design began. The taxonomy (roupas, essential, jeans, outlet, then fabric-level cuts like lã, alfaiataria, sarja) is how Canal's customer actually shops, so information-architecture decisions were the cheapest ones to get right early."
   },
 ];
 
@@ -255,6 +261,22 @@ const CNL_OWN = [
 function CnlScrollTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* hero campaign portrait, with a labeled placeholder until the export lands */
+function CnlModel() {
+  const [missing, setMissing] = useStateCnl(false);
+  if (missing) {
+    return (
+      <div className="cn-model-ph" role="img" aria-label="Canal campaign portrait">
+        <span>model image pending<br />canal-model.png</span>
+      </div>
+    );
+  }
+  return (
+    <img src="canal-model.png" alt="Canal campaign portrait" loading="lazy"
+      onError={() => setMissing(true)} />
+  );
 }
 
 function CnlMarquee({ items }) {
@@ -309,27 +331,31 @@ function CanalCase({ spec, onAsk }) {
         <button onClick={() => CnlScrollTo("cn-decisions")}>decisions</button>
       </nav>
 
-      {/* ── hero — ink ground, the design principle as ghost type ── */}
+      {/* ── hero — ink ground; the campaign portrait carries it (no ghost tagline) ── */}
       <header className="cn-hero" id="cn-top">
-        <div className="cn-ghost">
-          {[0, 1].map((half) => (
-            <span key={half} style={{ paddingRight: "0.6em" }}>THE PRODUCT IS THE POINT&nbsp;·&nbsp;</span>
-          ))}
+        <div className="cn-hero-model">
+          <CnlModel />
         </div>
         <div className="cn-wrap">
           <button className="cn-back" onClick={() => onAsk && onAsk("show me your work")}>← back to work</button>
           <div className="cn-eyebrow">canal concept <span className="d">●</span> studio brizza · 2023</div>
-          <h1 className="cn-h1">A new brand identity deserved <span className="u">a store to match.</span></h1>
+          <h1 className="cn-h1">Elegance, <span className="u">on the shelf.</span></h1>
           <p className="cn-hero-sub">
             Canal is a Brazilian women's fashion brand known for elegant design and quality
             materials. The brand had evolved; its e-commerce, the highest-traffic touchpoint,
             hadn't, and every visit widened the credibility gap. The brief: make the store feel
             like the brand. Quietly, and in three sprints.
           </p>
-          <button className="cn-cta" onClick={() => CnlScrollTo("cn-screens")}
-            aria-label="view the screens">
-            shop now
-          </button>
+          <div className="cn-hero-actions">
+            <button className="cn-cta" onClick={() => CnlScrollTo("cn-screens")}
+              aria-label="view the screens">
+              shop now
+            </button>
+            <a className="cn-live" href={p.liveUrl || "https://www.canal.com.br/"}
+              target="_blank" rel="noopener noreferrer">
+              visit the live store <span aria-hidden="true">↗</span>
+            </a>
+          </div>
           <div className="cn-hero-meta">
             <span className="cn-hero-chip"><b>role</b>{p.role || "product designer, with the lead designer"}</span>
             <span className="cn-hero-chip"><b>company</b>canal · studio brizza</span>

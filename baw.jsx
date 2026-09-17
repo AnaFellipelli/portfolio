@@ -65,9 +65,12 @@ const __BAW_STYLE = `
   .bawx :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   .bawx .dark :focus-visible, .bawx .bw-hero :focus-visible { outline-color: var(--buy); }
 
+  /* the left inset clears the fixed rail; the right inset was far smaller, which made
+     every band look pushed against the right edge. both are generous now. */
   .bw-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
-  @media (max-width: 1100px){ .bw-wrap { padding-left: clamp(24px, 5vw, 72px); } }
+    padding: 0 clamp(24px, 9vw, 150px) 0 clamp(24px, 15vw, 240px); }
+  @media (max-width: 1100px){ .bw-wrap { padding-left: clamp(24px, 5vw, 72px);
+    padding-right: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
   .bw-rail { position: fixed; left: 36px; top: 50%; transform: translateY(-50%);
@@ -117,11 +120,13 @@ const __BAW_STYLE = `
   .bw-back:hover { background: rgba(241,241,241,0.2); }
   .bw-eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.32em;
     text-transform: uppercase; color: var(--buy); margin-bottom: 30px; }
+  /* line-height was 0.9, which made the highlighted line's block overlap the lines
+     above and below it. 1.06 gives the inverted block room to sit on its own line. */
   .bw-h1 { font-family: var(--baw-display); font-weight: 900; letter-spacing: -0.02em;
-    text-transform: uppercase; font-size: clamp(52px, 9.5vw, 150px); line-height: 0.9;
+    text-transform: uppercase; font-size: clamp(52px, 9.5vw, 150px); line-height: 1.06;
     margin: 0 0 42px; max-width: 11ch; }
   .bw-h1 .noise { background: var(--chalk); color: var(--ink);
-    padding: 0 0.12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+    padding: 0.04em 0.12em 0.06em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .bw-hero-sub { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55;
     color: rgba(241,241,241,0.85); max-width: 54ch; margin: 0 0 44px; }
   /* hero CTA — same component as the PDP's COMPRAR band: a marquee in a green rectangle */
@@ -134,17 +139,19 @@ const __BAW_STYLE = `
     white-space: nowrap; width: max-content; animation: bawTicker 14s linear infinite; }
   .bw-cta .track span { font-family: var(--baw-display); font-weight: 900; font-size: 19px;
     letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); padding: 0 26px; }
+  /* hero actions: the marquee cta plus a link out to the shipped store */
+  .bw-hero-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .bw-live { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--chalk); text-decoration: none;
+    border-bottom: 1px solid rgba(241,241,241,0.45); padding-bottom: 3px;
+    transition: border-color .2s ease, color .2s ease; }
+  .bw-live:hover { color: var(--buy); border-color: var(--buy); }
   .bw-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
   .bw-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
     border: 1px solid rgba(241,241,241,0.35); color: rgba(241,241,241,0.85); }
   .bw-hero-chip b { color: var(--chalk); font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.1em; font-size: 9px; margin-right: 6px; }
-  /* ── marquee divider — the storefront's own mechanism (the COMPRAR band scrolls) ── */
-  .bw-marquee-wrap { overflow: hidden; background: var(--buy); color: var(--ink); padding: 14px 0; }
-  .bw-marquee { display: flex; white-space: nowrap; width: max-content;
-    animation: bawTicker 24s linear infinite; }
-  .bw-marquee-item { font-family: var(--baw-display); font-weight: 900; font-size: 14px;
-    letter-spacing: 0.3em; text-transform: uppercase; padding-right: 8px; }
+  /* the COMPRAR band's ticker still drives the hero cta */
   @keyframes bawTicker { to { transform: translateX(-50%); } }
 
   /* ── screens — the UI showcase: everything visible, composed big ── */
@@ -205,7 +212,7 @@ const __BAW_STYLE = `
 
   /* motion asks permission — every animation on this page is transform-only */
   @media (prefers-reduced-motion: reduce) {
-    .bw-ghost, .bw-marquee, .bw-cta .track { animation: none !important; }
+    .bw-ghost, .bw-cta .track { animation: none !important; }
     .bawx * { transition-duration: 0.01ms !important; }
   }
 `;
@@ -245,18 +252,6 @@ const BAW_OWN = [
 function BawScrollTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function BawMarquee({ items }) {
-  return (
-    <div className="bw-marquee" aria-hidden="true">
-      {[0, 1].map((half) => (
-        <span key={half} style={{ display: "flex" }}>
-          {items.map((t, i) => <span key={i} className="bw-marquee-item">{t}</span>)}
-        </span>
-      ))}
-    </div>
-  );
 }
 
 function BawCase({ spec, onAsk }) {
@@ -313,12 +308,18 @@ function BawCase({ spec, onAsk }) {
             conversion. The brief was to keep both: an e-commerce experience unmistakably BAW,
             disciplined enough to sell, all the way through a customized VTEX checkout.
           </p>
-          <button className="bw-cta" onClick={() => BawScrollTo("bw-screens")}
-            aria-label="enter the store">
-            <span className="track" aria-hidden="true">
-              {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the store →</span>)}
-            </span>
-          </button>
+          <div className="bw-hero-actions">
+            <button className="bw-cta" onClick={() => BawScrollTo("bw-screens")}
+              aria-label="enter the store">
+              <span className="track" aria-hidden="true">
+                {Array.from({ length: 6 }).map((_, i) => <span key={i}>Enter the store →</span>)}
+              </span>
+            </button>
+            <a className="bw-live" href={p.liveUrl || "https://www.bawclothing.com.br/"}
+              target="_blank" rel="noopener noreferrer">
+              visit the live store <span aria-hidden="true">↗</span>
+            </a>
+          </div>
           <div className="bw-hero-meta">
             <span className="bw-hero-chip"><b>role</b>{p.role || "product designer, with the lead designer"}</span>
             <span className="bw-hero-chip"><b>company</b>baw clothing · studio brizza</span>
@@ -327,11 +328,6 @@ function BawCase({ spec, onAsk }) {
           </div>
         </div>
       </header>
-
-      {/* ── marquee divider — buy-green, the storefront's own mechanism ── */}
-      <div className="bw-marquee-wrap">
-        <BawMarquee items={["we make noise", "★", "not fashion", "★", "baw clothing", "★", "vtex checkout", "★", "1032 produtos", "★"]} />
-      </div>
 
       {/* ── 01 · screens — the UI is the point: everything visible, composed big ── */}
       <section className="bw-sec concrete" id="bw-screens">

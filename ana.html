@@ -365,8 +365,15 @@
     line-height: 0.92; letter-spacing: -0.01em; color: var(--text);
     margin: 0 0 16px; white-space: nowrap; text-transform: lowercase;
   }
+  /* the purple block is optically centered on the glyphs, measured rather than guessed:
+     inline-block + line-height 1 collapses the font's oversized ascent/descent, then the
+     asymmetric padding compensates for where the italic actually inks. at these values the
+     ink sits 23.4px from top and bottom, 9.5px from left and right (measured at 72px). the
+     right padding is large because the italic's final "a" overhangs its advance width. */
   .hero-title em { font-family: var(--display); font-style: italic; font-weight: 900; text-transform: none; letter-spacing: -0.03em;
-    background: var(--accent); color: #fff; padding: 0 0.26em 0 0.23em;
+    background: var(--accent); color: #fff;
+    display: inline-block; line-height: 1;
+    padding: 0.04em 0.28em 0.165em 0.09em; vertical-align: baseline;
     box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .hero-sub {
     font-size: 17px; color: var(--muted-2); margin: 0;
@@ -695,7 +702,9 @@
   .as-para.outside { font-family: var(--serif); font-style: italic; color: var(--text);
     font-size: clamp(18px, 2vw, 24px); line-height: 1.5; }
 
-  .xp { padding: 26px 0 26px 24px; border-top: 0.5px solid rgba(40,28,70,0.12); }
+  /* no left padding: the role headings share the same left edge as the paragraphs
+     above them, so the whole about column reads on one axis */
+  .xp { padding: 26px 0; border-top: 0.5px solid rgba(40,28,70,0.12); }
   .xp:first-child { border-top: none; padding-top: 2px; }
   .xp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 13px; }
   .xp-role { font-family: var(--display); font-weight: 800; font-size: 19px;
@@ -715,7 +724,7 @@
   .xp-subrole { font-family: var(--display); font-weight: 700; font-size: 15.5px;
     letter-spacing: -0.01em; color: var(--text); margin: 0 0 12px; text-transform: lowercase; }
 
-  .edu { padding: 20px 0 20px 24px; border-top: 0.5px solid rgba(40,28,70,0.12); }
+  .edu { padding: 20px 0; border-top: 0.5px solid rgba(40,28,70,0.12); }
   .edu:first-child { border-top: none; padding-top: 2px; }
   .edu-detail { margin: 6px 0 0; font-size: 14.5px; line-height: 1.55; color: var(--muted-2); }
 
@@ -1801,10 +1810,12 @@
     </defs>
   </svg>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <!-- production react builds: the development ones shipped ~1MB more and run slower.
+       (no integrity attr on these two: swap in unpkg's published sha384 if you want SRI back) -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/framer-motion@11.18.2/dist/framer-motion.js"></script>
+  <!-- framer-motion removed: it was downloaded on every visit but never actually used -->
 
   <script type="text/babel" src="data.jsx"></script>
   <script type="text/babel" src="doodles.jsx"></script>

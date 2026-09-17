@@ -197,17 +197,10 @@ const __RLV_STYLE = `
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .rl-duo { grid-template-columns: 1fr; } }
 
-  /* demo — two columns on the page grid: the title left, the phone right */
+  /* demo — the prototype is the whole point, so it gets the full column and centers.
+     the old giant "demo" title repeated what the lede already says. */
   .rl-demo-duo { max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px);
-    display: grid; grid-template-columns: 1fr auto;
-    gap: clamp(28px, 5vw, 80px); align-items: center; }
-  @media (max-width: 1100px){ .rl-demo-duo { padding-left: clamp(24px, 5vw, 72px); } }
-  @media (max-width: 860px){ .rl-demo-duo { grid-template-columns: 1fr; justify-items: center; }
-    .rl-demo-left { text-align: center; } }
-  .rl-demo-title { font-family: var(--display, inherit); font-weight: 800;
-    text-transform: lowercase; letter-spacing: -0.04em; line-height: 0.95;
-    margin: 0; color: #fff; font-size: clamp(56px, 9vw, 140px); }
+    padding: 0 clamp(24px, 5vw, 72px); display: flex; justify-content: center; }
 
   /* the live prototype — the app in its own phone shell, running in demo mode */
   .rl-proto { display: flex; flex-direction: column; align-items: center; }
@@ -265,7 +258,10 @@ const __RLV_STYLE = `
   /* in hindsight — two columns so the band fills the page instead of a lonely left rail */
   .rl-hind { border-top: 1px solid var(--line-hi); margin-top: 8px; padding-top: 52px; margin-bottom: 20px;
     display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
-  .rl-hind .rl-hind-title { margin: 18px 0 0; }
+  /* the serif italic needs room: at line-height 1 its descenders collided and
+     "UX." was left stranded on a third line. balanced wrapping, looser leading. */
+  .rl-hind .rl-hind-title { margin: 18px 0 0; max-width: 20ch; line-height: 1.14;
+    text-wrap: balance; }
   .rl-hind .rl-lede { max-width: none; margin: 0; }
   .rl-hind .rl-lede em { font-family: var(--rl-serif); font-style: italic; color: var(--text); }
   @media (max-width: 820px){ .rl-hind { grid-template-columns: 1fr; gap: 22px; padding-top: 40px; } }
@@ -439,14 +435,8 @@ function RlvCase({ spec, onAsk }) {
           </p>
         </div>
 
-        {/* demo — two columns: title on the page grid, the phone beside it */}
+        {/* demo — the app itself, centered in its own shell */}
         <div className="rl-demo-duo">
-          <div className="rl-demo-left">
-            <h3 className="rl-demo-title">demo</h3>
-            <p className="rl-cap" style={{ marginTop: 10 }}>what (r)elevē is, and how it works.</p>
-          </div>
-
-          {/* ← the centerpiece: the app itself, in its own shell */}
           <figure className="rl-proto" id="rl-proto" style={{ margin: 0 }}>
             <span className="rl-proto-kicker">live prototype · demo mode, click through it</span>
             <RlvPhone />

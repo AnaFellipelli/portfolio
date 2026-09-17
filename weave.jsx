@@ -126,7 +126,6 @@ const WV_OWN = [
 const WV_DECISIONS = [
   { title: "Three densities are a product requirement.", body: "AutoCAD users live in high density: panels, palettes, and tables packed into every pixel. Fusion breathes at medium. Onboarding flows want low. One component, three metric sets, zero forks." },
   { title: "Each theme exists for a reason.", body: "Light gray, dark gray, and dark blue exist because Autodesk products run in bright offices and dark studios, over 3D viewports where the canvas itself is the product. Dark blue is the high-contrast scheme AutoCAD ships over the drawing canvas." },
-  { title: "The accent shifts per scheme, deliberately.", body: "Autodesk Blue 500 (#0696D7) carries the accent on light surfaces; on dark schemes it steps up the ramp to 400 (#38ABDF) so interactive states keep their contrast. Same ramp, different stop: that's the semantic layer doing its job." },
   { title: "Focus is a halo.", body: "A 2px halo in the accent at 35% opacity sits outside the component: hover 2px, pressed 4px, in the base color. Nothing shifts, nothing reflows. The component's silhouette never changes." },
   { title: "Adoption without asking.", body: "Documentation precise enough that engineers act on it independently: usage rules, QA criteria, no designer required in the room. The measure of success was teams onboarding without help. And they did." },
 ];
@@ -509,8 +508,9 @@ const __WV2_STYLE = `
     padding: clamp(30px, 4.5vw, 54px); margin: 20px 0 40px; }
   .wv2-outcome .k { font-family: var(--wv-mono); font-size: 10px; letter-spacing: 0.22em;
     text-transform: uppercase; opacity: .85; margin-bottom: 18px; }
+  /* max-width was 30ch, which left a large empty band on the right of the blue block */
   .wv2-outcome p { font-family: var(--wv-legend); font-weight: 700; letter-spacing: -0.015em;
-    font-size: clamp(21px, 2.8vw, 34px); line-height: 1.25; margin: 0; max-width: 30ch; }
+    font-size: clamp(21px, 2.8vw, 34px); line-height: 1.25; margin: 0; max-width: 46ch; }
 
   .wv2-sec.deep .proj-footer { border-top-color: rgba(188,211,238,0.2); }
   .wv2-sec.deep .pf-label { color: rgba(245,245,245,0.68); }
@@ -740,11 +740,9 @@ function WeaveCase({ spec, onAsk }) {
           <span className="wv2-chip">the system, live · 03</span>
           <h2 className="wv2-h2">Nine combinations. Try all of them.</h2>
           <p className="wv2-live-note">
-            <strong>Not a screenshot. This is the real thing.</strong> Everything below is built
-            from Weave's actual theme data (<span className="tok">@weave-design/theme-data</span>),
-            so you can see for yourself how the three themes and three densities work. Pick a theme,
-            pick a density, and watch every color, button, and row adjust. It's exactly what happens
-            inside AutoCAD when you switch.
+            The components below run on Weave's own theme data
+            (<span className="tok">@weave-design/theme-data</span>). Pick a theme and a density:
+            the colors, buttons, and rows recalculate the same way they do inside AutoCAD.
           </p>
 
           <div className="wv2-switch-row">
@@ -815,11 +813,6 @@ function WeaveCase({ spec, onAsk }) {
             </div>
           </div>
 
-          <p className="wv2-live-foot">
-            hover a button: 2px halo · press: 4px halo (button.pressed.haloWidth) · tab through: focus halo in halo.focus, {T.haloFocus} ·
-            disabled stays focusable at opacity.disabled 0.4 · row height {D.rowH}px, header {D.headH}px, button label {D.btnFont}/{D.btnLh}, all from the {D.label}-density metrics ·
-            artifakt element renders as dm sans here unless installed
-          </p>
         </div>
       </section>
 
@@ -867,12 +860,6 @@ function WeaveCase({ spec, onAsk }) {
               <p>High density drops button padding to 4×12 and rows to 20px for pointer-first CAD work. But the density choice belongs to the product context, never applied where touch is expected.</p>
               <div className="demo"><kbd>high 20px</kbd><kbd>medium 32px</kbd><kbd>low 32px+</kbd></div>
             </div>
-            <div className="wv2-ax">
-              <span className="tag">prefers-reduced-motion</span>
-              <h4>Motion asks permission.</h4>
-              <p>The hero's orbiting cube, the skeleton wave, and the ticker all stop under prefers-reduced-motion, on this page and in the system's own loading guidance: persistent UI stays static, only loading content moves.</p>
-              <div className="demo"><kbd>@media (prefers-reduced-motion: reduce)</kbd></div>
-            </div>
           </div>
         </div>
       </section>
@@ -886,7 +873,7 @@ function WeaveCase({ spec, onAsk }) {
           <div className="wv2-results">
             <div className="wv2-result"><div className="rn">14</div><div className="rl">core components in the may 2025 release, adopted across autocad, fusion, and revit</div></div>
             <div className="wv2-result"><div className="rn">9</div><div className="rl">theme × density combinations, one semantic token layer, zero component forks</div></div>
-            <div className="wv2-result"><div className="rn">20<span className="tbd">+</span></div><div className="rl">product teams adopting weave without designer support · directional, cleared figure pending</div></div>
+            <div className="wv2-result"><div className="rn"><span className="tbd">TBD</span></div><div className="rl">teams adopting without designer support · the number is real, pending clearance to publish</div></div>
           </div>
 
           <div className="wv2-context" style={{ marginBottom: 48, gridTemplateColumns: "1fr" }}>

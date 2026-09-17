@@ -3,10 +3,7 @@
    ════════════════════════════════════════════════════════════ */
 
 const { useState: uS, useEffect: uE, useRef: uR } = React;
-const FM = window.Motion || {};
-const motion = FM.motion;
-const AnimatePresence = FM.AnimatePresence;
-const LayoutGroup = FM.LayoutGroup;
+/* framer-motion is gone: every animation on this site is CSS. */
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -513,7 +510,7 @@ function App() {
     startReveal();
   };
 
-  const Wrap = LayoutGroup || React.Fragment;
+  const Wrap = React.Fragment;
   const heroPlaceholder = stage >= 6
     ? PLACEHOLDER_CYCLE[phIdx]
     : (stage >= 4 ? "ask me anything…" : "");

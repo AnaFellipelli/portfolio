@@ -321,7 +321,9 @@ const __MNF_STYLE = `
     font-size: clamp(34px, 4.8vw, 68px); line-height: 0.98; margin: 0 0 18px; }
   .mnf-sub-p { font-size: 16px; line-height: 1.62; opacity: .8; max-width: 54ch; margin: 0 0 44px; }
   .mnf-sub-head { display: flex; align-items: center; margin: 74px 0 18px; }
-  .mnf-sub-head .mnf-chip.sm { margin-bottom: 0; } /* keep chip + count pill on one baseline */
+  /* keep chip + count pill on one baseline: both carry a 30px bottom margin for
+     standalone use, which a centered flex row turns into a vertical offset */
+  .mnf-sub-head .mnf-chip.sm, .mnf-sub-head .mnf-count { margin-bottom: 0; }
 
   /* primitives + semantic live under accordions — headers stay, styles expand */
   .mnf-acc { overflow: hidden; max-height: 0; opacity: 0;
@@ -508,19 +510,8 @@ const __MNF_STYLE = `
     border-radius: 10px; display: grid; place-items: center; }
   .mnf-hit span { width: 32px; height: 32px; background: var(--ink); border-radius: 9999px;
     display: grid; place-items: center; color: #fff; font-family: var(--mono); font-size: 8px; }
-  .mnf-axx-foot { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
-    opacity: .6; line-height: 1.8; margin: 0 0 8px; }
-  .mnf-axx-foot b { color: var(--brand); font-weight: 700; }
-
   /* ── results / outcome ── */
-  .mnf-results-live { display: flex; flex-direction: column; gap: 10px; margin-bottom: 64px; }
-  .mnf-result-live { font-size: 15px; line-height: 1.6; opacity: .85;
-    display: flex; gap: 10px; align-items: flex-start; }
-  .mnf-result-live::before { content: "✓"; color: #2dcd92; flex: none;
-    font-family: var(--mono); font-size: 12px; margin-top: 2px; }
-
-  /* dark-band overrides for results + the portfolio's next-project footer */
-  .mnf-sec.dark .mnf-result-live { color: #fafafa; }
+  /* dark-band overrides for the portfolio's next-project footer */
   /* stats grid sits on the dark band but its cards are light — don't inherit the band's cream text */
   .mnf-sec.dark .mnf-stats { color: var(--ink); border-color: transparent; }
   .mnf-sec.dark .pf-label { color: rgba(250,250,250,0.55); }
@@ -540,6 +531,28 @@ const __MNF_STYLE = `
   .mnf-flag { font-family: var(--mono); font-size: 11px; line-height: 1.5; opacity: .55;
     margin: 0 0 48px; }
   .mnf-flag b { font-weight: 700; }
+
+  /* ── visual-design proto slots — the design work itself, inside the panels ── */
+  .mnf-proto { margin: 30px 0 0; }
+  .mnf-proto-frame { border: 1px solid rgba(13,13,13,0.15); border-radius: 12px;
+    overflow: hidden; line-height: 0; background: #fff; }
+  .mnf-panel-inner.on-dark .mnf-proto-frame { border-color: rgba(244,240,230,0.25); background: #101010; }
+  .mnf-proto-frame img { width: 100%; height: auto; display: block; }
+  .mnf-proto-ph { border: 1.5px dashed rgba(13,13,13,0.28); border-radius: 12px;
+    min-height: 220px; display: grid; place-items: center; padding: 28px; text-align: center;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; line-height: 2;
+    opacity: .6; }
+  .mnf-proto.tall .mnf-proto-ph { min-height: 320px; }
+  .mnf-proto-ph b { font-weight: 700; }
+  .mnf-proto figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.6; }
+  /* two protos side by side where the panel has room */
+  .mnf-proto-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px){ .mnf-proto-duo { grid-template-columns: 1fr; } }
+
+  /* the a11y proto sits full width under the trimmed card row */
+  .mnf-axx-proto { margin: 8px 0 0; }
+  .mnf-axx-proto .mnf-proto-ph { min-height: 300px; background: #fff; }
 `;
 
 const MNF_DECISIONS = [
@@ -580,13 +593,6 @@ const MNF_AGENTS = [
   { label: "P1 · quality gates", items: ["adr-author", "pr-reviewer", "cross-platform-consistency-checker", "breaking-change-detector", "token-syncer"] },
   { label: "P2 · release", items: ["version-bumper", "changelog-generator", "release-notes-author", "migration-guide-author"] },
   { label: "P3 · observability", items: ["metrics-collector"] },
-];
-
-const MNF_RESULTS_LIVE = [
-  "Quality bar locked in: AI edit distance under 20% on simple components, tracked weekly by the metrics agent.",
-  "Token and icon sync from Figma to code running on all three platforms.",
-  "Design consistently ahead of engineering: every shipped component had a library-ready Figma spec and written guideline before implementation started.",
-  "The system's operating model (guidelines-first, edit distance as a spec-quality signal, registry as source of truth) is now how the broader team works with AI.",
 ];
 
 /* ── the full token set, harvested from the file's variables ── */
@@ -690,6 +696,26 @@ function MnfScrollTo(id) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+/* visual-design proto slot: shows the export when it's in the folder, and a
+   labeled dashed placeholder while it isn't, so the page never breaks mid-upload */
+function MnfProto({ src, cap, alt, tall }) {
+  const [missing, setMissing] = useStateMnf(false);
+  return (
+    <figure className={"mnf-proto" + (tall ? " tall" : "")}>
+      {missing ? (
+        <div className="mnf-proto-ph" role="img" aria-label={alt}>
+          <span>proto pending<br /><b>{src}</b></span>
+        </div>
+      ) : (
+        <div className="mnf-proto-frame">
+          <img src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
+        </div>
+      )}
+      <figcaption>{cap}</figcaption>
+    </figure>
+  );
+}
+
 function MnfstCase({ spec, onAsk }) {
   const [open, setOpen] = useStateMnf(null);
   const [colOpen, setColOpen] = useStateMnf({ prims: false, sem: false });
@@ -782,6 +808,11 @@ function MnfstCase({ spec, onAsk }) {
           <span className="mnf-focus-dot" aria-hidden="true"></span>
           color/border/focus #5555E8 · border-width/focus 2px + 2px gap · on every interactive component
         </div>
+
+        <div className="mnf-proto-duo">
+          <MnfProto src="mnf-proto-color-light.png" cap="color in practice · light mode" alt="Manyfest screens showing the color tokens applied in light mode" />
+          <MnfProto src="mnf-proto-color-dark.png" cap="the same surfaces · dark mode" alt="Manyfest screens showing the same surfaces in dark mode" />
+        </div>
       </div>
     ),
     type: (
@@ -806,6 +837,8 @@ function MnfstCase({ spec, onAsk }) {
             typography/line-height/xs·sm·md · typography/weight/regular·bold · composed as body/[size]/[weight]
           </span>
         </div>
+
+        <MnfProto src="mnf-proto-type.png" cap="the two voices on a real screen · gravity display over rooftop body" alt="Manyfest screen showing the display typeface paired with body copy" />
       </div>
     ),
     found: (
@@ -887,6 +920,11 @@ function MnfstCase({ spec, onAsk }) {
             if inline content needs depth, the real fix is spacing or color separation.
           </span>
         </div>
+
+        <div className="mnf-proto-duo">
+          <MnfProto src="mnf-proto-foundations.png" cap="spacing + radius on a composed screen" alt="Manyfest screen showing the spacing and radius foundations in use" />
+          <MnfProto src="mnf-proto-responsive.png" cap="the same view across breakpoints" alt="Manyfest layout shown at mobile, tablet, and desktop breakpoints" />
+        </div>
       </div>
     ),
     voice: (
@@ -896,6 +934,8 @@ function MnfstCase({ spec, onAsk }) {
           <div className="mnf-voice-card vp"><h4>Useful first.</h4><p>Every sentence earns its place. If it doesn't help the reader move forward, it goes.</p></div>
           <div className="mnf-voice-card vk"><h4>Warm, but sharp.</h4><p>We have a sense of humor. We're also serious about the work. Both can be true.</p></div>
         </div>
+
+        <MnfProto src="mnf-proto-voice.png" cap="the voice in product copy · empty states, errors, onboarding" alt="Manyfest screens showing the voice and tone principles applied to product copy" />
       </div>
     ),
   };
@@ -945,8 +985,8 @@ function MnfstCase({ spec, onAsk }) {
           <h2 className="mnf-h2">Built live, against two moving targets.</h2>
 
           <div className="mnf-context">
-            <p>The real challenge: Manyfest is a system for two AI-native products that were being created live — designed and engineered at the same time as the system itself, across web, iOS, and Android. No legacy library to lean on, no settled patterns, almost no context. The system couldn't be specced once and shipped; it had to be a living, evolving process that moved in step with every product decision.</p>
-            <p>And the target moved twice, because the brand was evolving too. Manychat was rebranding how it communicates while the products took shape — and the system's whole goal was to pull the products closer to that brand. Absorbing change without fracturing became the real work. On top of it, the second bet: agents in the pipeline from day one, so every guideline and token decision had to serve two audiences at once — humans and agents.</p>
+            <p>The real challenge: Manyfest is a system for two AI-native products that were being created live: designed and engineered at the same time as the system itself, across web, iOS, and Android. No legacy library to lean on, no settled patterns, almost no context. The system couldn't be specced once and shipped; it had to be a living, evolving process that moved in step with every product decision.</p>
+            <p>And the target moved twice, because the brand was evolving too. Manychat was rebranding how it communicates while the products took shape, and the system's whole goal was to pull the products closer to that brand. Absorbing change without fracturing became the real work. On top of it, the second bet: agents in the pipeline from day one, so every guideline and token decision had to serve two audiences at once: humans and agents.</p>
           </div>
 
           <div className="mnf-stats">
@@ -1034,6 +1074,7 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           ))}
 
+          <MnfProto src="mnf-proto-primitives.png" cap="the ramps chosen against real ui, not swatch grids" alt="Manyfest primitive color ramps shown applied to real interface elements" />
           </div>
 
           <div className="mnf-sub-head"><span className="mnf-chip sm">semantic · color</span><span className="mnf-count">37 × 2 modes</span></div>
@@ -1065,6 +1106,11 @@ function MnfstCase({ spec, onAsk }) {
               </div>
             </div>
           ))}
+
+          <div className="mnf-proto-duo">
+            <MnfProto src="mnf-proto-semantic-light.png" cap="roles at work · light mode" alt="Manyfest interface showing semantic color roles in light mode" />
+            <MnfProto src="mnf-proto-semantic-dark.png" cap="same roles, same screen · dark mode" alt="The same Manyfest interface showing semantic color roles in dark mode" />
+          </div>
           </div>
         </div>
       </section>
@@ -1170,7 +1216,7 @@ function MnfstCase({ spec, onAsk }) {
             <div className="mnf-live-foot">
               default → hover → active, straight from the file · focus ring 2px #5555E8 + 2px gap ·
               press = scale 0.96 @ 100ms · loading keeps its label · disabled stays focusable ·
-              144 variants in the full set · typeface substituted (rooftop → archivo)
+              144 variants in the full set
             </div>
           </div>
         </div>
@@ -1181,7 +1227,7 @@ function MnfstCase({ spec, onAsk }) {
         <div className="mnf-wrap">
           <span className="mnf-chip">in the wild · 06</span>
           <h2 className="mnf-h2">The system, shipped.</h2>
-          <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented on this page — explorations from the iOS vision work.</p>
+          <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented on this page. These are explorations from the iOS vision work.</p>
         </div>
 
         {/* full-bleed: outside the wrap so the strip overflows the right edge */}
@@ -1235,7 +1281,7 @@ function MnfstCase({ spec, onAsk }) {
         <div className="mnf-wrap">
           <span className="mnf-chip">accessibility · 08</span>
           <h2 className="mnf-h2">Written into every spec.</h2>
-          <p className="mnf-sec-sub">None of this is aspirational: each rule is written into the component specs, codified in ADRs, and checked by an agent in the pipeline. Try them, tab through this page.</p>
+          <p className="mnf-sec-sub">None of this is aspirational: each rule is written into the component specs, codified in ADRs, and checked by an agent before release. Reduced motion, roving tabindex, and compile-time label enforcement live in the same specs. Try these, tab through this page.</p>
 
           <div className="mnf-axx">
             <div className="mnf-ax">
@@ -1254,28 +1300,10 @@ function MnfstCase({ spec, onAsk }) {
               </div>
             </div>
             <div className="mnf-ax">
-              <span className="tag">iconbutton · compile-time</span>
-              <h4>No label, no build.</h4>
-              <p>Icon-only components require aria-label or aria-labelledby as a discriminated union, enforced at compile time instead of a runtime console warning someone ignores.</p>
-              <div className="demo"><kbd>aria-label</kbd><span style={{ fontFamily: "var(--mono)", fontSize: 10, opacity: .5 }}>| </span><kbd>aria-labelledby</kbd></div>
-            </div>
-            <div className="mnf-ax">
               <span className="tag">touch targets</span>
               <h4>44pt, no matter the visual.</h4>
               <p>Small controls keep their compact look but extend an invisible hit area to 44×44. When a chip stays compact, the parent row owns the 44pt. The responsibility is written into the spec.</p>
               <div className="demo"><span className="mnf-hit"><span>32</span></span><span style={{ fontFamily: "var(--mono)", fontSize: 9.5, opacity: .6 }}>32 visual · 44 hit</span></div>
-            </div>
-            <div className="mnf-ax">
-              <span className="tag">tabs · keyboard</span>
-              <h4>Roving tabindex.</h4>
-              <p>One tab stop per group; arrow keys move between items, Enter or Space activates. Selection is announced via aria-selected and marked with a 2px underline, so color is never doing the job alone.</p>
-              <div className="demo"><kbd>←</kbd><kbd>→</kbd><kbd>Enter</kbd></div>
-            </div>
-            <div className="mnf-ax">
-              <span className="tag">motion + loading</span>
-              <h4>Motion asks permission.</h4>
-              <p>prefers-reduced-motion skips the selection slides and fades. Loading states announce with aria-busy, keep their label next to the spinner, and stay focusable while they work.</p>
-              <div className="demo"><button className="mnf-btn solid-brand" type="button" aria-disabled="true" aria-busy="true" tabIndex={0}><span className="mnf-spin" aria-hidden="true"></span>Button</button></div>
             </div>
             <div className="mnf-ax" style={{ gridColumn: "1 / -1" }}>
               <span className="tag">contrast · checked in the token pipeline</span>
@@ -1297,10 +1325,9 @@ function MnfstCase({ spec, onAsk }) {
             </div>
           </div>
 
-          <p className="mnf-axx-foot">
-            skeletons are aria-hidden inside an aria-busy container · disabled fades via opacity/disabled (40%) on the wrapper, control and label together ·
-            an <b>accessibility-check agent</b> reviews every component before release · rules codified as ADRs, so agents inherit them too.
-          </p>
+          <div className="mnf-axx-proto">
+            <MnfProto src="mnf-proto-accessibility.png" cap="accessibility in practice · focus order, targets, and reduced motion on a real flow" alt="Manyfest prototype annotated with focus order, touch targets, and reduced-motion behavior" tall />
+          </div>
         </div>
       </section>
 
@@ -1319,17 +1346,7 @@ function MnfstCase({ spec, onAsk }) {
             <div className="mnf-stat"><div className="n">20<span className="acc">+</span></div><div className="l">components live on web, Button through Modal</div></div>
           </div>
 
-          <div className="mnf-results-live">
-            {MNF_RESULTS_LIVE.map((r, i) => (
-              <div className="mnf-result-live" key={i}>{r}</div>
-            ))}
-          </div>
-
-          <div className="mnf-context" style={{ marginBottom: 56 }}>
-            <p>The eval baseline is still a target; the results are coming in. Edit distance below 20% is where we drew the bar; the weekly metrics agent will tell us whether the guidelines are actually good or just thorough. And the synchronized release train has a cost we accepted knowingly: the slowest platform sets the milestone pace. Ask me about it.</p>
-          </div>
-
-          <div className="mnf-outcome">
+          <div className="mnf-outcome" style={{ marginTop: 56 }}>
             <div className="k">why this matters beyond manychat</div>
             <p>Most teams treat AI tooling as something that consumes a design system. Manyfest treats the design system as something that trains and constrains AI. Agents hallucinate; the system is the guardrail. We just built it first.</p>
           </div>
