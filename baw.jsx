@@ -120,13 +120,15 @@ const __BAW_STYLE = `
   .bw-back:hover { background: rgba(241,241,241,0.2); }
   .bw-eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.32em;
     text-transform: uppercase; color: var(--buy); margin-bottom: 30px; }
-  /* 0.9 made the highlight block collide with its neighbours; 1.06 was then too airy.
-     0.98 with the block's own padding baked in sits tight without touching. */
+  /* the highlight uses box-shadow, not padding, to gain its side bleed: padding on an
+     inline box grows that line's height and nothing else, which is exactly the
+     inconsistent leading this title had. with zero padding every line measures the same. */
   .bw-h1 { font-family: var(--baw-display); font-weight: 900; letter-spacing: -0.025em;
-    text-transform: uppercase; font-size: clamp(60px, 10.5vw, 168px); line-height: 0.98;
-    margin: 0 0 42px; max-width: 11ch; }
-  .bw-h1 .noise { background: var(--chalk); color: var(--ink);
-    padding: 0.02em 0.1em 0.04em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+    text-transform: uppercase; font-size: clamp(38px, 6.4vw, 104px); line-height: 1.04;
+    margin: 0 0 42px; max-width: 12ch; }
+  .bw-h1 .noise { background: var(--chalk); color: var(--ink); padding: 0;
+    box-shadow: 0.1em 0 0 var(--chalk), -0.08em 0 0 var(--chalk);
+    box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .bw-hero-sub { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55;
     color: rgba(241,241,241,0.85); max-width: 54ch; margin: 0 0 44px; }
   /* hero CTA — same component as the PDP's COMPRAR band: a marquee in a green rectangle */

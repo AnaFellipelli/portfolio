@@ -152,7 +152,11 @@ const __CNL_STYLE = `
   .cn-cta:hover { transform: translateY(-2px); }
   .cn-cta:active { transform: scale(0.99); }
   .cn-hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
-  .cn-hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  /* the button is deliberately pushed past the text column so it straddles the
+     portrait's left edge: half on the ink ground, half over the photograph. */
+  .cn-hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    position: relative; z-index: 2; margin-left: clamp(0px, 22vw, 320px); }
+  @media (max-width: 1000px){ .cn-hero-actions { margin-left: 0; } }
   .cn-hero-chip { font-family: var(--mono); font-size: 10.5px; padding: 7px 14px;
     border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
   .cn-hero-chip b { color: var(--paper); font-weight: 700; text-transform: uppercase;
@@ -345,7 +349,7 @@ function CanalCase({ spec, onAsk }) {
           <div className="cn-hero-actions">
             <a className="cn-cta" href={p.liveUrl || "https://www.canal.com.br/"}
               target="_blank" rel="noopener noreferrer" aria-label="open the live canal store">
-              shop now <span aria-hidden="true">↗</span>
+              visit the website <span aria-hidden="true">↗</span>
             </a>
           </div>
         </div>

@@ -61,8 +61,9 @@ const __BMT_STYLE = `
   .bmt .dark :focus-visible, .bmt .bt-hero :focus-visible { outline-color: var(--mint); }
 
   .bt-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
-  @media (max-width: 1100px){ .bt-wrap { padding-left: clamp(24px, 5vw, 72px); } }
+    padding: 0 clamp(24px, 9vw, 150px) 0 clamp(24px, 15vw, 240px); }
+  @media (max-width: 1100px){ .bt-wrap { padding-left: clamp(24px, 5vw, 72px);
+    padding-right: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
   .bt-rail { position: fixed; left: 36px; top: 50%; transform: translateY(-50%);
@@ -83,8 +84,16 @@ const __BMT_STYLE = `
   .bt-sec.paper { background: var(--paper); }
   .bt-sec.white { background: #fff; }
   .bt-sec.dark { background: var(--coal); color: var(--paper); }
+  /* the hairlines are the page's grid: they sit ON the content column's own edges,
+     so copy stops at a rule instead of being sliced by one. */
   .bt-sec .rule-v { position: absolute; top: 0; bottom: 0; width: 1px;
     background: var(--hair); pointer-events: none; }
+  .bt-sec .rule-v.at-text-start { left: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px)); }
+  .bt-sec .rule-v.at-text-end { right: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 9vw, 150px)); }
+  @media (max-width: 1100px){
+    .bt-sec .rule-v.at-text-start { left: clamp(24px, 5vw, 72px); }
+    .bt-sec .rule-v.at-text-end { right: clamp(24px, 5vw, 72px); }
+  }
   .bt-sec.dark .rule-v { background: var(--hair-inv); }
   @media (max-width: 760px){ .bt-sec .rule-v { display: none; } }
   .bt-chip { display: inline-block; font-family: var(--mono); font-size: 11px;
@@ -103,14 +112,16 @@ const __BMT_STYLE = `
   .bt-hero { position: relative; background: var(--coal); color: var(--paper);
     overflow: hidden; padding: 130px 0 104px; }
   .bt-hero .bt-wrap { position: relative; }
-  /* the mark, full blown: centered, bleeding past the viewport, sitting behind the words */
+  /* the mark, full blown and laid OVER the words, the way the shipped site frames its
+     hero with the ✕. mix-blend-mode keeps the copy readable through the stroke. */
   .bt-xmark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     font-family: var(--bmt-grot); font-weight: 700; line-height: 1;
-    font-size: min(118vh, 96vw); color: var(--mint); opacity: .16;
-    pointer-events: none; user-select: none; z-index: 0;
+    font-size: min(118vh, 96vw); color: var(--mint); opacity: .5;
+    mix-blend-mode: hard-light;
+    pointer-events: none; user-select: none; z-index: 3;
     animation: btXin 1.2s var(--ease-out) both; }
   @keyframes btXin { from { transform: translate(-50%, -50%) scale(.82); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1); opacity: .16; } }
+    to { transform: translate(-50%, -50%) scale(1); opacity: .5; } }
 
   /* the centered stack itself */
   .bt-hero-core { position: relative; z-index: 1; max-width: 62ch; margin: 0 auto;
@@ -211,10 +222,16 @@ const __BMT_STYLE = `
     letter-spacing: -0.01em; }
   .bt-dec-p { font-size: 15px; line-height: 1.68; margin: 0; opacity: .8; }
   @media (max-width: 560px){ .bt-decision { grid-template-columns: 48px 1fr; gap: 0 20px; } }
-  .bt-own { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px 24px; margin-bottom: 28px; }
+  .bt-own { position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 26px 24px; margin-bottom: 28px; }
   @media (max-width: 860px){ .bt-own { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px){ .bt-own { grid-template-columns: 1fr; } }
-  .bt-own-item { border-top: 2.5px solid var(--mint); padding-top: 16px; }
+  /* two paper rules run the full band, end to end, and the mint tops sit on top of
+     them: the grid keeps reading across the gaps between the columns. */
+  .bt-own-rule { position: absolute; left: 50%; width: 100vw; transform: translateX(-50%);
+    height: 1px; background: rgba(239,239,239,0.28); pointer-events: none; z-index: 0; }
+  .bt-own-item { position: relative; z-index: 1;
+    border-top: 2.5px solid var(--mint); padding-top: 16px; }
   .bt-own-item h4 { font-family: var(--bmt-grot); font-weight: 700; font-size: 16px; margin: 0 0 8px; }
   .bt-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .75; }
   .bt-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
@@ -382,7 +399,7 @@ function BmtaxCase({ spec, onAsk }) {
 
       {/* ── 01 · screens — the shipped work, composed big ── */}
       <section className="bt-sec paper" id="bt-screens">
-        <div className="rule-v" style={{ left: "12%" }}></div>
+        <div className="rule-v at-text-start"></div>
         <div className="bt-wrap">
           <span className="bt-chip">the screens · 01</span><span className="bt-count">6 captures</span>
           <h2 className="bt-h2">Blueprint, not brochure<span className="x">.</span></h2>
@@ -408,7 +425,7 @@ function BmtaxCase({ spec, onAsk }) {
 
       {/* ── 02 · process ── */}
       <section className="bt-sec white" id="bt-process">
-        <div className="rule-v" style={{ right: "16%" }}></div>
+        <div className="rule-v at-text-end"></div>
         <div className="bt-wrap">
           <span className="bt-chip">the process · 02</span>
           <h2 className="bt-h2">Precision as a design language<span className="x">.</span></h2>
@@ -455,7 +472,7 @@ function BmtaxCase({ spec, onAsk }) {
 
       {/* ── 03 · decisions + 04 · ownership (dark band) ── */}
       <section className="bt-sec dark" id="bt-decisions">
-        <div className="rule-v" style={{ left: "11%" }}></div>
+        <div className="rule-v at-text-start"></div>
         <div className="bt-wrap">
           <span className="bt-chip">the decisions · 03</span>
           <h2 className="bt-h2">Measured, verifiable, done<span className="x">.</span></h2>
@@ -474,6 +491,9 @@ function BmtaxCase({ spec, onAsk }) {
           <span className="bt-chip">ownership · 04</span>
           <h2 className="bt-h2" style={{ fontSize: "clamp(32px, 4.5vw, 64px)" }}>What I owned<span className="x">.</span></h2>
           <div className="bt-own">
+            {/* the two full-bleed rules, one per row of the grid */}
+            <div className="bt-own-rule" style={{ top: 0 }} aria-hidden="true"></div>
+            <div className="bt-own-rule" style={{ top: "calc(50% + 13px)" }} aria-hidden="true"></div>
             {BMT_OWN.map((f, i) => (
               <div className="bt-own-item" key={i}>
                 <h4>{f.h}</h4>

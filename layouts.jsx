@@ -56,6 +56,7 @@ const PROJECT_NAV = [
   { id: "espm", label: "espm.", q: "tell me about espm" },
   { id: "canal", label: "canal.", q: "tell me about canal" },
   { id: "baw", label: "baw.", q: "tell me about baw" },
+  { id: "bmtax", label: "bm tax.", q: "tell me about bmtax" },
 ];
 
 function NextProjectFooter({ currentId, onAsk }) {

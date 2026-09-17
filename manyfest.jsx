@@ -133,7 +133,8 @@ const __MNF_STYLE = `
     border: 1px solid currentColor; border-radius: 6px; padding: 8px 14px; margin-bottom: 30px; opacity: .85; }
   .mnf-h2 { font-family: var(--display); font-weight: 900; letter-spacing: -0.03em;
     font-size: clamp(44px, 7.5vw, 110px); line-height: 0.94; margin: 0 0 28px; max-width: 14ch; }
-  .mnf-sec-sub { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; max-width: 54ch;
+  /* body copy runs the full content column instead of stopping short */
+  .mnf-sec-sub { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; max-width: none;
     margin: 0 0 54px; opacity: .85; }
 
   /* ── pillars accordion ── */
@@ -229,7 +230,7 @@ const __MNF_STYLE = `
   .mnf-voice-card.vk { background: var(--ink); color: #fff; }        /* action/primary */
 
   /* ── components (dark band, live render) ── */
-  .mnf-live-note { font-size: 15px; line-height: 1.65; margin: 0 0 40px; max-width: 62ch; opacity: .9; }
+  .mnf-live-note { font-size: 15px; line-height: 1.65; margin: 0 0 40px; max-width: none; opacity: .9; }
   .mnf-live-note strong { color: #b48ade; /* brand, lightened for dark bg */ }
   .mnf-live-note .tok { font-family: var(--mono); font-size: 10.5px; color: #b48ade;
     background: rgba(128,64,207,0.16); border-radius: 5px; padding: 2px 6px; white-space: nowrap; }
@@ -288,32 +289,29 @@ const __MNF_STYLE = `
     animation: mnfSpin .8s linear infinite; }
   @keyframes mnfSpin { to { transform: rotate(360deg); } }
 
-  /* ── the shipped work: the canal/baw rhythm ──
-     big composed figures stacked in a wide container OUTSIDE the text column,
-     instead of the old horizontal scroller that hid half the screens off-canvas. */
-  .mnf-wide { max-width: 1500px; margin: 0 auto;
-    padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
-    gap: clamp(40px, 6vw, 84px); }
-  .mnf-band { border: 1.5px solid rgba(13,13,13,0.14); border-radius: 14px;
-    overflow: hidden; line-height: 0; background: #fff; }
-  /* the hairline border has to invert on the dark bands or it disappears */
-  .mnf-sec.dark .mnf-band { border-color: rgba(244,240,230,0.22); }
-  .mnf-band img { width: 100%; height: auto; display: block; }
-  /* phones: three across, two rows, big enough to actually read */
-  .mnf-trio { display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: clamp(20px, 3.5vw, 48px); }
-  @media (max-width: 900px){ .mnf-trio { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px){ .mnf-trio { grid-template-columns: 1fr; } }
-  .mnf-shot { margin: 0; }
+  /* ── in the wild: ManyMe screens on the system ──
+     the scroller sits OUTSIDE .mnf-wrap and spans the full viewport, so phones
+     run off the right edge instead of clipping at the content column. the inset
+     aligns the first phone with the column's left edge; generous vertical
+     padding keeps drop-shadows inside the scroll box instead of being cut. */
+  .mnf-shots { --shots-inset: calc(max((100vw - 1280px) / 2, 0px) + clamp(24px, 15vw, 240px));
+    display: flex; gap: 18px; overflow-x: auto;
+    padding: 16px var(--shots-inset) 58px var(--shots-inset);
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--shots-inset);
+    scrollbar-width: thin; scrollbar-color: rgba(13,13,13,0.25) transparent; }
+  @media (max-width: 1100px){ .mnf-shots { --shots-inset: clamp(24px, 5vw, 72px); } }
+  .mnf-shot { flex: 0 0 auto; width: clamp(200px, 21vw, 264px); scroll-snap-align: start; margin: 0; }
+  @media (max-width: 480px){
+    .mnf-shot { width: min(72vw, 240px); }
+    .mnf-shot:hover img { transform: none; } /* no hover lift on touch */
+  }
   .mnf-shot img { width: 100%; height: auto; display: block;
     filter: drop-shadow(0 18px 26px rgba(13,13,13,0.28)); /* hugs the phone silhouette */
     transition: transform .3s var(--ease-out); }
   .mnf-shot:hover img { transform: translateY(-5px); }
-  @media (max-width: 560px){ .mnf-shot:hover img { transform: none; } }
-  .mnf-shot figcaption, .mnf-band-cap { font-family: var(--mono); font-size: 9.5px;
-    letter-spacing: 0.12em; text-transform: uppercase; opacity: .6; margin-top: 12px;
-    line-height: 1.55; }
-  .mnf-band-cap { text-align: center; }
+  .mnf-shot figcaption { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.55; }
 
   /* ── color + typography sections (mirroring /color and /typography) ── */
   .mnf-chip.sm { font-size: 10px; padding: 6px 11px; margin-bottom: 18px; }
@@ -322,7 +320,7 @@ const __MNF_STYLE = `
     display: inline-block; vertical-align: baseline; margin-bottom: 30px; }
   .mnf-h3 { font-family: var(--display); font-weight: 900; letter-spacing: -0.025em;
     font-size: clamp(34px, 4.8vw, 68px); line-height: 0.98; margin: 0 0 18px; }
-  .mnf-sub-p { font-size: 16px; line-height: 1.62; opacity: .8; max-width: 54ch; margin: 0 0 44px; }
+  .mnf-sub-p { font-size: 16px; line-height: 1.62; opacity: .8; max-width: none; margin: 0 0 44px; }
   .mnf-sub-head { display: flex; align-items: center; margin: 74px 0 18px; }
   /* keep chip + count pill on one baseline: both carry a 30px bottom margin for
      standalone use, which a centered flex row turns into a vertical offset */
@@ -333,11 +331,11 @@ const __MNF_STYLE = `
     transition: max-height .6s var(--ease-out), opacity .4s ease; }
   .mnf-acc.open { max-height: 4200px; opacity: 1; }
   .mnf-acc-btn { font-family: var(--mono); font-size: 11px; font-weight: 700;
-    letter-spacing: 0.16em; text-transform: uppercase; color: #fff; background: var(--ink);
+    letter-spacing: 0.16em; text-transform: uppercase; color: #fff; background: var(--brand);
     border: none; border-radius: 999px; padding: 15px 26px; cursor: pointer;
     margin: 0 0 30px; display: inline-flex; align-items: center; gap: 10px;
     transition: transform .2s var(--ease-out), background .2s ease; }
-  .mnf-acc-btn:hover { transform: translateY(-2px); background: #242422; }
+  .mnf-acc-btn:hover { transform: translateY(-2px); background: #6b30b8; /* action/brand-hover */ }
   .mnf-acc-btn .arr { transition: transform .3s var(--ease-out); display: inline-block; }
   .mnf-acc-btn[aria-expanded="true"] .arr { transform: rotate(90deg); }
 
@@ -449,7 +447,7 @@ const __MNF_STYLE = `
   .mnf-own-item h4 { font-family: var(--display); font-weight: 800; font-size: 16px; margin: 0 0 8px; }
   .mnf-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .75; }
   .mnf-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
-    margin: 0 0 64px; line-height: 1.7; max-width: 88ch; }
+    margin: 0 0 64px; line-height: 1.7; max-width: none; }
 
   .mnf-agents { border: 1.5px solid #f4f0e6; border-radius: 16px; overflow: hidden; }
   .mnf-ag-head { border-bottom: 1.5px solid #f4f0e6; padding: 14px 22px;
@@ -1010,27 +1008,19 @@ function MnfstCase({ spec, onAsk }) {
       {/* ── 02 · the shipped work, up front: the canal/baw rhythm, big and stacked ── */}
       <section className="mnf-sec cream mnf-grid-bg" id="mnf-wild">
         <div className="mnf-wrap">
-          <span className="mnf-chip">the work, shipped · 02</span><span className="mnf-count">library + 6 screens</span>
+          <span className="mnf-chip">the work, shipped · 02</span><span className="mnf-count">6 screens</span>
           <h2 className="mnf-h2">The system, shipped.</h2>
           <p className="mnf-sec-sub">ManyMe is one of the two AI-native products built on Manyfest. Every screen below draws from the tokens, type voices, and patterns documented further down this page. These are explorations from the iOS vision work.</p>
         </div>
 
-        {/* wide container, outside the text column */}
-        <div className="mnf-wide">
-          <figure style={{ margin: 0 }}>
-            <div className="mnf-band">
-              <img src="manyfest-cover.png" alt="The Manyfest DS library cover: Manyfest DS, collection of foundations and components" loading="lazy" width="2000" height="1144" />
-            </div>
-            <figcaption className="mnf-band-cap">the library · manyfest ds · foundations and components</figcaption>
-          </figure>
-          <div className="mnf-trio">
-            {MNF_SHOTS.map(([src, cap, alt]) => (
-              <figure className="mnf-shot" key={src}>
-                <img src={src} alt={alt} loading="lazy" width="436" height="904" />
-                <figcaption>{cap}</figcaption>
-              </figure>
-            ))}
-          </div>
+        {/* full-bleed: outside the wrap so the strip overflows the right edge */}
+        <div className="mnf-shots">
+          {MNF_SHOTS.map(([src, cap, alt]) => (
+            <figure className="mnf-shot" key={src}>
+              <img src={src} alt={alt} loading="lazy" width="436" height="904" />
+              <figcaption>{cap}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 
@@ -1242,16 +1232,6 @@ function MnfstCase({ spec, onAsk }) {
               144 variants in the full set
             </div>
           </div>
-        </div>
-
-        {/* the same component in the file: the real variant matrix, composed big */}
-        <div className="mnf-wide" style={{ marginTop: "clamp(40px, 5vw, 72px)" }}>
-          <figure style={{ margin: 0 }}>
-            <div className="mnf-band">
-              <img src="manyfest-buttons.png" alt="The Button variant matrix in the Manyfest Figma file: three sizes across eight style rows and six state columns" loading="lazy" width="1616" height="2048" />
-            </div>
-            <figcaption className="mnf-band-cap">button in the file · three sizes · eight styles · six states</figcaption>
-          </figure>
         </div>
       </section>
 

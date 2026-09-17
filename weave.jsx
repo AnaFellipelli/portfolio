@@ -292,7 +292,8 @@ const __WV2_STYLE = `
     margin-bottom: 30px; opacity: .85; }
   .wv2-h2 { font-family: var(--wv-legend); font-weight: 700; letter-spacing: -0.02em;
     font-size: clamp(38px, 6.5vw, 92px); line-height: 0.98; margin: 0 0 28px; max-width: 16ch; }
-  .wv2-sec-sub { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; max-width: 56ch;
+  /* body copy runs the full content column instead of stopping short */
+  .wv2-sec-sub { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; max-width: none;
     margin: 0 0 52px; opacity: .85; }
   .wv2-context { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 64px; }
   @media (max-width: 760px){ .wv2-context { grid-template-columns: 1fr; gap: 22px; } }
@@ -316,7 +317,7 @@ const __WV2_STYLE = `
   .wv2-dec-p { font-size: 15px; line-height: 1.62; opacity: .8; margin: 0; max-width: 66ch; }
 
   /* ── the live system: theme × density viewport ── */
-  .wv2-live-note { font-size: 15.5px; line-height: 1.65; margin: 0 0 34px; max-width: 64ch; opacity: .92; }
+  .wv2-live-note { font-size: 15.5px; line-height: 1.65; margin: 0 0 34px; max-width: none; opacity: .92; }
   .wv2-live-note strong { color: var(--awb-4); }
   .wv2-live-note .tok { font-family: var(--wv-mono); font-size: 10.5px; color: var(--awb-4);
     background: rgba(56,171,223,0.12); border-radius: 2px; padding: 2px 6px; white-space: nowrap; }
@@ -760,8 +761,7 @@ function WeaveCase({ spec, onAsk }) {
           <span className="wv2-chip">the system, live · 03</span>
           <h2 className="wv2-h2">Nine combinations. Try all of them.</h2>
           <p className="wv2-live-note">
-            The components below run on Weave's own theme data
-            (<span className="tok">@weave-design/theme-data</span>). Pick a theme and a density:
+            The components below run on Weave's own theme data. Pick a theme and a density:
             the colors, buttons, and rows recalculate the same way they do inside AutoCAD.
           </p>
 
@@ -895,7 +895,7 @@ function WeaveCase({ spec, onAsk }) {
           <div className="wv2-results">
             <div className="wv2-result"><div className="rn">14</div><div className="rl">core components in the may 2025 release, adopted across autocad, fusion, and revit</div></div>
             <div className="wv2-result"><div className="rn">9</div><div className="rl">theme × density combinations, one semantic token layer, zero component forks</div></div>
-            <div className="wv2-result"><div className="rn"><span className="tbd">TBD</span></div><div className="rl">teams adopting without designer support · the number is real, pending clearance to publish</div></div>
+            <div className="wv2-result"><div className="rn">4<span className="acc">+</span></div><div className="rl">product teams adopting without designer support: autocad, autocad web, maya, fusion</div></div>
           </div>
 
           <div className="wv2-context" style={{ marginBottom: 48, gridTemplateColumns: "1fr" }}>
