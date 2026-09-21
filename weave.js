@@ -754,6 +754,12 @@ const __WV2_STYLE = `
   .wv2-deep-body.flip .wv2-deep-prose { order: 2; }
   .wv2-deep-body.flip .wv2-deep-side { order: 1; }
   @media (max-width: 860px){
+    /* .flip's own two-class rule above (1.1fr 1fr) outranks the plain
+       .wv2-deep-body mobile override two blocks up, so autocomplete — the
+       only dive with "flip" — was the one dive still rendering its clip
+       and prose side by side on mobile instead of stacked. same specificity
+       here, later in the sheet, wins it back to a single column. */
+    .wv2-deep-body.flip { grid-template-columns: 1fr; }
     .wv2-deep-body.flip .wv2-deep-prose { order: 1; }
     .wv2-deep-body.flip .wv2-deep-side { order: 2; }
   }
