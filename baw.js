@@ -398,14 +398,14 @@ function BawCase({
   })), /*#__PURE__*/React.createElement("figure", {
     className: "bw-full",
     style: {
-      background: "#b7a3de"
+      background: "#282828"
     }
   }, /*#__PURE__*/React.createElement("img", {
-    src: "images-baw/BAW3.jpg",
-    alt: "Desktop search overlay with autocomplete suggestions and product results, overlapped with the cart drawer showing the comprar checkout band, on a lavender background",
+    src: "images-baw/BAW3.jpg?v=2",
+    alt: "Three mobile screens in phone frames on a charcoal background: the street-photography home hero reading 'we make noise not fashion', the camisetas category page with a 1032-product grid and discount tags, and a t-shirt product page with colorway swatches",
     loading: "lazy",
-    width: "2400",
-    height: "1800"
+    width: "1200",
+    height: "900"
   })), /*#__PURE__*/React.createElement("figure", {
     className: "bw-full",
     style: {

@@ -363,8 +363,11 @@ function BawCase({ spec, onAsk }) {
           <img src="images-baw/baw2.jpg" alt="Two tilted mobile screens in phone frames: the search overlay with autocomplete suggestions and a product results grid, overlapping the street-photography home hero reading 'we make noise not fashion' with the cart drawer and checkout total open on top, on a lavender background" loading="lazy" width="2400" height="1800" />
         </figure>
 
-        <figure className="bw-full" style={{ background: "#b7a3de" }}>
-          <img src="images-baw/BAW3.jpg" alt="Desktop search overlay with autocomplete suggestions and product results, overlapped with the cart drawer showing the comprar checkout band, on a lavender background" loading="lazy" width="2400" height="1800" />
+        {/* BAW3 was re-uploaded with new artwork under the same filename. images are served
+            `immutable, max-age=1y` (see vercel.json), so browsers keep the old bytes forever —
+            the ?v=2 query is the cache bust. bump it again on any future re-upload. */}
+        <figure className="bw-full" style={{ background: "#282828" }}>
+          <img src="images-baw/BAW3.jpg?v=2" alt="Three mobile screens in phone frames on a charcoal background: the street-photography home hero reading 'we make noise not fashion', the camisetas category page with a 1032-product grid and discount tags, and a t-shirt product page with colorway swatches" loading="lazy" width="1200" height="900" />
         </figure>
 
         <figure className="bw-full" style={{ background: "#d6d7d2" }}>
