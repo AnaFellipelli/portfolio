@@ -114,6 +114,49 @@ const WV_DENSITY = {
 /* the four component deep dives (data lives in PROJECTS) */
 const WEAVE_DEEP_DIVES = ["panel", "datagrid", "autocomplete", "skeleton"];
 
+/* ---------- the data grid specification, exported from the weave figma library ----------
+   nine documentation pages, in the order engineering reads them: what a row is, what it's
+   made of, how it behaves, then the four features, then the don'ts. every image below is a
+   straight export of the delivered artboard, not a redraw. */
+const WV_SPEC = [
+  { id: "row", tab: "row", src: "weave-doc-row.png", w: 800, h: 503,
+    title: "Row",
+    note: "The unit everything else hangs off, defined before any state, so every later page inherits one definition instead of restating it.",
+    settles: ["what counts as a row", "which content types a row can hold"] },
+  { id: "anatomy", tab: "anatomy", src: "weave-doc-anatomy.png", w: 800, h: 763,
+    title: "Row anatomy",
+    note: "Four parts, three of them optional, each numbered. An engineer can name the thing they are building without a designer in the room.",
+    settles: ["drag handle", "check box", "cell", "action button"] },
+  { id: "states", tab: "states", src: "weave-doc-states.png", w: 800, h: 1314,
+    title: "States",
+    note: "Default, hover, pressed, focus. Twice over, because a selected row does not behave like an unselected one, and the difference is where teams used to diverge.",
+    settles: ["8 row states", "selected vs unselected"] },
+  { id: "cells", tab: "cell states", src: "weave-doc-cellstates.png", w: 770, h: 496,
+    title: "Cell states",
+    note: "The cell runs its own state machine: selected, focus, edit, and the combinations that only exist where a row and a column cross.",
+    settles: ["7 cell states", "focus + editing overlap"] },
+  { id: "grouping", tab: "row grouping", src: "weave-doc-grouping.png", w: 800, h: 795,
+    title: "Row grouping",
+    note: "Groups inside groups, second level included. Only the caret opens one, because plus and minus already belong to master detail.",
+    settles: ["nesting depth", "caret is the only affordance"] },
+  { id: "master", tab: "master detail", src: "weave-doc-masterdetail.png", w: 800, h: 1364,
+    title: "Master detail",
+    note: "A row expands into a panel. Scroll sideways and the rows move while the detail stays centred: the kind of behavior you only find by prototyping it.",
+    settles: ["multiple details open at once", "pin the operator column"] },
+  { id: "selection", tab: "selection", src: "weave-doc-selection.png", w: 800, h: 1978,
+    title: "Selection",
+    note: "Click, ctrl click, shift range, check box. Written as the four things a person does, not the four booleans in the props table.",
+    settles: ["single + multiple", "range", "check box parity"] },
+  { id: "editing", tab: "editing", src: "weave-doc-editing.png", w: 766, h: 2230,
+    title: "Editing",
+    note: "Cell editing and row editing, each crossed with selection, plus multi edit. The matrix that made the engineering estimate honest.",
+    settles: ["cell vs row edition", "editing while selected", "multi edit"] },
+  { id: "practices", tab: "best practices", src: "weave-doc-practices.png", w: 800, h: 1070,
+    title: "Best practices",
+    note: "The don'ts. Caret for grouping, plus and minus for master detail, never crossed. Most of the fragmentation I was cleaning up started as a swapped icon.",
+    settles: ["icon ownership", "what not to nest"] },
+];
+
 /* what I owned */
 const WV_OWN = [
   { h: "Component core", p: "14 core components shipped in the May 2025 release, each with complete specs, states, and Figma documentation, adopted across AutoCAD, Fusion, and Revit." },
@@ -174,7 +217,7 @@ const __WV2_STYLE = `
 
   /* content column — leaves room for the fixed rail */
   .wv2-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .wv2-wrap { padding-left: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
@@ -431,29 +474,77 @@ const __WV2_STYLE = `
   .wv2-sec.darkgray .wv2-acc-btn:focus-visible, .wv2-sec.darkblue .wv2-acc-btn:focus-visible,
   .wv2-sec.deep .wv2-acc-btn:focus-visible { box-shadow: 0 0 0 2px #1a1f25, 0 0 0 4px #38abdf; }
 
-  /* ── the documentation band ── */
-  .wv2-docs { margin-top: 58px; }
-  .wv2-docs .wv2-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px) !important; }
+  /* ── the specification: a tabbed reader over the real exported artboards ── */
+  .wv2-docs { margin-top: 62px; }
   .wv2-docs-head { margin-bottom: 14px; }
-  .wv2-docs-lede { font-size: 15.5px; line-height: 1.65; opacity: .85; margin: 0 0 30px; }
-  .wv2-docs-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-    margin-top: 26px; }
-  @media (max-width: 860px){ .wv2-docs-trio { grid-template-columns: 1fr; } }
-  .wv2-shot { margin: 0; }
-  .wv2-shot.wide { max-width: 1600px; margin: 0 auto;
-    padding: 0 clamp(16px, 3vw, 40px); }
-  .wv2-shot-frame { border: 1px solid rgba(60,60,60,0.16); border-radius: 4px;
-    overflow: hidden; line-height: 0; background: #fff; }
-  .wv2-shot-frame img { width: 100%; height: auto; display: block; }
-  .wv2-shot-ph { border: 1.5px dashed rgba(60,60,60,0.28); border-radius: 4px;
-    min-height: 200px; display: grid; place-items: center; padding: 26px; text-align: center;
-    font-family: var(--wv-mono); font-size: 10.5px; letter-spacing: 0.08em; line-height: 2;
-    opacity: .6; }
-  .wv2-shot.wide .wv2-shot-ph { min-height: 340px; }
-  .wv2-shot figcaption { font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em;
-    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.6; }
+  .wv2-docs-lede { font-size: 15.5px; line-height: 1.65; opacity: .85; margin: 0 0 30px;
+    max-width: 78ch; }
   .wv2-chip.sm { font-size: 10px; padding: 6px 11px; }
+
+  .wv2-spec-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px; }
+  .wv2-spec-tab { font-family: var(--wv-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
+    background: transparent; border: 1px solid rgba(128,128,128,0.45); border-radius: 2px;
+    padding: 9px 13px; cursor: pointer; white-space: nowrap;
+    transition: box-shadow .15s ease, border-color .15s ease, background .15s ease; }
+  .wv2-spec-tab:hover { box-shadow: 0 0 0 2px rgba(128,128,128,0.15); }
+  .wv2-spec-tab:focus-visible { outline: none; border-color: #0696d7;
+    box-shadow: 0 0 0 2px rgba(6,150,215,0.35); }
+  .wv2-spec-tab[aria-selected="true"] { background: rgba(6,150,215,0.14);
+    border-color: rgba(6,150,215,0.55); color: var(--awb-7); }
+
+  .wv2-spec-stage { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 980px){ .wv2-spec-stage { grid-template-columns: 1fr; gap: 22px; } }
+
+  .wv2-board { border: 1px solid rgba(60,60,60,0.16); border-radius: 4px; overflow: hidden;
+    background: var(--white); }
+  .wv2-board-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 9px 12px; background: var(--paper); border-bottom: 1px solid rgba(60,60,60,0.12);
+    opacity: .65; }
+  .wv2-board-scroll { max-height: 620px; overflow-y: auto; overscroll-behavior: contain;
+    background: var(--white); scrollbar-width: thin; }
+  .wv2-board-btn { display: block; width: 100%; padding: 0; border: 0; background: none;
+    cursor: zoom-in; line-height: 0; }
+  .wv2-board-btn:focus-visible { outline: 2px solid #0696d7; outline-offset: -2px; }
+  .wv2-board-btn img { width: 100%; height: auto; display: block; }
+  .wv2-board-foot { display: flex; justify-content: space-between; gap: 12px;
+    font-family: var(--wv-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 8px 12px; border-top: 1px solid rgba(60,60,60,0.12); opacity: .5; }
+
+  .wv2-spec-side h4 { font-family: var(--wv-legend); font-weight: 700; letter-spacing: -0.015em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: 0 0 12px; }
+  .wv2-spec-side p { font-size: 15px; line-height: 1.66; opacity: .85; margin: 0 0 22px; }
+  .wv2-spec-settles { list-style: none; margin: 0 0 24px; padding: 0; }
+  .wv2-spec-settles li { font-family: var(--wv-mono); font-size: 10.5px; letter-spacing: 0.06em;
+    text-transform: uppercase; opacity: .7; padding: 9px 0 9px 20px; position: relative;
+    border-top: 1px solid rgba(60,60,60,0.1); }
+  .wv2-spec-settles li::before { content: "·"; position: absolute; left: 4px; color: var(--awb);
+    font-size: 15px; line-height: 1.3; }
+  .wv2-spec-count { font-family: var(--wv-mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; opacity: .5; }
+
+  /* the working spread, kept as one tall scroll so the volume reads as volume */
+  .wv2-spread { margin-top: 44px; }
+  .wv2-spread .wv2-board-scroll { max-height: 760px; }
+  .wv2-spec-cap { font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.7; }
+
+  /* lightbox */
+  .wv2-lb { position: fixed; inset: 0; z-index: 900; background: rgba(26,31,38,0.9);
+    overflow: auto; overscroll-behavior: contain; padding: 64px clamp(16px, 4vw, 56px) 56px;
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .wv2-lb img { display: block; width: 100%; max-width: 1180px; height: auto; margin: 0 auto;
+    background: #fff; border-radius: 4px; box-shadow: 0 24px 70px rgba(0,0,0,0.45); }
+  .wv2-lb-close { position: fixed; top: 18px; right: clamp(16px, 4vw, 56px);
+    font-family: var(--wv-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #f5f5f5; background: transparent;
+    border: 1px solid rgba(188,211,238,0.5); border-radius: 2px; padding: 10px 16px; cursor: pointer; }
+  .wv2-lb-close:hover { border-color: #38abdf; }
+  .wv2-lb-close:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(56,171,223,0.5); }
+  .wv2-lb-cap { position: fixed; top: 22px; left: clamp(16px, 4vw, 56px);
+    font-family: var(--wv-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(245,245,245,0.7); }
 
   /* ── deep dives ── */
   .wv2-deep { border-top: 1px solid rgba(60,60,60,0.15); padding: 44px 0 28px; }
@@ -552,23 +643,104 @@ function WvScrollTo(id) {
 }
 
 /* one component deep dive — header always visible, dense material behind "open →" */
-/* a weave figure: shows the export when it's in the folder, and a labeled frame
-   while it isn't, so the band keeps its shape mid-upload */
-function WvShot({ src, cap, alt, wide }) {
-  const [missing, setMissing] = useStateWv(false);
+
+/* an artboard: the export inside a frame that names it, the way it sits in figma.
+   clicking opens it full size, because a spec page is meant to be read, not glanced at. */
+function WvBoard({ src, alt, label, size, foot, onZoom, className }) {
   return (
-    <figure className={"wv2-shot" + (wide ? " wide" : "")}>
-      {missing ? (
-        <div className="wv2-shot-ph" role="img" aria-label={alt}>
-          <span>export pending<br /><b>{src}</b></span>
-        </div>
-      ) : (
-        <div className="wv2-shot-frame">
-          <img src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
+    <div className={"wv2-board" + (className ? " " + className : "")}>
+      <div className="wv2-board-bar">
+        <span>{label}</span>
+        <span>{size}</span>
+      </div>
+      <div className="wv2-board-scroll">
+        <button type="button" className="wv2-board-btn" onClick={onZoom}
+          aria-label={"open " + label + " full size"}>
+          <img src={src} alt={alt} loading="lazy" />
+        </button>
+      </div>
+      {foot && (
+        <div className="wv2-board-foot">
+          <span>{foot}</span>
+          <span>click to enlarge</span>
         </div>
       )}
-      <figcaption>{cap}</figcaption>
-    </figure>
+    </div>
+  );
+}
+
+/* the spec reader: nine delivered pages, one at a time, arrow keys move between them */
+function WvSpecGallery({ onZoom }) {
+  const [active, setActive] = useStateWv(0);
+  const tabsRef = useRefWv(null);
+  const s = WV_SPEC[active];
+
+  const onKey = (e) => {
+    const last = WV_SPEC.length - 1;
+    let next = null;
+    if (e.key === "ArrowRight") next = active === last ? 0 : active + 1;
+    else if (e.key === "ArrowLeft") next = active === 0 ? last : active - 1;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = last;
+    if (next === null) return;
+    e.preventDefault();
+    setActive(next);
+    const el = tabsRef.current && tabsRef.current.children[next];
+    if (el) el.focus();
+  };
+
+  return (
+    <div className="wv2-spec">
+      <div className="wv2-spec-tabs" role="tablist" aria-label="data grid specification pages"
+        ref={tabsRef} onKeyDown={onKey}>
+        {WV_SPEC.map((p, i) => (
+          <button key={p.id} type="button" className="wv2-spec-tab" role="tab"
+            id={"wv2-spec-tab-" + p.id} aria-selected={i === active}
+            aria-controls="wv2-spec-panel" tabIndex={i === active ? 0 : -1}
+            onClick={() => setActive(i)}>
+            {p.tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="wv2-spec-stage" role="tabpanel" id="wv2-spec-panel"
+        aria-labelledby={"wv2-spec-tab-" + s.id}>
+        <WvBoard src={s.src} alt={"The " + s.title + " page of the Weave Data Grid specification"}
+          label={"weave / data grid / " + s.title.toLowerCase()}
+          size={s.w + " × " + s.h}
+          foot={"page " + (active + 1) + " of " + WV_SPEC.length}
+          onZoom={() => onZoom({ src: s.src, cap: "weave / data grid / " + s.title.toLowerCase() })} />
+
+        <div className="wv2-spec-side">
+          <h4>{s.title}</h4>
+          <p>{s.note}</p>
+          <ul className="wv2-spec-settles">
+            {s.settles.map((x) => <li key={x}>{x}</li>)}
+          </ul>
+          <span className="wv2-spec-count">{active + 1} / {WV_SPEC.length} · exported from the weave figma library</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* full-size reader for any artboard */
+function WvLightbox({ shot, onClose }) {
+  useEffectWv(() => {
+    if (!shot) return;
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [shot]);
+  if (!shot) return null;
+  return (
+    <div className="wv2-lb" role="dialog" aria-modal="true" aria-label={shot.cap} onClick={onClose}>
+      <span className="wv2-lb-cap">{shot.cap}</span>
+      <button type="button" className="wv2-lb-close" onClick={onClose} autoFocus>close esc</button>
+      <img src={shot.src} alt={shot.cap} onClick={(e) => e.stopPropagation()} />
+    </div>
   );
 }
 
@@ -635,6 +807,7 @@ function WeaveCase({ spec, onAsk }) {
   const [theme, setTheme] = useStateWv("darkBlue");
   const [density, setDensity] = useStateWv("medium");
   const [deepOpen, setDeepOpen] = useStateWv(() => new Set());
+  const [zoom, setZoom] = useStateWv(null);
 
   useEffectWv(() => {
     document.body.classList.add("wv-mode");
@@ -693,13 +866,14 @@ function WeaveCase({ spec, onAsk }) {
   return (
     <div className="wv2">
       <style>{__WV2_STYLE}</style>
+      <WvLightbox shot={zoom} onClose={() => setZoom(null)} />
 
       {/* rail */}
       <nav className="wv2-rail" aria-label="sections">
         <button onClick={() => WvScrollTo("wv2-top")}>overview</button>
         <button onClick={() => WvScrollTo("wv2-story")}>the story</button>
         <button onClick={() => WvScrollTo("wv2-own")}>ownership</button>
-        <button onClick={() => WvScrollTo("wv2-live")}>the system, live</button>
+        <button onClick={() => WvScrollTo("wv2-live")}>the system</button>
         <button onClick={() => WvScrollTo("wv2-components")}>components</button>
         <button onClick={() => WvScrollTo("wv2-access")}>accessibility</button>
         <button onClick={() => WvScrollTo("wv2-results")}>results</button>
@@ -792,10 +966,10 @@ function WeaveCase({ spec, onAsk }) {
         </div>
       </section>
 
-      {/* ── 03 · the system, live ── */}
+      {/* ── 03 · the system ── */}
       <section className="wv2-sec darkgray" id="wv2-live">
         <div className="wv2-wrap">
-          <span className="wv2-chip">the system, live · 03</span>
+          <span className="wv2-chip">the system · 03</span>
           <h2 className="wv2-h2">Nine combinations. Try all of them.</h2>
           <p className="wv2-live-note">
             The components below run on Weave's own theme data. Pick a theme and a density:
@@ -890,32 +1064,34 @@ function WeaveCase({ spec, onAsk }) {
         </div>
 
         {/* ── the documentation itself. the case claims engineers shipped without a
-            designer in the room; this is the artifact that made that true, so the
-            whole spread goes in at full bleed (the volume IS the argument) and the
-            readable crops sit under it. ── */}
-        <div className="wv2-docs">
-          <div className="wv2-wrap" style={{ padding: 0 }}>
+            designer in the room; these are the artifacts that made that true. nine
+            delivered pages of the data grid spec, readable one at a time, plus the
+            working spread behind them. ── */}
+        <div className="wv2-wrap">
+          <div className="wv2-docs">
             <div className="wv2-docs-head">
               <span className="wv2-chip sm">the documentation</span>
             </div>
             <p className="wv2-docs-lede">
-              One component's spec: anatomy, surface, resizing, grippers, content, header,
-              footer, tabs, and every placement (floating, docked, fixed, side, dock, tables
-              and tiles inside panels). This is what "no designer required in the room" looks
-              like as an artifact.
+              Nine pages of the Data Grid spec, straight out of the Weave library: what a row is,
+              what it's made of, how it behaves, then the four features I owned, then the don'ts.
+              This is what "no designer required in the room" looks like as an artifact.
             </p>
-          </div>
-          <WvShot src="weave-doc-panel-spread.png" wide
-            cap="panel · the full specification page, as delivered to engineering"
-            alt="The complete Panel documentation page: dozens of annotated artboards covering anatomy, states and placements" />
-          <div className="wv2-wrap" style={{ padding: 0 }}>
-            <div className="wv2-docs-trio">
-              <WvShot src="weave-doc-anatomy.png" cap="anatomy · every part named and measured"
-                alt="The Panel anatomy artboard, with each region numbered and described" />
-              <WvShot src="weave-doc-docking.png" cap="docking · the behavior written as steps"
-                alt="The Panel docking documentation, showing the drag-to-dock behavior step by step" />
-              <WvShot src="weave-doc-tabs.png" cap="tabs · parent, content, horizontal, vertical"
-                alt="The Panel tabs documentation covering parent tabs, content tabs and their orientations" />
+
+            <WvSpecGallery onZoom={setZoom} />
+
+            <div className="wv2-spread">
+              <WvBoard src="weave-doc-spread.png"
+                alt="The working specification spread: focus and active states across checkboxes, text input, numeric input, date, dropdowns and icon buttons"
+                label="weave / data grid / focus and active states"
+                size="1560 × 2856"
+                foot="the working spread"
+                onZoom={() => setZoom({ src: "weave-doc-spread.png", cap: "weave / data grid / focus and active states" })} />
+              <p className="wv2-spec-cap">
+                the proposal spread behind those pages · keyboard navigation resolved per content
+                type, every cell state drawn twice (unselected and selected) before a single one
+                shipped
+              </p>
             </div>
           </div>
         </div>

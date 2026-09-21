@@ -35,7 +35,7 @@ function ProjectCard({ id, onAsk }) {
   const thumbSrc = (p.items || []).find((it) => it.src);
   const showImg = thumbSrc && !broken;
   return (
-    <div className="proj-card" onClick={() => onAsk && onAsk("tell me about " + p.name.replace(".", ""))}>
+    <div className="proj-card" onClick={() => onAsk && onAsk(p.ask || ("tell me about " + p.name.replace(/\.$/, "")))}>
       <div className={"proj-thumb" + (showImg ? " has-img" : "")}>
         {showImg
           ? <img src={thumbSrc.src} alt="" loading="lazy" onError={() => setBroken(true)} />
@@ -48,34 +48,51 @@ function ProjectCard({ id, onAsk }) {
   );
 }
 
-/* ---------- next-project footer (shared across every project/case page) ---------- */
-const PROJECT_NAV = [
-  { id: "manychat-ds", label: "manyfest.", q: "tell me about manychat" },
-  { id: "weave", label: "weave.", q: "open the full weave case" },
-  { id: "releve", label: "(r)elevē.", q: "tell me about releve" },
-  { id: "espm", label: "espm.", q: "tell me about espm" },
-  { id: "canal", label: "canal.", q: "tell me about canal" },
-  { id: "baw", label: "baw.", q: "tell me about baw" },
-  { id: "bmtax", label: "bm tax.", q: "tell me about bmtax" },
-];
+/* ---------- next-project footer (shared across every project/case page) ----------
+   the nav order lives here, but every label and every question is read straight
+   off PROJECTS, so a footer link can never drift from the project it points at.
+   (it used to carry its own hand-typed `q` per row — one typo away from a dead
+   link, and exactly how bm tax got stranded.) */
+const PROJECT_NAV_ORDER = ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"];
+
+const PROJECT_NAV = PROJECT_NAV_ORDER
+  .filter((id) => typeof PROJECTS !== "undefined" && PROJECTS[id])
+  .map((id) => ({
+    id,
+    label: PROJECTS[id].name,
+    q: PROJECTS[id].ask || ("tell me about " + PROJECTS[id].name.replace(/\.$/, "")),
+  }));
 
 function NextProjectFooter({ currentId, onAsk }) {
   const idx = PROJECT_NAV.findIndex((p) => p.id === currentId);
-  if (idx === -1) return null;
+  if (idx === -1 || PROJECT_NAV.length < 2) return null;
   const next = PROJECT_NAV[(idx + 1) % PROJECT_NAV.length];
   const others = PROJECT_NAV.filter((p) => p.id !== currentId && p.id !== next.id);
+  const go = (q) => { if (onAsk) onAsk(q); };
   return (
     <div className="proj-footer">
       <span className="pf-label">next project</span>
-      <button className="pf-next-link" onClick={() => onAsk && onAsk(next.q)}>
+      <button className="pf-next-link" onClick={() => go(next.q)}>
         {next.label}<span className="arr">→</span>
       </button>
       <div className="pf-all">
         <span className="pf-label">or jump to</span>
         <div className="pf-pills">
           {others.map((p) => (
-            <button className="pf-pill" key={p.id} onClick={() => onAsk && onAsk(p.q)}>{p.label}</button>
+            <button className="pf-pill" key={p.id} onClick={() => go(p.q)}>{p.label}</button>
           ))}
+          <button className="pf-pill" onClick={() => go("show me your work")}>all work →</button>
+        </div>
+      </div>
+      {/* every case page used to dead-end at the project list. these reuse the
+          pf-pill class on purpose, so each case page's dark override styles them
+          for free. */}
+      <div className="pf-all pf-reach">
+        <span className="pf-label">or reach me</span>
+        <div className="pf-pills">
+          <button className="pf-pill" onClick={() => go("are you open to work")}>let's talk →</button>
+          <a className="pf-pill" href="mailto:anacristinafellipelli@gmail.com">email ↗</a>
+          <a className="pf-pill" href="https://www.linkedin.com/in/ana-fellipelli/" target="_blank" rel="noreferrer noopener">linkedin ↗</a>
         </div>
       </div>
     </div>

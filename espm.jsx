@@ -40,13 +40,6 @@ const __ESPM_STYLE = `
   body.espm-mode .atmosphere, body.espm-mode .grain { display: none; }
   body.espm-mode { background: #1f1f1f; /* floor — sampled espm-4 background */ }
 
-  /* header protection: pure backdrop blur (no bar); items adapt to the band underneath */
-  body.espm-mode .topbar::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    -webkit-mask-image: linear-gradient(#000 60%, transparent);
-    mask-image: linear-gradient(#000 60%, transparent);
-  }
   body.espm-mode .topbar > * { position: relative; z-index: 1; }
   body.espm-mode .topbar .logo { color: #1f1f1f; transition: color .3s ease; }
   body.espm-mode .nav-link { color: rgba(31,31,31,0.6); transition: color .3s ease; }
@@ -81,7 +74,7 @@ const __ESPM_STYLE = `
   .espmx .light :focus-visible { outline-color: var(--red); }
 
   .es-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .es-wrap { padding-left: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
@@ -126,12 +119,6 @@ const __ESPM_STYLE = `
     background: radial-gradient(circle at 35% 35%, var(--magenta), var(--violet) 60%, transparent 75%); }
   .es-blob.b2 { width: 420px; height: 420px; left: -160px; bottom: -180px; opacity: .45;
     background: radial-gradient(circle at 60% 40%, var(--tick), var(--blue) 65%, transparent 80%); }
-  .es-ghost { position: absolute; top: 90px; left: 0; white-space: nowrap;
-    font-family: var(--espm-display); font-weight: 900; text-transform: uppercase;
-    font-size: clamp(120px, 24vw, 340px); line-height: 1; letter-spacing: -0.02em;
-    color: rgba(255,255,255,0.05); pointer-events: none; user-select: none;
-    display: flex; width: max-content; animation: espmGhost 60s linear infinite; }
-  @keyframes espmGhost { to { transform: translateX(-50%); } }
   .es-hero .es-wrap { position: relative; }
   .es-back { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--paper); background: rgba(255,255,255,0.08);
@@ -147,7 +134,8 @@ const __ESPM_STYLE = `
   /* keep the key art proportionate to the text column: cap by viewport height
      so both phones always sit fully inside the hero */
   .es-hero-shot { margin: 0; line-height: 0; display: flex; justify-content: center; }
-  .es-hero-shot img { width: 100%; max-width: 520px; height: auto;
+  /* no cap: the phones fill their grid column */
+  .es-hero-shot img { width: 100%; max-width: none; height: auto;
     max-height: min(68vh, 640px); object-fit: contain; display: block; }
   @media (max-width: 1024px){ .es-hero-shot { max-width: 560px; justify-self: center; width: 100%; } }
   .es-h1 { font-family: var(--espm-display); font-weight: 900; letter-spacing: -0.02em;
@@ -171,19 +159,15 @@ const __ESPM_STYLE = `
   .es-hero-chip b { color: var(--paper); font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.1em; font-size: 9px; margin-right: 6px; }
 
-  /* ── marquee divider — the calendar's selected-day gradient, stretched into a band ── */
-  .es-marquee-wrap { overflow: hidden; color: var(--paper); padding: 14px 0;
-    background: linear-gradient(90deg, var(--pill-a), var(--pill-b)); /* sampled espm-3 · day pill */ }
-  .es-marquee { display: flex; white-space: nowrap; width: max-content;
-    animation: espmTicker 24s linear infinite; }
-  .es-marquee-item { font-family: var(--espm-quirk); font-weight: 700; font-size: 13px;
-    letter-spacing: 0.3em; text-transform: uppercase; padding-right: 8px; }
-  @keyframes espmTicker { to { transform: translateX(-50%); } }
 
   /* ── screens — the UI showcase: everything visible, composed big ── */
-  .es-wide { max-width: 1500px; margin: 0 auto;
+  .es-wide { max-width: 1760px; margin: 0 auto;
     padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
     gap: clamp(40px, 6vw, 88px); }
+  /* the section rail is position:fixed at the viewport's left edge and only
+     exists above 1100px, so wide media has to start clear of it instead of
+     running underneath the labels */
+  @media (min-width: 1101px) { .es-wide { padding-left: 212px; } }
   /* captures ship inside their own device frames with transparency — frameless */
   .es-shot { border: none; background: transparent; line-height: 0; }
   .es-shot img { width: 100%; height: auto; display: block; }
@@ -193,6 +177,136 @@ const __ESPM_STYLE = `
   .es-duo { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 56px);
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .es-duo { grid-template-columns: 1fr; } }
+
+  /* ── screens, take two — full-bleed bands, same configuration as the manyfest
+     case (.mnf-full): each capture runs the full viewport, the band's own left
+     padding clears the fixed rail, and the band's background is sampled from
+     that capture's own canvas so there's no seam between page and photo. ── */
+  .es-full { margin-top: 12px; margin-bottom: 0;
+    padding: 0;
+    padding-left: max(212px, clamp(24px, 15vw, 240px));
+    margin-left: calc(-1 * (max((100vw - 1280px) / 2, 0px) + max(212px, clamp(24px, 15vw, 240px))));
+    margin-right: calc(-1 * (max((100vw - 1280px) / 2, 0px) + clamp(24px, 5vw, 72px))); }
+  .es-full + .es-full { margin-top: 0; }
+  @media (max-width: 1100px){ .es-full { padding-left: 0;
+    margin-left: calc(-1 * clamp(24px, 5vw, 72px));
+    margin-right: calc(-1 * clamp(24px, 5vw, 72px)); } }
+  /* sized down to fit a desktop viewport: these are 3D device-mockup renders
+     (roughly 4:3, or a wide sitemap), not fixed-aspect screenshots, so full
+     width alone made the phone renders taller than the viewport. capping
+     height and letting width follow keeps them centered inside the band
+     instead of forcing a giant scroll. */
+  .es-full img { display: block; width: auto; height: auto;
+    max-width: 100%; max-height: min(640px, 68vh); margin: 0 auto; border: 0; }
+
+  /* ── the remap sub-block, sitting inside the process section: a short
+     sub-head + argument ahead of the two sitemaps, so "architecture, then
+     skin" isn't just a caption but an actual explained decision. ── */
+  .es-sub-head { display: flex; align-items: center; gap: 12px; margin: 64px 0 18px; }
+  .es-sub-head .es-chip.sm { font-size: 10px; padding: 6px 12px; margin-bottom: 0; }
+  .es-h3 { font-family: var(--espm-display); font-weight: 900; letter-spacing: -0.015em;
+    text-transform: uppercase; font-size: clamp(24px, 3vw, 34px); line-height: 1.05;
+    margin: 0 0 16px; max-width: 20ch; }
+  .es-remap-p { font-size: clamp(15px, 1.4vw, 17px); line-height: 1.65; opacity: .85;
+    margin: 0 0 8px; max-width: 68ch; }
+
+  /* ── native sitemaps — real tree DIAGRAMS, drawn top-down exactly like the
+     source flows: rounded boxes in rows, joined by drop lines, a horizontal
+     distribution bar across each set of siblings, and arrowheads into every
+     child. all of it is nested <ul>s with the connectors painted by
+     ::before / ::after — no image, no SVG, no fixed-size canvas, so it
+     reflows and never gets cut off by the page. two connector idioms, both
+     taken from the source flows: .es-vt-row is the standard top-down fan
+     (used for the whole legacy map), and .es-vt-stack is the grouped column
+     the flows use under a section header, where a spine runs down the left
+     and elbows into each item. box width, gaps and type size are clamp()ed
+     to the viewport so the diagram shrinks instead of overflowing; only on
+     phones does it pan inside its own scroller. no card: it sits on the
+     section's own light background. ── */
+  .es-sm-head { margin: 0 0 16px; }
+  .es-sm-note { font-family: var(--espm-quirk); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 14px 0 0; }
+
+  .es-vt-fig { margin: 0;
+    --vt-w: clamp(86px, 8.6vw, 112px);   /* every box the same width, so rows read as levels */
+    --vt-h: 48px;                        /* and the same height, so siblings sit on one line:
+                                            tall enough for the longest label to wrap to two
+                                            lines at the narrowest box, because one box growing
+                                            a line taller would knock its whole row out of line */
+    --v1: 20px;                          /* parent box down to the sibling bar */
+    --v2: 20px;                          /* sibling bar down into each child */
+    --hg: 9px;                           /* half the gap between siblings */
+    --arm: clamp(12px, 1.4vw, 18px);     /* elbow arm inside a stacked group */
+    --ln: rgba(0,0,0,0.34);
+    --half: calc((var(--arm) + var(--vt-w)) / 2); }
+  .es-vt-scroll { overflow-x: auto; overflow-y: hidden; padding: 2px 2px 10px; }
+  .es-vt, .es-vt ul { list-style: none; margin: 0; padding: 0; }
+  /* left-aligned, not centred: the diagram then starts on the same line as
+     the section's chip and paragraphs instead of floating in the column */
+  .es-vt { display: flex; justify-content: flex-start; width: max-content; min-width: 100%; }
+  .es-vt-li { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+  /* ── top-down fan: drop from the parent, bar across the siblings, drop into each ── */
+  .es-vt-row { position: relative; display: flex; justify-content: center; margin-top: var(--v1); }
+  .es-vt-row::before { content: ""; position: absolute; top: calc(-1 * var(--v1)); left: 50%;
+    height: var(--v1); border-left: 1.5px solid var(--ln); }
+  .es-vt-row > .es-vt-li { padding: var(--v2) var(--hg) 0; }
+  .es-vt-row > .es-vt-li::before { content: ""; position: absolute; top: 0; left: 50%;
+    height: var(--v2); border-left: 1.5px solid var(--ln); }
+  /* the bar is a top border tiled across every sibling, then trimmed to half
+     on the first and last so it starts and stops at the outermost centres.
+     an only child gets left:50% and right:50% at once, i.e. nothing. */
+  .es-vt-row > .es-vt-li::after { content: ""; position: absolute; top: 0; left: 0; right: 0;
+    border-top: 1.5px solid var(--ln); }
+  .es-vt-row > .es-vt-li:first-child::after { left: 50%; }
+  .es-vt-row > .es-vt-li:last-child::after { right: 50%; }
+
+  /* ── grouped column: one spine down the left, an elbow into each item ── */
+  .es-vt-stack { position: relative; display: flex; flex-direction: column; margin-top: var(--v1); }
+  .es-vt-stack::before { content: ""; position: absolute; top: calc(-1 * var(--v1));
+    left: var(--half); height: var(--v1); border-left: 1.5px solid var(--ln); }
+  .es-vt-stack::after { content: ""; position: absolute; top: 0; left: 0;
+    width: var(--half); border-top: 1.5px solid var(--ln); }
+  .es-vt-stack > .es-vt-li { align-items: flex-start; padding: 4px 0 4px var(--arm); }
+  .es-vt-stack > .es-vt-li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    border-left: 1.5px solid var(--ln); }
+  .es-vt-stack > .es-vt-li:last-child::before { bottom: 50%; }
+  .es-vt-stack > .es-vt-li::after { content: ""; position: absolute; left: 0; top: 50%;
+    width: var(--arm); border-top: 1.5px solid var(--ln); }
+
+  /* arrowheads, same as the source flows: pointing down out of a fan,
+     pointing right out of a stacked group's elbow */
+  .es-vt-row > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
+    left: 50%; top: 0; transform: translate(-50%, -100%);
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 5px solid var(--ln); }
+  .es-vt-stack > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
+    left: 0; top: 50%; transform: translate(-100%, -50%);
+    border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+    border-left: 5px solid var(--ln); }
+
+  .es-vt-node { position: relative; box-sizing: border-box; flex: none;
+    width: var(--vt-w); min-height: var(--vt-h);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; text-align: center;
+    padding: 6px 8px; border-radius: 8px;
+    border: 1.5px solid rgba(0,0,0,0.22); background: #fff;
+    font-family: var(--espm-body); font-size: clamp(9.5px, 0.84vw, 11.5px);
+    line-height: 1.25; color: rgba(0,0,0,0.78); overflow-wrap: break-word; }
+  /* tablet and down: the boxes are already at their floor, so buy the width
+     back from the gaps instead, which keeps the widest map inside the column
+     rather than making it pan */
+  @media (max-width: 860px) { .es-vt-fig { --hg: 5px; --arm: 10px; } }
+  .es-vt-tag { font-family: var(--espm-quirk); font-style: normal; font-size: 8px;
+    line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--violet); }
+  .es-vt-node.is-root { background: var(--red); border-color: var(--red); color: var(--paper);
+    font-family: var(--espm-display); font-weight: 900; text-transform: uppercase;
+    letter-spacing: -0.005em; }
+  .es-vt-node.is-top { border-color: var(--magenta); border-width: 2px; color: var(--floor);
+    font-weight: 700; background: rgba(228,1,174,0.06); }
+  .es-vt-node.is-dup { border-style: dashed; border-color: rgba(0,0,0,0.3);
+    background: transparent; color: rgba(0,0,0,0.45); font-style: italic; }
 
   /* ── process — research first, four beats ── */
   .es-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -225,7 +339,7 @@ const __ESPM_STYLE = `
     font-size: 15px; margin: 0 0 8px; }
   .es-own-item p { font-size: 14px; line-height: 1.6; margin: 0; opacity: .75; }
   .es-collab { font-family: var(--mono); font-size: 11.5px; opacity: .6;
-    margin: 0; line-height: 1.7; max-width: 88ch; }
+    margin: 0; line-height: 1.7; max-width: none; }
 
   /* portfolio footer on the dark band */
   .es-sec.floor .pf-label { color: rgba(255,255,255,0.55); }
@@ -235,9 +349,8 @@ const __ESPM_STYLE = `
     border-color: rgba(255,255,255,0.35); }
   .es-sec.floor .pf-pill:hover { color: var(--magenta); border-color: var(--magenta); }
 
-  /* motion asks permission — every animation on this page is transform-only */
+  /* motion asks permission — what's left on this page is hover/transition only */
   @media (prefers-reduced-motion: reduce) {
-    .es-ghost, .es-marquee { animation: none !important; }
     .espmx * { transition-duration: 0.01ms !important; }
   }
 `;
@@ -274,21 +387,147 @@ const ESPM_OWN = [
   { h: "Competitive audit", p: "The four-school benchmark (FAAP, FGV, Insper, Mackenzie), read for how each handled the same student jobs." },
 ];
 
+/* ── the two sitemaps, native — nested <ul>/<li> with the connectors drawn
+   in CSS, no image and no fixed-size canvas, so they reflow with the
+   viewport instead of being scrolled like a picture.
+
+   BOTH are transcribed node-for-node and edge-for-edge from Ana's original
+   draw.io flows. two things in the legacy flow are easy to misread and are
+   deliberately transcribed the way the source draws them: the boxes cascade
+   down the page in a staircase, but a staircase there means SIBLINGS off one
+   shared spine, not a chain — the small filled dot on a box's bottom edge is
+   what marks a real parent, and only Tela Inicial, Login, Financeiro,
+   Calendário, Mais and Institucional have one. So Notas e Faltas,
+   Carteirinha and Financeiro are three siblings under Login (not a chain),
+   and all nine institutional pages hang off Institucional alone — which is
+   the actual finding the case argues: one parent used as a dumping ground.
+   Labels are kept verbatim from the source flows, typos included. ── */
+const ESPM_MAP_OLD = {
+  label: "Tela Inicial",
+  children: [
+    { label: "Login", children: [
+      { label: "Notas e Faltas" },
+      { label: "Carteirinha" },
+      { label: "Financeiro", children: [{ label: "Extrato" }] },
+      { label: "Calendário", children: [
+        { label: "Mais", children: [
+          { label: "Biblioteca" },
+          { label: "Ajuda" },
+          { label: "Institucional", dup: true, tag: "loops back ↑" },
+        ]},
+      ]},
+    ]},
+    { label: "Esqueci minha senha", children: [
+      { label: "Página na WEB - portal ESPM" },
+    ]},
+    { label: "Institucional", children: [
+      { label: "Educação Continuada" },
+      { label: "A ESPM" },
+      { label: "Mestrado e Doutorado" },
+      { label: "Vestibular" },
+      { label: "Educação à Distância" },
+      { label: "Graduação" },
+      { label: "Para empresas" },
+      { label: "Pós graduação" },
+      { label: "Fale conosco" },
+    ]},
+  ],
+};
+
+/* the redesign, same notation and same root so before → after is
+   like-for-like: one login, four task-first sections, nothing below them. */
+const ESPM_MAP_NEW = {
+  label: "Login",
+  children: [
+    { label: "Serviços (?)", children: [
+      { label: "Financeiro" },
+      { label: "Contato" },
+      { label: "Requerimeto" },
+      { label: "Whatsapp" },
+      { label: "Bibliotecas e Recursos" },
+    ]},
+    { label: "outros", children: [
+      { label: "Canvas" },
+      { label: "Vagas" },
+      { label: "Perfil" },
+      { label: "Ajuda" },
+      { label: "Horas ACOM e estágio" },
+    ]},
+    { label: "Academico", children: [
+      { label: "Disciplinas (Notas e Faltas)" },
+      { label: "ACOM e estágio" },
+    ]},
+    { label: "Tela Home", children: [
+      { label: "Acessar carterinha" },
+      { label: "Financeiro" },
+      { label: "Acom e Estágio" },
+      { label: "Requerimento" },
+      { label: "Buscar" },
+      { label: "Calendário" },
+    ]},
+  ],
+};
+
+/* which of the two connector idioms a group gets. the rule is about what
+   the group CONTAINS, not how deep it sits:
+
+   · a group that still has structure under it (any child with children of
+     its own) fans out in a row — .es-vt-row: drop, bar across the siblings,
+     drop into each, arrowhead down. this is what makes depth read as
+     LEVELS, in horizontal bands across the page. using the column idiom
+     here was the bug in the previous pass: each nested group stepped a
+     little further right, so five levels read as indentation, like an
+     outline, instead of as five rows.
+
+   · a group that is nothing but leaves (a section's pages, with two or
+     more of them) becomes a grouped column — .es-vt-stack: one spine down
+     the left, an elbow and arrowhead right into each item. it costs one
+     box of width no matter how many items it holds, which is what keeps
+     Institucional's nine pages from being nine columns wide, and it's how
+     the source flows draw a section's pages.
+
+   a single child (Financeiro → Extrato) stays a row, where the bar
+   collapses to nothing and you get a clean straight drop. */
+function espmGroupKind(node) {
+  const kids = node.children || [];
+  const allLeaves = kids.every((k) => !k.children || k.children.length === 0);
+  return allLeaves && kids.length >= 2 ? "es-vt-stack" : "es-vt-row";
+}
+
+function EspmTreeNode({ node, depth }) {
+  const kids = node.children && node.children.length > 0;
+  return (
+    <li className="es-vt-li">
+      <div className={"es-vt-node"
+        + (depth === 0 ? " is-root" : "")
+        + (depth === 1 ? " is-top" : "")
+        + (node.dup ? " is-dup" : "")}>
+        <span>{node.label}</span>
+        {node.tag && <span className="es-vt-tag">{node.tag}</span>}
+      </div>
+      {kids && (
+        <ul className={espmGroupKind(node)}>
+          {node.children.map((c, i) => <EspmTreeNode key={i} node={c} depth={depth + 1} />)}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+function EspmTree({ root, label, note }) {
+  return (
+    <figure className="es-vt-fig">
+      <div className="es-vt-scroll" role="img" aria-label={label}>
+        <ul className="es-vt"><EspmTreeNode node={root} depth={0} /></ul>
+      </div>
+      {note && <figcaption className="es-sm-note">{note}</figcaption>}
+    </figure>
+  );
+}
+
 function EspmScrollTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function EspmMarquee({ items }) {
-  return (
-    <div className="es-marquee" aria-hidden="true">
-      {[0, 1].map((half) => (
-        <span key={half} style={{ display: "flex" }}>
-          {items.map((t, i) => <span key={i} className="es-marquee-item">{t}</span>)}
-        </span>
-      ))}
-    </div>
-  );
 }
 
 function EspmCase({ spec, onAsk }) {
@@ -329,15 +568,11 @@ function EspmCase({ spec, onAsk }) {
         <button onClick={() => EspmScrollTo("es-decisions")}>decisions</button>
       </nav>
 
-      {/* ── hero — the app's dark canvas, its orbs, and the rebrand's two words ── */}
+      {/* ── hero — the app's dark canvas, its orbs, and the rebrand's two words.
+           no scrolling wordmark band: the blobs are static, nothing loops. ── */}
       <header className="es-hero" id="es-top">
         <div className="es-blob b1" aria-hidden="true"></div>
         <div className="es-blob b2" aria-hidden="true"></div>
-        <div className="es-ghost">
-          {[0, 1].map((half) => (
-            <span key={half} style={{ paddingRight: "0.5em" }}>INUSITADO ✦ ATITUDE ✦ NEW ON SCHOOL ✦&nbsp;</span>
-          ))}
-        </div>
         <div className="es-wrap">
           <button className="es-back" onClick={() => onAsk && onAsk("show me your work")}>← back to work</button>
           <div className="es-hero-grid">
@@ -353,12 +588,6 @@ function EspmCase({ spec, onAsk }) {
                 aria-label="see the app screens">
                 Enroll →
               </button>
-              <div className="es-hero-meta">
-                <span className="es-hero-chip"><b>role</b>{p.role || "ux/ui designer, with one colleague"}</span>
-                <span className="es-hero-chip"><b>company</b>espm · graduation project</span>
-                <span className="es-hero-chip"><b>platforms</b>mobile · ios</span>
-                <span className="es-hero-chip"><b>timeline</b>one semester · 2021</span>
-              </div>
             </div>
             <figure className="es-hero-shot">
               <img src="Frame 1000005225.png" alt="ESPM student app, two composed iPhone screens: the gradient home dashboard and the color-coded calendar" />
@@ -367,12 +596,10 @@ function EspmCase({ spec, onAsk }) {
         </div>
       </header>
 
-      {/* ── marquee divider — the calendar's day-pill gradient, stretched into a band ── */}
-      <div className="es-marquee-wrap">
-        <EspmMarquee items={["new on school", "✦", "inusitado", "✦", "atitude", "✦", "espm student app", "✦", "36 students heard", "✦"]} />
-      </div>
-
-      {/* ── 01 · screens — the UI is the point: everything visible, composed big ── */}
+      {/* ── 01 · screens — the UI is the point: everything visible, composed big.
+           full-bleed bands, same configuration as the manyfest case study: each
+           capture runs the full viewport, left padding clears the rail, and the
+           band's background is sampled from that capture's own canvas. ── */}
       <section className="es-sec glass" id="es-screens">
         <div className="es-wrap">
           <span className="es-chip">the screens · 01</span><span className="es-count">4 captures</span>
@@ -384,28 +611,27 @@ function EspmCase({ spec, onAsk }) {
           </p>
         </div>
 
-        <div className="es-wide">
-          <div className="es-duo">
-            <figure style={{ margin: 0 }}>
-              <div className="es-shot"><img src="espm-4.png" alt="Home dashboard: ESPM gradient header blobs, quick-action rail (ID, Calendar, Finance, Requests, Credits), 'New on school' carousel with red Enroll button" loading="lazy" /></div>
-              <figcaption className="es-cap">home · mobile · quick actions first: id, calendar, finance</figcaption>
-            </figure>
-            <figure style={{ margin: 0 }}>
-              <div className="es-shot"><img src="espm-3.png" alt="Calendar: March with gradient selected-day pill, today and tomorrow lists with color-coded ticks for classes, tests and deadlines" loading="lazy" /></div>
-              <figcaption className="es-cap">calendar · mobile · color-coded today and tomorrow</figcaption>
-            </figure>
-          </div>
+        {/* nested inside es-wrap on purpose: the negative margins below cancel exactly this
+            wrapper's own gutter + rail padding to reach the true viewport edge, then re-add
+            the rail clearance for the image alone (same trick as manyfest's .mnf-full inside
+            .mnf-wrap). without this wrapper the band drifts left of the viewport instead of
+            clearing the rail. */}
+        <div className="es-wrap">
+        <figure className="es-full" style={{ background: "#3e192c" }}>
+          <img src="images-espm/espm1.jpg" alt="Marketing II course screen: grade and absence rings, a list of exams with scores, and the next classes list with room and time" loading="lazy" width="2000" height="1500" />
+        </figure>
 
-          <div className="es-duo">
-            <figure style={{ margin: 0 }}>
-              <div className="es-shot"><img src="espm-1.png" alt="Student ID: glassmorphic card with photo, QR access code and gradient orbs on a dark background" loading="lazy" /></div>
-              <figcaption className="es-cap">student id · mobile · glass card, qr access, no plastic</figcaption>
-            </figure>
-            <figure style={{ margin: 0 }}>
-              <div className="es-shot"><img src="espm-5.png" alt="Marketing II course screen: exams with grade pills, next classes list, magenta gradient blob bleeding from the right edge" loading="lazy" /></div>
-              <figcaption className="es-cap">grades · mobile · per-course exams and next classes</figcaption>
-            </figure>
-          </div>
+        <figure className="es-full" style={{ background: "#282828" }}>
+          <img src="images-espm/espm2.jpg" alt="Calendar: March with a magenta-to-violet gradient selected-day pill, today's list showing color-coded ticks for a class, a test and a deadline" loading="lazy" width="1800" height="1350" />
+        </figure>
+
+        <figure className="es-full" style={{ background: "#2e1f3a" }}>
+          <img src="images-espm/espm3.jpg" alt="Two phones: the home dashboard with gradient header blobs, quick-action rail (id, calendar, finance, requests, credits) and 'new on school' carousel, and the upcoming-events list with a red enroll band" loading="lazy" width="2200" height="1650" />
+        </figure>
+
+        <figure className="es-full" style={{ background: "#282828" }}>
+          <img src="images-espm/espm4.jpg" alt="Four phones fanned out: per-course grades, the home dashboard with quick-action rail and 'new on school' carousel, the color-coded calendar, and the glassmorphic student id card" loading="lazy" width="2200" height="1650" />
+        </figure>
         </div>
       </section>
 
@@ -441,6 +667,41 @@ function EspmCase({ spec, onAsk }) {
               <p>The restructured app map was validated with students at low fidelity before hi-fi. The gradients went onto a skeleton that had already been proven.</p>
             </div>
           </div>
+
+          {/* the remapping, argued before it's shown: this is the "structure · 04" phase
+              made concrete, not just a caption under two diagrams. */}
+          <div className="es-sub-head"><span className="es-chip sm">remapping · before → after</span></div>
+          <h3 className="es-h3">We remapped the app before we skinned it.</h3>
+          <p className="es-remap-p">
+            The legacy portal buried the same task under three different parents and dead-ended
+            in institutional pages nobody opened twice. We flattened the whole map to two levels:
+            one login, four task-first sections (Serviços, Outros, Acadêmico, Tela Home), each
+            holding the actual jobs, finance, requests, calendar, credits, one tap from where a
+            student lands instead of four taps deep.
+          </p>
+          <p className="es-remap-p">
+            The new map was tested with students at low fidelity before a single gradient went
+            on: fewer levels, no duplicate destinations, and every task reachable from home. The
+            two sitemaps below are the same product, six months apart.
+          </p>
+        </div>
+
+        {/* the two sitemaps, before → after: the argument above, made visible.
+            transcribed node-for-node from Ana's original draw.io flows (see
+            ESPM_MAP_OLD and ESPM_MAP_NEW above) and redrawn as top-down tree
+            diagrams in real page content, so they reflow instead of being a
+            screenshot or a fixed canvas. same notation on both, stacked one
+            after the other, so the difference the reader sees is depth and
+            nothing else. nested inside es-wrap for the same rail-clearing
+            reason as the screens above. */}
+        <div className="es-wrap">
+          <div className="es-sm-head"><span className="es-chip sm">sitemap · before</span></div>
+          <EspmTree root={ESPM_MAP_OLD} note="5 levels deep · 9 pages under one parent · 1 duplicate dead end"
+            label="Tree diagram of the legacy portal: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login holds Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone holds nine institutional pages." />
+
+          <div className="es-sm-head" style={{ marginTop: 64 }}><span className="es-chip sm">sitemap · after</span></div>
+          <EspmTree root={ESPM_MAP_NEW} note="2 levels deep · every task one tap from home"
+            label="Tree diagram of the redesigned app: Login into four task-first sections (Serviços, Outros, Academico, Tela Home), each holding its own pages and nothing deeper, validated with students before any hi-fi screen existed" />
         </div>
       </section>
 

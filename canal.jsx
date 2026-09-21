@@ -63,7 +63,7 @@ const __CNL_STYLE = `
   /* the left inset clears the fixed rail; the right inset was far smaller, which made
      every band look pushed against the right edge. both are generous now. */
   .cn-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 9vw, 150px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 9vw, 150px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .cn-wrap { padding-left: clamp(24px, 5vw, 72px);
     padding-right: clamp(24px, 5vw, 72px); } }
 
@@ -160,9 +160,13 @@ const __CNL_STYLE = `
 
 
   /* ── screens — the UI showcase: everything visible, composed big ── */
-  .cn-wide { max-width: 1500px; margin: 0 auto;
+  .cn-wide { max-width: 1760px; margin: 0 auto;
     padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
     gap: clamp(40px, 6vw, 88px); }
+  /* the section rail is position:fixed at the viewport's left edge and only
+     exists above 1100px, so wide media has to start clear of it instead of
+     running underneath the labels */
+  @media (min-width: 1101px) { .cn-wide { padding-left: 212px; } }
   .cn-shot { border: 1px solid var(--ink); overflow: hidden; line-height: 0;
     background: var(--paper); }
   .cn-shot.bare { border: none; background: transparent; }
@@ -174,6 +178,26 @@ const __CNL_STYLE = `
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .cn-duo { grid-template-columns: 1fr; } }
   .cn-solo { max-width: 480px; margin: 0 auto; width: 100%; }
+
+  /* ── screens, take two — full-bleed bands, same configuration as the manyfest
+     case (.mnf-full): each capture runs the full viewport, the band's own left
+     padding clears the fixed rail, and the band's background is sampled from
+     that capture's own canvas so there's no seam between page and photo. ── */
+  .cn-full { margin-top: 12px; margin-bottom: 0;
+    padding: 0;
+    padding-left: max(212px, clamp(24px, 15vw, 240px));
+    margin-left: calc(-1 * (max((100vw - 1280px) / 2, 0px) + max(212px, clamp(24px, 15vw, 240px))));
+    margin-right: calc(-1 * (max((100vw - 1280px) / 2, 0px) + clamp(24px, 9vw, 150px))); }
+  .cn-full + .cn-full { margin-top: 0; }
+  @media (max-width: 1100px){ .cn-full { padding-left: 0;
+    margin-left: calc(-1 * clamp(24px, 5vw, 72px));
+    margin-right: calc(-1 * clamp(24px, 5vw, 72px)); } }
+  /* sized down to fit a desktop viewport: these are 3D device-mockup renders
+     (roughly 4:3), not wide screenshots, so full width alone made them taller
+     than the viewport. capping height and letting width follow keeps them
+     centered inside the full-bleed band instead of forcing a giant scroll. */
+  .cn-full img { display: block; width: auto; height: auto;
+    max-width: 100%; max-height: min(640px, 68vh); margin: 0 auto; border: 0; }
 
   /* ── process — four beats, hairline-topped like the menu's dividers ── */
   .cn-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -260,7 +284,7 @@ function CnlModel() {
     );
   }
   return (
-    <img className="soft-edge" src="canal-model.png" alt="Canal campaign portrait"
+    <img src="canal-model.png" alt="Canal campaign portrait"
       loading="lazy" onError={() => setMissing(true)} />
   );
 }
@@ -328,10 +352,13 @@ function CanalCase({ spec, onAsk }) {
       </header>
 
 
-      {/* ── 01 · screens — the UI is the point: everything visible, composed big ── */}
+      {/* ── 01 · screens — the UI is the point: everything visible, composed big.
+           full-bleed bands, same configuration as the manyfest case study: each
+           capture runs the full viewport, left padding clears the rail, and the
+           band's background is sampled from that capture's own canvas. ── */}
       <section className="cn-sec mist" id="cn-screens">
         <div className="cn-wrap">
-          <span className="cn-chip">the screens · 01</span><span className="cn-count">6 captures</span>
+          <span className="cn-chip">the screens · 01</span><span className="cn-count">7 captures</span>
           <h2 className="cn-h2">Let the clothes do the talking.</h2>
           <p className="cn-lede">
             Every image below is the designed storefront: mobile and desktop, framed as
@@ -340,40 +367,39 @@ function CanalCase({ spec, onAsk }) {
           </p>
         </div>
 
-        {/* the composed storefront — full-width, no frame on the frame */}
-        <div className="cn-wide">
-          <figure className="cn-fig" style={{ margin: 0 }}>
-            <div className="cn-shot bare"><img src="Frame 1000005235.png" alt="Canal storefront composed across two desktop browsers and a phone: full-bleed campaign photography with white tracked-type panels and the mega menu open" loading="lazy" /></div>
-            <figcaption className="cn-cap">the storefront · mobile + desktop · one language at every size</figcaption>
-          </figure>
+        {/* nested inside cn-wrap on purpose: the negative margins below cancel exactly this
+            wrapper's own gutter + rail padding to reach the true viewport edge, then re-add
+            the rail clearance for the image alone (same trick as manyfest's .mnf-full inside
+            .mnf-wrap). without this wrapper the band drifts left of the viewport instead of
+            clearing the rail. */}
+        <div className="cn-wrap">
+        <figure className="cn-full" style={{ background: "#efefea" }}>
+          <img src="images-canal/canal1.jpg" alt="Two desktop browsers overlapped: the outlet hero at até 70% off, and the new in summer collection shelf behind it" loading="lazy" width="2600" height="1950" />
+        </figure>
 
-          <figure className="cn-fig" style={{ margin: 0 }}>
-            <div className="cn-shot bare"><img src="canal-5.png" alt="Desktop mega menu opened over the campaign hero: four hairlined columns of categories from camisas to coletes, thin tracked uppercase type" loading="lazy" /></div>
-            <figcaption className="cn-cap">new in · desktop · the mega menu, four hairlined columns over the campaign</figcaption>
-          </figure>
+        <figure className="cn-full" style={{ background: "#282828" }}>
+          <img src="images-canal/canal2.jpg" alt="Two mobile screens in phone frames: the in between sale hero at 50% off, and the new in summer collection listing" loading="lazy" width="2000" height="1500" />
+        </figure>
 
-          <div className="cn-duo">
-            <figure className="cn-fig" style={{ margin: 0 }}>
-              <div className="cn-shot bare"><img src="canal-1.png" alt="Mobile product page in a phone frame: full-bleed campaign photo of an olive dress, white panel with price, size row and the black SHOP NOW band" loading="lazy" /></div>
-              <figcaption className="cn-cap">pdp · mobile · photography full-bleed<br />the ui compressed to the thumb</figcaption>
-            </figure>
-            <figure className="cn-fig" style={{ margin: 0 }}>
-              <div className="cn-shot bare"><img src="canal-2.png" alt="Mobile navigation menu in a phone frame: accordion category tree with new in, roupas, essential expanded, jeans and outlet, hairline dividers" loading="lazy" /></div>
-              <figcaption className="cn-cap">menu · mobile · the validated category tree, opened</figcaption>
-            </figure>
-          </div>
+        <figure className="cn-full" style={{ background: "#efefea" }}>
+          <img src="images-canal/canal3.jpg" alt="Three desktop panes: a product page with compre junto and recomendações canal shelves, the mega menu open over the outlet hero, and a product gallery zoomed in a lightbox" loading="lazy" width="2600" height="1167" />
+        </figure>
 
-          <figure className="cn-fig" style={{ margin: 0 }}>
-            <div className="cn-shot bare"><img src="canal-6.png" alt="Desktop product page compre junto section: three product portraits joined by squared plus signs, LEVE JUNTO panel with one price and a black SHOP NOW band" loading="lazy" /></div>
-            <figcaption className="cn-cap">pdp · desktop · compre junto, the look assembled on one shelf</figcaption>
-          </figure>
+        <figure className="cn-full" style={{ background: "#282828" }}>
+          <img src="images-canal/canal4.jpg" alt="Three mobile screens in phone frames: the calças femininas listing with 50% off tags, the filter panel open with price, size and color facets, and a full-bleed product portrait" loading="lazy" width="2400" height="1800" />
+        </figure>
 
-          <div className="cn-solo">
-            <figure className="cn-fig" style={{ margin: 0 }}>
-              <div className="cn-shot bare"><img src="canal-3.png" alt="Mobile compre junto: two stacked product portraits with quiet graphite 50% off tags, joined by a squared plus, prices and size rows beside each" loading="lazy" /></div>
-              <figcaption className="cn-cap">pdp · mobile · compre junto stacked for one hand</figcaption>
-            </figure>
-          </div>
+        <figure className="cn-full" style={{ background: "#efefea" }}>
+          <img src="images-canal/canal5.jpg" alt="Two tilted mobile screens in phone frames: the winter/fall and summer drop collection banners, and the category tree accordion open with product suggestions" loading="lazy" width="2000" height="1500" />
+        </figure>
+
+        <figure className="cn-full" style={{ background: "#282828" }}>
+          <img src="images-canal/canal6.jpg" alt="Two mobile screens in phone frames: a full-bleed product page for an olive dress, and the compre junto cross-sell with recomendações canal below it" loading="lazy" width="2000" height="1500" />
+        </figure>
+
+        <figure className="cn-full" style={{ background: "#efefea" }}>
+          <img src="images-canal/canal7.jpg" alt="Three mobile screens in phone frames: the cart step, the email login step, and the delivery and payment review step of the customized checkout" loading="lazy" width="2400" height="1800" />
+        </figure>
         </div>
       </section>
 

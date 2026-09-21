@@ -1823,6 +1823,11 @@
     border-radius: 99px; padding: 7px 14px; cursor: pointer; transition: all .22s ease;
   }
   .pf-pill:hover { color: var(--accent); border-color: var(--accent-dim); }
+  a.pf-pill { text-decoration: none; display: inline-flex; align-items: center; }
+  .pf-reach { margin-top: 18px; }
+  @media (max-width: 640px) {
+    .pf-all { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
 
   /* live site link */
   .live-link {
@@ -1921,7 +1926,11 @@
         return loadScript(BABEL).then(function () {
           return SRC.reduce(function (chain, n) {
             return chain.then(function () {
-              return fetch(n + ".jsx").then(function (r) { return r.text(); }).then(function (src) {
+              /* cache: "no-store" plus a unique query, because fetch() will
+                 happily serve a stale .jsx out of the HTTP cache even after a
+                 hard reload — which reads exactly like "my edit did nothing". */
+              return fetch(n + ".jsx?t=" + Date.now(), { cache: "no-store" })
+                .then(function (r) { return r.text(); }).then(function (src) {
                 var code = Babel.transform(src, { presets: ["react"], filename: n + ".jsx" }).code;
                 var blob = new Blob([code], { type: "text/javascript" });
                 return loadScript(URL.createObjectURL(blob));
