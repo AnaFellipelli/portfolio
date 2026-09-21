@@ -227,7 +227,7 @@ const isGallery = spec.layout === "gallery" || isAbout || isContact;
    swatch, so you can jump between cases without going back to the gallery.
    the folder colors come from PROJECT_FOLDER_LOOK (folders.jsx), so a project's
    chip here matches the folder it has on the work page. ── */
-const WORK_NAV_IDS = ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"];
+const WORK_NAV_IDS = ["manychat-ds", "baw", "bmtax", "canal", "weave", "espm", "releve"];
 
 function MiniFolder({ id }) {
   const look = (typeof PROJECT_FOLDER_LOOK !== "undefined" && PROJECT_FOLDER_LOOK[id]) || {};
@@ -431,78 +431,17 @@ function App() {
       }
       requestAnimationFrame(frame);
     };
-    /* snap: the first wheel gesture in the hero commits the whole transition —
-       we animate to the anchor ourselves, instantly, and swallow the momentum */
-    let snapping = false, snapTarget = 0, snapRaf = 0, idleTimer = 0;
-    let lastY = window.scrollY, dir = 0;
-    const workTopNow = () => {
-      const work = document.getElementById("work-preview");
-      return work ? work.offsetTop : window.innerHeight;
-    };
-    const animateTo = (target) => {
-      snapping = true; snapTarget = target;
-      const from = window.scrollY, d = target - from, t0 = performance.now(), dur = 600;
-      const easeOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-      cancelAnimationFrame(snapRaf);
-      const step = (now) => {
-        if (!snapping) return;
-        const t = Math.min(1, (now - t0) / dur);
-        window.scrollTo(0, from + d * easeOut(t));
-        if (t < 1) snapRaf = requestAnimationFrame(step);
-        else snapping = false;
-      };
-      snapRaf = requestAnimationFrame(step);
-    };
-    const onWheel = (e) => {
-      const workTop = workTopNow();
-      const y = window.scrollY;
-      if (snapping) {
-        e.preventDefault(); // swallow trailing momentum
-        // a firm opposite gesture flips the destination mid-flight
-        if (snapTarget === 0 && e.deltaY > 12) animateTo(workTop);
-        else if (snapTarget > 0 && e.deltaY < -12) animateTo(0);
-        return;
-      }
-      if (y < workTop - 2) {
-        if (e.deltaY > 6) { e.preventDefault(); animateTo(workTop); }
-        else if (e.deltaY < -6 && y > 2) { e.preventDefault(); animateTo(0); }
-      } else if (y <= workTop + 2 && e.deltaY < -6) {
-        /* at the very top of the work section, scrolling up returns to the hero */
-        e.preventDefault(); animateTo(0);
-      }
-    };
-    /* touch fallback: snap once the scroll settles (no momentum-fighting on mobile) */
-    const maybeSnapIdle = () => {
-      const workTop = workTopNow();
-      const y = window.scrollY;
-      if (y <= 2 || y >= workTop - 2) return;
-      animateTo(dir >= 0 ? workTop : 0);
-    };
-    const onScroll = () => {
-      dir = window.scrollY - lastY || dir;
-      lastY = window.scrollY;
-      if (!snapping) {
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(maybeSnapIdle, 90);
-      }
-    };
-    const onTouchStart = () => { snapping = false; cancelAnimationFrame(snapRaf); };
+    /* scrolling is the browser's. no wheel interception, no snap animation,
+       no programmatic scrollTo — the rAF loop above only *reads* scrollY and
+       writes transforms, so trackpad, mouse wheel, touch momentum, keyboard
+       and scrollbar drag all behave exactly as the platform intends. */
     const onResize = () => measure();
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
     measure();
     requestAnimationFrame(frame);
     return () => {
       running = false;
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      cancelAnimationFrame(snapRaf);
-      clearTimeout(idleTimer);
-      snapping = false;
     };
   }, [mode, stage]);
 

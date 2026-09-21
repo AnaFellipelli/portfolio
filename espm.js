@@ -227,9 +227,16 @@ const __ESPM_STYLE = `
      to the viewport so the diagram shrinks instead of overflowing; only on
      phones does it pan inside its own scroller. no card: it sits on the
      section's own light background. ── */
-  .es-sm-head { margin: 0 0 16px; }
+  /* one rhythm for both sitemap blocks: a big, equal gap ABOVE each chip
+     (whether what precedes it is the argument paragraph or the previous
+     diagram's note) and a small one BELOW it, so the chip belongs to the
+     diagram it labels instead of floating between the two. the chip's own
+     30px base margin-bottom has to be zeroed here or that "small" gap below
+     ends up bigger than the gap above — which was the uneven part. */
+  .es-sm-head { margin: 72px 0 18px; line-height: 1; }
+  .es-sm-head .es-chip.sm { font-size: 10px; padding: 6px 12px; margin-bottom: 0; }
   .es-sm-note { font-family: var(--espm-quirk); font-size: 10px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 14px 0 0; }
+    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 18px 0 0; }
 
   .es-vt-fig { margin: 0;
     --vt-w: clamp(86px, 8.6vw, 112px);   /* every box the same width, so rows read as levels */
@@ -237,14 +244,21 @@ const __ESPM_STYLE = `
                                             tall enough for the longest label to wrap to two
                                             lines at the narrowest box, because one box growing
                                             a line taller would knock its whole row out of line */
-    --v1: 20px;                          /* parent box down to the sibling bar */
-    --v2: 20px;                          /* sibling bar down into each child */
+    --v1: 22px;                          /* parent box down to the sibling bar */
+    --v2: 24px;                          /* sibling bar down into each child */
     --hg: 9px;                           /* half the gap between siblings */
-    --arm: clamp(12px, 1.4vw, 18px);     /* elbow arm inside a stacked group */
+    --arm: clamp(16px, 1.7vw, 24px);     /* elbow arm inside a stacked group: long
+                                            enough that the 5px arrowhead reads as
+                                            an arrow on a line, not as a blob */
     --ln: rgba(0,0,0,0.34);
     --half: calc((var(--arm) + var(--vt-w)) / 2); }
   .es-vt-scroll { overflow-x: auto; overflow-y: hidden; padding: 2px 2px 10px; }
-  .es-vt, .es-vt ul { list-style: none; margin: 0; padding: 0; }
+  /* reset the list defaults on the group CLASSES, never as ".es-vt ul" — a
+     descendant selector like that outscores ".es-vt-row" (0,1,1 beats 0,1,0),
+     so its "margin: 0" silently killed the margin-top that opens the gap
+     between a parent box and its children, and every drop line (drawn from
+     var(--v1) above its group) ended up inside the parent box instead. */
+  .es-vt, .es-vt-row, .es-vt-stack { list-style: none; margin: 0; padding: 0; }
   /* left-aligned, not centred: the diagram then starts on the same line as
      the section's chip and paragraphs instead of floating in the column */
   .es-vt { display: flex; justify-content: flex-start; width: max-content; min-width: 100%; }
@@ -271,7 +285,7 @@ const __ESPM_STYLE = `
     left: var(--half); height: var(--v1); border-left: 1.5px solid var(--ln); }
   .es-vt-stack::after { content: ""; position: absolute; top: 0; left: 0;
     width: var(--half); border-top: 1.5px solid var(--ln); }
-  .es-vt-stack > .es-vt-li { align-items: flex-start; padding: 4px 0 4px var(--arm); }
+  .es-vt-stack > .es-vt-li { align-items: flex-start; padding: 5px 0 5px var(--arm); }
   .es-vt-stack > .es-vt-li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0;
     border-left: 1.5px solid var(--ln); }
   .es-vt-stack > .es-vt-li:last-child::before { bottom: 50%; }
@@ -279,17 +293,22 @@ const __ESPM_STYLE = `
     width: var(--arm); border-top: 1.5px solid var(--ln); }
 
   /* arrowheads, same as the source flows: pointing down out of a fan,
-     pointing right out of a stacked group's elbow */
+     pointing right out of a stacked group's elbow. an absolutely positioned
+     child is placed against its container's PADDING box, so top/left 0 sits
+     inside the border — the tip has to be pushed back out by the box's own
+     border width (--bw, which differs on the level-1 boxes) or the arrow
+     lands on top of the border instead of meeting it. */
   .es-vt-row > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
-    left: 50%; top: 0; transform: translate(-50%, -100%);
+    left: 50%; top: calc(-1 * var(--bw)); transform: translate(-50%, -100%);
     border-left: 4px solid transparent; border-right: 4px solid transparent;
     border-top: 5px solid var(--ln); }
   .es-vt-stack > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
-    left: 0; top: 50%; transform: translate(-100%, -50%);
+    left: calc(-1 * var(--bw)); top: 50%; transform: translate(-100%, -50%);
     border-top: 4px solid transparent; border-bottom: 4px solid transparent;
     border-left: 5px solid var(--ln); }
 
-  .es-vt-node { position: relative; box-sizing: border-box; flex: none;
+  .es-vt-node { --bw: 1.5px;
+    position: relative; box-sizing: border-box; flex: none;
     width: var(--vt-w); min-height: var(--vt-h);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 2px; text-align: center;
@@ -307,8 +326,8 @@ const __ESPM_STYLE = `
   .es-vt-node.is-root { background: var(--red); border-color: var(--red); color: var(--paper);
     font-family: var(--espm-display); font-weight: 900; text-transform: uppercase;
     letter-spacing: -0.005em; }
-  .es-vt-node.is-top { border-color: var(--magenta); border-width: 2px; color: var(--floor);
-    font-weight: 700; background: rgba(228,1,174,0.06); }
+  .es-vt-node.is-top { --bw: 2px; border-color: var(--magenta); border-width: 2px;
+    color: var(--floor); font-weight: 700; background: rgba(228,1,174,0.06); }
   .es-vt-node.is-dup { border-style: dashed; border-color: rgba(0,0,0,0.3);
     background: transparent; color: rgba(0,0,0,0.45); font-style: italic; }
 
@@ -629,10 +648,10 @@ function EspmCase({
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => EspmScrollTo("es-top")
   }, "overview"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => EspmScrollTo("es-screens")
-  }, "screens"), /*#__PURE__*/React.createElement("button", {
     onClick: () => EspmScrollTo("es-process")
   }, "process"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => EspmScrollTo("es-screens")
+  }, "screens"), /*#__PURE__*/React.createElement("button", {
     onClick: () => EspmScrollTo("es-decisions")
   }, "decisions")), /*#__PURE__*/React.createElement("header", {
     className: "es-hero",
@@ -668,13 +687,70 @@ function EspmCase({
     src: "Frame 1000005225.png",
     alt: "ESPM student app, two composed iPhone screens: the gradient home dashboard and the color-coded calendar"
   }))))), /*#__PURE__*/React.createElement("section", {
+    className: "es-sec light",
+    id: "es-process"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "es-wrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "es-chip"
+  }, "the process · 01"), /*#__PURE__*/React.createElement("h2", {
+    className: "es-h2"
+  }, "Research before opinion."), /*#__PURE__*/React.createElement("p", {
+    className: "es-lede"
+  }, "Three layers of research came before any screen: what the brand promised, what the market did, what students actually needed. Then architecture, validated at low fidelity, and only then the neon."), /*#__PURE__*/React.createElement("div", {
+    className: "es-process"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "es-phase"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "k"
+  }, "brand · 01"), /*#__PURE__*/React.createElement("h4", null, "Positioning audit"), /*#__PURE__*/React.createElement("p", null, "ESPM's rebrand promised the unusual and attitude. We audited whether the student app lived up to it. It didn't: it was a portal wearing a logo.")), /*#__PURE__*/React.createElement("div", {
+    className: "es-phase"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "k"
+  }, "market · 02"), /*#__PURE__*/React.createElement("h4", null, "Four-school benchmark"), /*#__PURE__*/React.createElement("p", null, "FAAP, FGV, Insper, and Mackenzie, read for how each handled the same student-facing jobs: where they converged, and where nobody was trying.")), /*#__PURE__*/React.createElement("div", {
+    className: "es-phase"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "k"
+  }, "students · 03"), /*#__PURE__*/React.createElement("h4", null, "36-student survey"), /*#__PURE__*/React.createElement("p", null, "We asked the people who'd use it. Grades, schedules, and financial info came back as what students open the app to do first, so they lead the home screen.")), /*#__PURE__*/React.createElement("div", {
+    className: "es-phase"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "k"
+  }, "structure · 04"), /*#__PURE__*/React.createElement("h4", null, "Architecture, then skin"), /*#__PURE__*/React.createElement("p", null, "The restructured app map was validated with students at low fidelity before hi-fi. The gradients went onto a skeleton that had already been proven."))), /*#__PURE__*/React.createElement("div", {
+    className: "es-sub-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "es-chip sm"
+  }, "remapping · before → after")), /*#__PURE__*/React.createElement("h3", {
+    className: "es-h3"
+  }, "We remapped the app before we skinned it."), /*#__PURE__*/React.createElement("p", {
+    className: "es-remap-p"
+  }, "The legacy portal buried the same task under three different parents and dead-ended in institutional pages nobody opened twice. We flattened the whole map to two levels: one login, four task-first sections (Serviços, Outros, Acadêmico, Tela Home), each holding the actual jobs, finance, requests, calendar, credits, one tap from where a student lands instead of four taps deep."), /*#__PURE__*/React.createElement("p", {
+    className: "es-remap-p"
+  }, "The new map was tested with students at low fidelity before a single gradient went on: fewer levels, no duplicate destinations, and every task reachable from home. The two sitemaps below are the same product, six months apart.")), /*#__PURE__*/React.createElement("div", {
+    className: "es-wrap"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "es-sm-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "es-chip sm"
+  }, "sitemap · before")), /*#__PURE__*/React.createElement(EspmTree, {
+    root: ESPM_MAP_OLD,
+    note: "5 levels deep · 9 pages under one parent · 1 duplicate dead end",
+    label: "Tree diagram of the legacy portal: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login holds Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone holds nine institutional pages."
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "es-sm-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "es-chip sm"
+  }, "sitemap · after")), /*#__PURE__*/React.createElement(EspmTree, {
+    root: ESPM_MAP_NEW,
+    note: "2 levels deep · every task one tap from home",
+    label: "Tree diagram of the redesigned app: Login into four task-first sections (Serviços, Outros, Academico, Tela Home), each holding its own pages and nothing deeper, validated with students before any hi-fi screen existed"
+  }))), /*#__PURE__*/React.createElement("section", {
     className: "es-sec glass",
     id: "es-screens"
   }, /*#__PURE__*/React.createElement("div", {
     className: "es-wrap"
   }, /*#__PURE__*/React.createElement("span", {
     className: "es-chip"
-  }, "the screens · 01"), /*#__PURE__*/React.createElement("span", {
+  }, "the screens · 02"), /*#__PURE__*/React.createElement("span", {
     className: "es-count"
   }, "4 captures"), /*#__PURE__*/React.createElement("h2", {
     className: "es-h2"
@@ -727,66 +803,6 @@ function EspmCase({
     width: "2200",
     height: "1650"
   })))), /*#__PURE__*/React.createElement("section", {
-    className: "es-sec light",
-    id: "es-process"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "es-wrap"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "es-chip"
-  }, "the process · 02"), /*#__PURE__*/React.createElement("h2", {
-    className: "es-h2"
-  }, "Research before opinion."), /*#__PURE__*/React.createElement("p", {
-    className: "es-lede"
-  }, "Three layers of research came before any screen: what the brand promised, what the market did, what students actually needed. Then architecture, validated at low fidelity, and only then the neon."), /*#__PURE__*/React.createElement("div", {
-    className: "es-process"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "es-phase"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "k"
-  }, "brand · 01"), /*#__PURE__*/React.createElement("h4", null, "Positioning audit"), /*#__PURE__*/React.createElement("p", null, "ESPM's rebrand promised the unusual and attitude. We audited whether the student app lived up to it. It didn't: it was a portal wearing a logo.")), /*#__PURE__*/React.createElement("div", {
-    className: "es-phase"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "k"
-  }, "market · 02"), /*#__PURE__*/React.createElement("h4", null, "Four-school benchmark"), /*#__PURE__*/React.createElement("p", null, "FAAP, FGV, Insper, and Mackenzie, read for how each handled the same student-facing jobs: where they converged, and where nobody was trying.")), /*#__PURE__*/React.createElement("div", {
-    className: "es-phase"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "k"
-  }, "students · 03"), /*#__PURE__*/React.createElement("h4", null, "36-student survey"), /*#__PURE__*/React.createElement("p", null, "We asked the people who'd use it. Grades, schedules, and financial info came back as what students open the app to do first, so they lead the home screen.")), /*#__PURE__*/React.createElement("div", {
-    className: "es-phase"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "k"
-  }, "structure · 04"), /*#__PURE__*/React.createElement("h4", null, "Architecture, then skin"), /*#__PURE__*/React.createElement("p", null, "The restructured app map was validated with students at low fidelity before hi-fi. The gradients went onto a skeleton that had already been proven."))), /*#__PURE__*/React.createElement("div", {
-    className: "es-sub-head"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "es-chip sm"
-  }, "remapping · before → after")), /*#__PURE__*/React.createElement("h3", {
-    className: "es-h3"
-  }, "We remapped the app before we skinned it."), /*#__PURE__*/React.createElement("p", {
-    className: "es-remap-p"
-  }, "The legacy portal buried the same task under three different parents and dead-ended in institutional pages nobody opened twice. We flattened the whole map to two levels: one login, four task-first sections (Serviços, Outros, Acadêmico, Tela Home), each holding the actual jobs, finance, requests, calendar, credits, one tap from where a student lands instead of four taps deep."), /*#__PURE__*/React.createElement("p", {
-    className: "es-remap-p"
-  }, "The new map was tested with students at low fidelity before a single gradient went on: fewer levels, no duplicate destinations, and every task reachable from home. The two sitemaps below are the same product, six months apart.")), /*#__PURE__*/React.createElement("div", {
-    className: "es-wrap"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "es-sm-head"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "es-chip sm"
-  }, "sitemap · before")), /*#__PURE__*/React.createElement(EspmTree, {
-    root: ESPM_MAP_OLD,
-    note: "5 levels deep · 9 pages under one parent · 1 duplicate dead end",
-    label: "Tree diagram of the legacy portal: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login holds Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone holds nine institutional pages."
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "es-sm-head",
-    style: {
-      marginTop: 64
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "es-chip sm"
-  }, "sitemap · after")), /*#__PURE__*/React.createElement(EspmTree, {
-    root: ESPM_MAP_NEW,
-    note: "2 levels deep · every task one tap from home",
-    label: "Tree diagram of the redesigned app: Login into four task-first sections (Serviços, Outros, Academico, Tela Home), each holding its own pages and nothing deeper, validated with students before any hi-fi screen existed"
-  }))), /*#__PURE__*/React.createElement("section", {
     className: "es-sec floor",
     id: "es-decisions"
   }, /*#__PURE__*/React.createElement("div", {

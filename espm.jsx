@@ -223,9 +223,16 @@ const __ESPM_STYLE = `
      to the viewport so the diagram shrinks instead of overflowing; only on
      phones does it pan inside its own scroller. no card: it sits on the
      section's own light background. ── */
-  .es-sm-head { margin: 0 0 16px; }
+  /* one rhythm for both sitemap blocks: a big, equal gap ABOVE each chip
+     (whether what precedes it is the argument paragraph or the previous
+     diagram's note) and a small one BELOW it, so the chip belongs to the
+     diagram it labels instead of floating between the two. the chip's own
+     30px base margin-bottom has to be zeroed here or that "small" gap below
+     ends up bigger than the gap above — which was the uneven part. */
+  .es-sm-head { margin: 72px 0 18px; line-height: 1; }
+  .es-sm-head .es-chip.sm { font-size: 10px; padding: 6px 12px; margin-bottom: 0; }
   .es-sm-note { font-family: var(--espm-quirk); font-size: 10px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 14px 0 0; }
+    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 18px 0 0; }
 
   .es-vt-fig { margin: 0;
     --vt-w: clamp(86px, 8.6vw, 112px);   /* every box the same width, so rows read as levels */
@@ -233,14 +240,21 @@ const __ESPM_STYLE = `
                                             tall enough for the longest label to wrap to two
                                             lines at the narrowest box, because one box growing
                                             a line taller would knock its whole row out of line */
-    --v1: 20px;                          /* parent box down to the sibling bar */
-    --v2: 20px;                          /* sibling bar down into each child */
+    --v1: 22px;                          /* parent box down to the sibling bar */
+    --v2: 24px;                          /* sibling bar down into each child */
     --hg: 9px;                           /* half the gap between siblings */
-    --arm: clamp(12px, 1.4vw, 18px);     /* elbow arm inside a stacked group */
+    --arm: clamp(16px, 1.7vw, 24px);     /* elbow arm inside a stacked group: long
+                                            enough that the 5px arrowhead reads as
+                                            an arrow on a line, not as a blob */
     --ln: rgba(0,0,0,0.34);
     --half: calc((var(--arm) + var(--vt-w)) / 2); }
   .es-vt-scroll { overflow-x: auto; overflow-y: hidden; padding: 2px 2px 10px; }
-  .es-vt, .es-vt ul { list-style: none; margin: 0; padding: 0; }
+  /* reset the list defaults on the group CLASSES, never as ".es-vt ul" — a
+     descendant selector like that outscores ".es-vt-row" (0,1,1 beats 0,1,0),
+     so its "margin: 0" silently killed the margin-top that opens the gap
+     between a parent box and its children, and every drop line (drawn from
+     var(--v1) above its group) ended up inside the parent box instead. */
+  .es-vt, .es-vt-row, .es-vt-stack { list-style: none; margin: 0; padding: 0; }
   /* left-aligned, not centred: the diagram then starts on the same line as
      the section's chip and paragraphs instead of floating in the column */
   .es-vt { display: flex; justify-content: flex-start; width: max-content; min-width: 100%; }
@@ -267,7 +281,7 @@ const __ESPM_STYLE = `
     left: var(--half); height: var(--v1); border-left: 1.5px solid var(--ln); }
   .es-vt-stack::after { content: ""; position: absolute; top: 0; left: 0;
     width: var(--half); border-top: 1.5px solid var(--ln); }
-  .es-vt-stack > .es-vt-li { align-items: flex-start; padding: 4px 0 4px var(--arm); }
+  .es-vt-stack > .es-vt-li { align-items: flex-start; padding: 5px 0 5px var(--arm); }
   .es-vt-stack > .es-vt-li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0;
     border-left: 1.5px solid var(--ln); }
   .es-vt-stack > .es-vt-li:last-child::before { bottom: 50%; }
@@ -275,17 +289,22 @@ const __ESPM_STYLE = `
     width: var(--arm); border-top: 1.5px solid var(--ln); }
 
   /* arrowheads, same as the source flows: pointing down out of a fan,
-     pointing right out of a stacked group's elbow */
+     pointing right out of a stacked group's elbow. an absolutely positioned
+     child is placed against its container's PADDING box, so top/left 0 sits
+     inside the border — the tip has to be pushed back out by the box's own
+     border width (--bw, which differs on the level-1 boxes) or the arrow
+     lands on top of the border instead of meeting it. */
   .es-vt-row > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
-    left: 50%; top: 0; transform: translate(-50%, -100%);
+    left: 50%; top: calc(-1 * var(--bw)); transform: translate(-50%, -100%);
     border-left: 4px solid transparent; border-right: 4px solid transparent;
     border-top: 5px solid var(--ln); }
   .es-vt-stack > .es-vt-li > .es-vt-node::before { content: ""; position: absolute;
-    left: 0; top: 50%; transform: translate(-100%, -50%);
+    left: calc(-1 * var(--bw)); top: 50%; transform: translate(-100%, -50%);
     border-top: 4px solid transparent; border-bottom: 4px solid transparent;
     border-left: 5px solid var(--ln); }
 
-  .es-vt-node { position: relative; box-sizing: border-box; flex: none;
+  .es-vt-node { --bw: 1.5px;
+    position: relative; box-sizing: border-box; flex: none;
     width: var(--vt-w); min-height: var(--vt-h);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 2px; text-align: center;
@@ -303,8 +322,8 @@ const __ESPM_STYLE = `
   .es-vt-node.is-root { background: var(--red); border-color: var(--red); color: var(--paper);
     font-family: var(--espm-display); font-weight: 900; text-transform: uppercase;
     letter-spacing: -0.005em; }
-  .es-vt-node.is-top { border-color: var(--magenta); border-width: 2px; color: var(--floor);
-    font-weight: 700; background: rgba(228,1,174,0.06); }
+  .es-vt-node.is-top { --bw: 2px; border-color: var(--magenta); border-width: 2px;
+    color: var(--floor); font-weight: 700; background: rgba(228,1,174,0.06); }
   .es-vt-node.is-dup { border-style: dashed; border-color: rgba(0,0,0,0.3);
     background: transparent; color: rgba(0,0,0,0.45); font-style: italic; }
 
@@ -563,8 +582,8 @@ function EspmCase({ spec, onAsk }) {
       {/* rail */}
       <nav className="es-rail" aria-label="sections">
         <button onClick={() => EspmScrollTo("es-top")}>overview</button>
-        <button onClick={() => EspmScrollTo("es-screens")}>screens</button>
         <button onClick={() => EspmScrollTo("es-process")}>process</button>
+        <button onClick={() => EspmScrollTo("es-screens")}>screens</button>
         <button onClick={() => EspmScrollTo("es-decisions")}>decisions</button>
       </nav>
 
@@ -596,49 +615,10 @@ function EspmCase({ spec, onAsk }) {
         </div>
       </header>
 
-      {/* ── 01 · screens — the UI is the point: everything visible, composed big.
-           full-bleed bands, same configuration as the manyfest case study: each
-           capture runs the full viewport, left padding clears the rail, and the
-           band's background is sampled from that capture's own canvas. ── */}
-      <section className="es-sec glass" id="es-screens">
-        <div className="es-wrap">
-          <span className="es-chip">the screens · 01</span><span className="es-count">4 captures</span>
-          <h2 className="es-h2">A new identity deserved an app to match.</h2>
-          <p className="es-lede">
-            Every image below is the validated concept: the rebrand's gradients on a dark
-            canvas, structure decided by 36 students before a single hi-fi screen. Frames as
-            captured, nothing redrawn.
-          </p>
-        </div>
-
-        {/* nested inside es-wrap on purpose: the negative margins below cancel exactly this
-            wrapper's own gutter + rail padding to reach the true viewport edge, then re-add
-            the rail clearance for the image alone (same trick as manyfest's .mnf-full inside
-            .mnf-wrap). without this wrapper the band drifts left of the viewport instead of
-            clearing the rail. */}
-        <div className="es-wrap">
-        <figure className="es-full" style={{ background: "#3e192c" }}>
-          <img src="images-espm/espm1.jpg" alt="Marketing II course screen: grade and absence rings, a list of exams with scores, and the next classes list with room and time" loading="lazy" width="2000" height="1500" />
-        </figure>
-
-        <figure className="es-full" style={{ background: "#282828" }}>
-          <img src="images-espm/espm2.jpg" alt="Calendar: March with a magenta-to-violet gradient selected-day pill, today's list showing color-coded ticks for a class, a test and a deadline" loading="lazy" width="1800" height="1350" />
-        </figure>
-
-        <figure className="es-full" style={{ background: "#2e1f3a" }}>
-          <img src="images-espm/espm3.jpg" alt="Two phones: the home dashboard with gradient header blobs, quick-action rail (id, calendar, finance, requests, credits) and 'new on school' carousel, and the upcoming-events list with a red enroll band" loading="lazy" width="2200" height="1650" />
-        </figure>
-
-        <figure className="es-full" style={{ background: "#282828" }}>
-          <img src="images-espm/espm4.jpg" alt="Four phones fanned out: per-course grades, the home dashboard with quick-action rail and 'new on school' carousel, the color-coded calendar, and the glassmorphic student id card" loading="lazy" width="2200" height="1650" />
-        </figure>
-        </div>
-      </section>
-
-      {/* ── 02 · process ── */}
+      {/* ── 01 · process ── */}
       <section className="es-sec light" id="es-process">
         <div className="es-wrap">
-          <span className="es-chip">the process · 02</span>
+          <span className="es-chip">the process · 01</span>
           <h2 className="es-h2">Research before opinion.</h2>
           <p className="es-lede">
             Three layers of research came before any screen: what the brand promised, what the
@@ -693,15 +673,54 @@ function EspmCase({ spec, onAsk }) {
             screenshot or a fixed canvas. same notation on both, stacked one
             after the other, so the difference the reader sees is depth and
             nothing else. nested inside es-wrap for the same rail-clearing
-            reason as the screens above. */}
+            reason as the screens section. */}
         <div className="es-wrap">
           <div className="es-sm-head"><span className="es-chip sm">sitemap · before</span></div>
           <EspmTree root={ESPM_MAP_OLD} note="5 levels deep · 9 pages under one parent · 1 duplicate dead end"
             label="Tree diagram of the legacy portal: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login holds Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone holds nine institutional pages." />
 
-          <div className="es-sm-head" style={{ marginTop: 64 }}><span className="es-chip sm">sitemap · after</span></div>
+          <div className="es-sm-head"><span className="es-chip sm">sitemap · after</span></div>
           <EspmTree root={ESPM_MAP_NEW} note="2 levels deep · every task one tap from home"
             label="Tree diagram of the redesigned app: Login into four task-first sections (Serviços, Outros, Academico, Tela Home), each holding its own pages and nothing deeper, validated with students before any hi-fi screen existed" />
+        </div>
+      </section>
+
+      {/* ── 02 · screens — the UI is the point: everything visible, composed big.
+           full-bleed bands, same configuration as the manyfest case study: each
+           capture runs the full viewport, left padding clears the rail, and the
+           band's background is sampled from that capture's own canvas. ── */}
+      <section className="es-sec glass" id="es-screens">
+        <div className="es-wrap">
+          <span className="es-chip">the screens · 02</span><span className="es-count">4 captures</span>
+          <h2 className="es-h2">A new identity deserved an app to match.</h2>
+          <p className="es-lede">
+            Every image below is the validated concept: the rebrand's gradients on a dark
+            canvas, structure decided by 36 students before a single hi-fi screen. Frames as
+            captured, nothing redrawn.
+          </p>
+        </div>
+
+        {/* nested inside es-wrap on purpose: the negative margins below cancel exactly this
+            wrapper's own gutter + rail padding to reach the true viewport edge, then re-add
+            the rail clearance for the image alone (same trick as manyfest's .mnf-full inside
+            .mnf-wrap). without this wrapper the band drifts left of the viewport instead of
+            clearing the rail. */}
+        <div className="es-wrap">
+        <figure className="es-full" style={{ background: "#3e192c" }}>
+          <img src="images-espm/espm1.jpg" alt="Marketing II course screen: grade and absence rings, a list of exams with scores, and the next classes list with room and time" loading="lazy" width="2000" height="1500" />
+        </figure>
+
+        <figure className="es-full" style={{ background: "#282828" }}>
+          <img src="images-espm/espm2.jpg" alt="Calendar: March with a magenta-to-violet gradient selected-day pill, today's list showing color-coded ticks for a class, a test and a deadline" loading="lazy" width="1800" height="1350" />
+        </figure>
+
+        <figure className="es-full" style={{ background: "#2e1f3a" }}>
+          <img src="images-espm/espm3.jpg" alt="Two phones: the home dashboard with gradient header blobs, quick-action rail (id, calendar, finance, requests, credits) and 'new on school' carousel, and the upcoming-events list with a red enroll band" loading="lazy" width="2200" height="1650" />
+        </figure>
+
+        <figure className="es-full" style={{ background: "#282828" }}>
+          <img src="images-espm/espm4.jpg" alt="Four phones fanned out: per-course grades, the home dashboard with quick-action rail and 'new on school' carousel, the color-coded calendar, and the glassmorphic student id card" loading="lazy" width="2200" height="1650" />
+        </figure>
         </div>
       </section>
 

@@ -111,8 +111,62 @@ const WV_DENSITY = {
   low:    { label: "low",    btnPadV: 12, btnPadH: 24, btnFont: 16, btnLh: 18, inputH: 36, panelHeadH: 40, rowH: 32, headH: 40, sp: 24 },
 };
 
-/* the four component deep dives (data lives in PROJECTS) */
-const WEAVE_DEEP_DIVES = ["panel", "datagrid", "autocomplete", "skeleton"];
+/* the four component deep dives (data lives in PROJECTS).
+   the data grid goes last: it is the biggest one, it is the only full-width dive,
+   and the feature-set plate that closes the section belongs to it. */
+const WEAVE_DEEP_DIVES = ["panel", "autocomplete", "skeleton", "datagrid"];
+
+/* ---------- stills the recordings made redundant ----------
+   PROJECTS[].items still feeds the work gallery, so the dives filter here instead
+   of deleting source data. every one of these says something a clip on the same
+   dive already says, and the section was showing a weave table seven times over. */
+const WV_DROP_STILLS = new Set([
+  "weave-autocomplete.png", // the same suggestion menu the recording types into
+  "weave-datagrid.png",     // a sixth table (column resize, annotation crop)
+  "weave-datagrid-2.png",   // a seventh table (pagination, annotation crop)
+  "weave-panel-2.png",      // 3KB, an all but empty frame
+  "weave-skeleton.png",     // the recording already carries the loading story
+  "weave-skeleton-2.png",
+]);
+
+/* ---------- the components, moving ----------
+   recordings of the real prototypes. "lead" puts them across the top of the dive
+   (the data grid has three, so they earn the full width); "side" sits them next to
+   the prose, where one clip carries the whole point. */
+const WV_MOTION = {
+  datagrid: {
+    layout: "lead",
+    clips: [
+      /* the row leads: it is the unit the other two are built out of, and it is a
+         thin strip, so it reads as a header rather than a third panel */
+      { src: "images-autodesk/tablerow.webp", w: 1250, h: 134, span: 2, inset: true,
+        label: "row states",
+        cap: "clicking a row that is already selected changes nothing, which is the decision the prototype was built to settle" },
+      { src: "images-autodesk/tableexpanf.webp", w: 1091, h: 888,
+        label: "master detail",
+        cap: "a row opens into a panel, and the rows keep scrolling under it" },
+      { src: "images-autodesk/table-parent.webp", w: 1288, h: 765,
+        label: "row grouping",
+        cap: "groups inside groups, and only the caret opens one" },
+    ],
+  },
+  autocomplete: {
+    layout: "side", flip: true,
+    clips: [
+      { src: "images-autodesk/autocomplete.webp", w: 574, h: 414,
+        label: "suggestions",
+        cap: "the behavior on a search input: match as you type, the typed part stays bold" },
+    ],
+  },
+  skeleton: {
+    layout: "side",
+    clips: [
+      { src: "images-autodesk/skeleton.webp", w: 800, h: 552,
+        label: "autocad start page",
+        cap: "the persistent ui stays put, only the content that is loading gets a skeleton" },
+    ],
+  },
+};
 
 /* what I owned */
 const WV_OWN = [
@@ -302,6 +356,10 @@ const __WV2_STYLE = `
   .wv2-stat .l { font-family: var(--wv-mono); font-size: 10.5px; letter-spacing: 0.05em;
     text-transform: uppercase; opacity: .6; margin-top: 13px; line-height: 1.55; }
 
+  /* story, ownership and components all run on the same paper now, so the accent
+     rule that ownership used against dark needs the darker blue to hold on light */
+  .wv2-sec.paper .wv2-own-item { border-top-color: var(--awb); }
+
   .wv2-decisions { display: grid; gap: 0; }
   .wv2-decision { display: grid; grid-template-columns: 74px 1fr; gap: 24px;
     padding: 26px 0; border-top: 1px solid rgba(60,60,60,0.15); }
@@ -431,28 +489,6 @@ const __WV2_STYLE = `
   .wv2-sec.darkgray .wv2-acc-btn:focus-visible, .wv2-sec.darkblue .wv2-acc-btn:focus-visible,
   .wv2-sec.deep .wv2-acc-btn:focus-visible { box-shadow: 0 0 0 2px #1a1f25, 0 0 0 4px #38abdf; }
 
-  /* ── the documentation band ── */
-  .wv2-docs { margin-top: 58px; }
-  .wv2-docs .wv2-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)) !important; }
-  .wv2-docs-head { margin-bottom: 14px; }
-  .wv2-docs-lede { font-size: 15.5px; line-height: 1.65; opacity: .85; margin: 0 0 30px; }
-  .wv2-docs-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-    margin-top: 26px; }
-  @media (max-width: 860px){ .wv2-docs-trio { grid-template-columns: 1fr; } }
-  .wv2-shot { margin: 0; }
-  .wv2-shot.wide { max-width: 1600px; margin: 0 auto;
-    padding: 0 clamp(16px, 3vw, 40px); }
-  .wv2-shot-frame { border: 1px solid rgba(60,60,60,0.16); border-radius: 4px;
-    overflow: hidden; line-height: 0; background: #fff; }
-  .wv2-shot-frame img { width: 100%; height: auto; display: block; }
-  .wv2-shot-ph { border: 1.5px dashed rgba(60,60,60,0.28); border-radius: 4px;
-    min-height: 200px; display: grid; place-items: center; padding: 26px; text-align: center;
-    font-family: var(--wv-mono); font-size: 10.5px; letter-spacing: 0.08em; line-height: 2;
-    opacity: .6; }
-  .wv2-shot.wide .wv2-shot-ph { min-height: 340px; }
-  .wv2-shot figcaption { font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em;
-    text-transform: uppercase; opacity: .6; margin-top: 10px; line-height: 1.6; }
   .wv2-chip.sm { font-size: 10px; padding: 6px 11px; }
 
   /* ── deep dives ── */
@@ -481,10 +517,124 @@ const __WV2_STYLE = `
   .wv2-figs { display: grid; gap: 14px; align-content: start; }
   .wv2-fig { border: 1px solid rgba(60,60,60,0.12); border-radius: 4px; overflow: hidden;
     background: var(--white); }
-  .wv2-fig img { width: 100%; display: block; }
+  /* the exports are edge to edge in their own file, so the frame has to supply the
+     breathing room; box-sizing keeps the padding inside the 100% width */
+  .wv2-fig img { width: 100%; display: block; box-sizing: border-box;
+    padding: clamp(14px, 2vw, 22px); }
   .wv2-fig .cap { font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.12em;
     text-transform: uppercase; opacity: .55; padding: 9px 12px;
     border-top: 1px solid rgba(60,60,60,0.1); }
+
+  /* ── full-bleed plate, same construction as the other cases ──
+     the band reaches the true viewport edge by cancelling the wrap's own gutter,
+     then re-adds the rail clearance so only the artwork clears the fixed rail.
+     it ONLY cancels correctly while the figure sits INSIDE a "wv2-wrap". the
+     artwork carries the same #f5f5f5 as the band, so there is no visible edge:
+     no frame, no heading, no caption. */
+  .wv2-full { margin: clamp(30px, 4vw, 56px) 0; background: var(--paper);
+    padding: clamp(18px, 3vw, 44px) 0 clamp(18px, 3vw, 44px);
+    padding-left: max(212px, clamp(24px, 15vw, 240px));
+    margin-left: calc(-1 * (max((100vw - 1280px) / 2, 0px) + max(212px, clamp(24px, 15vw, 240px))));
+    margin-right: calc(-1 * (max((100vw - 1280px) / 2, 0px) + clamp(24px, 5vw, 72px))); }
+  @media (max-width: 1100px){ .wv2-full { padding-left: 0;
+    margin-left: calc(-1 * clamp(24px, 5vw, 72px));
+    margin-right: calc(-1 * clamp(24px, 5vw, 72px)); } }
+  /* the section intro already carries 52px of its own; do not stack another 56 */
+  .wv2-sec-sub + .wv2-full { margin-top: 0; }
+  .wv2-full + .wv2-deep { border-top: 0; padding-top: 8px; }
+  /* first thing in a section: cancel the section's 96px so it meets the hero */
+  .wv2-full.top { margin-top: -96px; padding-top: clamp(30px, 4vw, 64px);
+    margin-bottom: clamp(44px, 5vw, 76px); }
+  /* last thing in a section: cancel the 110px so it does not leave dead air */
+  .wv2-full.bottom { margin-bottom: -110px; padding-bottom: clamp(30px, 4vw, 64px); }
+  .wv2-deep + .wv2-full { margin-top: clamp(38px, 4.5vw, 64px); }
+  /* overflow:hidden because the crop pushes the blank margins outside the box, and
+     the band already runs to the viewport edge: without it that becomes a scrollbar */
+  .wv2-full { overflow: hidden; }
+  .wv2-bleed { position: relative; width: 100%; overflow: hidden; }
+  .wv2-full img { display: block; width: 100%; height: auto; margin: 0;
+    border: 0; border-radius: 0; box-shadow: none; }
+  /* once the content box is known, the image is positioned so its content, and only
+     its content, fills the frame. the padding-bottom is the content's own aspect. */
+  /* not the full band width: the crop makes the artwork fill its frame, and filling
+     the frame edge to edge was too big, so the frame itself sits in from the sides */
+  .wv2-bleed.cropped { max-width: 84%; margin: 0 auto; }
+  .wv2-bleed.cropped img { position: absolute; height: auto; }
+  @media (max-width: 760px){ .wv2-bleed.cropped { max-width: 100%; } }
+
+  /* ── the components, moving ── */
+  .wv2-deep-side { display: grid; gap: 14px; align-content: start; }
+  /* problem, solution, outcome side by side, for a dive whose media is full width */
+  .wv2-deep-prose.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 32px; }
+  .wv2-deep-prose.trio .row { grid-template-columns: 1fr; gap: 10px; padding: 16px 0 0;
+    border-top: 2px solid var(--awb-4); align-content: start; }
+  @media (max-width: 860px){
+    .wv2-deep-prose.trio { grid-template-columns: 1fr; gap: 0; }
+    .wv2-deep-prose.trio .row { border-top-width: 1px; border-color: rgba(60,60,60,0.15);
+      padding: 14px 0; }
+  }
+  /* stills as a strip under the two columns, so a short prose never sits beside
+     a tall stack of images */
+  /* capped, not 1fr: with a single still auto-fit would hand it the whole row and
+     blow one screenshot up to full width */
+  .wv2-figs.row { grid-template-columns: repeat(auto-fit, minmax(240px, 340px));
+    justify-content: start; gap: 14px; margin-top: 20px; align-items: start; }
+  @media (max-width: 560px){
+    .wv2-figs.row { grid-template-columns: 1fr; }
+  }
+  /* the two side by side hold the same frame height even though the recordings have
+     different aspect ratios: the image stays at its own ratio, anchored to the top,
+     and the leftover is the recording's own paper, so both captions line up */
+  .wv2-clips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    align-content: start; align-items: stretch; }
+  .wv2-clips.one { grid-template-columns: 1fr; }
+  @media (max-width: 760px){ .wv2-clips { grid-template-columns: 1fr; } }
+  .wv2-clip { margin: 0; border: 1px solid rgba(60,60,60,0.14); border-radius: 4px;
+    overflow: hidden; background: var(--white);
+    display: flex; flex-direction: column; }
+  .wv2-clip.span2 { grid-column: 1 / -1; }
+  @media (max-width: 760px){ .wv2-clip.span2 { grid-column: auto; } }
+  .wv2-clip-head { display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; font-family: var(--wv-mono); font-size: 9.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; padding: 9px 12px; background: var(--paper);
+    border-bottom: 1px solid rgba(60,60,60,0.1); }
+  .wv2-clip-head .nm { opacity: .75; }
+  /* a live dot, so the still frame of a paused recording still reads as a recording */
+  .wv2-clip-head .rec { display: inline-flex; align-items: center; gap: 6px;
+    color: var(--awb-7); opacity: .8; }
+  .wv2-clip-head .rec::before { content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--awb); animation: wvRec 2s ease-in-out infinite; }
+  @keyframes wvRec { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+  .wv2-clip img { width: 100%; height: auto; display: block; background: var(--paper);
+    flex: 1 1 auto; min-height: 0; object-fit: contain; object-position: top center; }
+  /* a full-width strip of a 1250px recording would stretch past its own resolution
+     and dwarf the two panels under it, so it gets room around it and a ceiling */
+  .wv2-clip.inset img { box-sizing: border-box; max-width: 860px; margin: 0 auto;
+    padding: clamp(22px, 4vw, 56px) clamp(20px, 5vw, 80px); }
+  /* the capped width leaves a gutter either side of the image: the frame has to
+     carry the recording's own paper there, or the gutter reads as a white seam */
+  .wv2-clip.inset { background: var(--paper); }
+  .wv2-clip figcaption { font-size: 12.5px; line-height: 1.55; opacity: .7; padding: 10px 12px;
+    border-top: 1px solid rgba(60,60,60,0.1); }
+
+  /* the four dives alternate which side the media sits on, so reading down the
+     section is a zigzag instead of one tall column of identical blocks */
+  .wv2-deep-body.flip { grid-template-columns: 1.1fr 1fr; }
+  .wv2-deep-body.flip .wv2-deep-prose { order: 2; }
+  .wv2-deep-body.flip .wv2-deep-side { order: 1; }
+  @media (max-width: 860px){
+    .wv2-deep-body.flip .wv2-deep-prose { order: 1; }
+    .wv2-deep-body.flip .wv2-deep-side { order: 2; }
+  }
+
+  /* "lead" dives: clips across the top, then prose and stills underneath */
+  .wv2-deep-body.lead { grid-template-columns: 1fr; gap: 26px; }
+  .wv2-deep-body.lead .wv2-deep-cols { display: grid; grid-template-columns: 1fr 1.1fr;
+    gap: 44px; align-items: start; }
+  @media (max-width: 860px){
+    .wv2-deep-body.lead .wv2-deep-cols { grid-template-columns: 1fr; gap: 24px; }
+  }
+  .wv2-deep-body.lead .wv2-figs { grid-template-columns: 1fr; }
 
   /* ── ownership ── */
   .wv2-own { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px 26px; margin-bottom: 44px; }
@@ -551,26 +701,103 @@ function WvScrollTo(id) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-/* one component deep dive — header always visible, dense material behind "open →" */
-/* a weave figure: shows the export when it's in the folder, and a labeled frame
-   while it isn't, so the band keeps its shape mid-upload */
-function WvShot({ src, cap, alt, wide }) {
-  const [missing, setMissing] = useStateWv(false);
+/* a full-bleed plate that paints itself the colour of the artwork it holds.
+   the exports come out of figma on whatever background that page happened to use
+   (light gray on one, #535353 on the next), so hardcoding the band would break
+   every time one gets re-exported. sampling a corner pixel means the artwork's
+   own margins melt into the band and the seam never exists. */
+function WvBleed({ src, alt, className }) {
+  const ref = useRefWv(null);
+  const [bg, setBg] = useStateWv(null);
+  const [box, setBox] = useStateWv(null);
+
+  /* read the artwork: the background it was exported on, and the rectangle its
+     content actually occupies. the exports arrive with big, lopsided blank margins
+     (one was 2797px wide holding 1873px of content, 776 blank on the left and 148
+     on the right), so at width:100% the spread renders small and off to one side.
+     knowing the content box lets the band crop to it in CSS and scale the content
+     up to fill the width, without touching the file: whatever gets re-exported next
+     lands the same way. */
+  const sample = () => {
+    const img = ref.current;
+    if (!img || !img.naturalWidth) return;
+    try {
+      const W = 240;
+      const H = Math.max(1, Math.round(W * img.naturalHeight / img.naturalWidth));
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, W, H);
+      const px = ctx.getImageData(0, 0, W, H).data;
+
+      /* the colour comes off the FULL-RES corner, not the downsample: scaling to
+         240px averages neighbouring pixels and shifted one export's #f6f6f6 to
+         #fcfcfc, which is enough to draw a hairline where the band meets the art */
+      const c1 = document.createElement("canvas");
+      c1.width = 1; c1.height = 1;
+      const x1c = c1.getContext("2d", { willReadFrequently: true });
+      x1c.drawImage(img, 2, 2, 1, 1, 0, 0, 1, 1);
+      const base = Array.from(x1c.getImageData(0, 0, 1, 1).data);
+      if (base[3] > 8) setBg("rgb(" + base[0] + ", " + base[1] + ", " + base[2] + ")");
+
+      const ink = (x, y) => {
+        const i = (y * W + x) * 4;
+        return Math.abs(px[i] - base[0]) + Math.abs(px[i + 1] - base[1]) +
+               Math.abs(px[i + 2] - base[2]) > 24 ||
+               (base[3] > 8 && px[i + 3] < base[3] - 24);
+      };
+
+      let x0 = -1, x1 = -1, y0 = -1, y1 = -1;
+      for (let x = 0; x < W; x++) for (let y = 0; y < H; y++) {
+        if (ink(x, y)) { if (x0 < 0) x0 = x; x1 = x; break; }
+      }
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        if (ink(x, y)) { if (y0 < 0) y0 = y; y1 = y; break; }
+      }
+      if (x0 < 0 || x1 <= x0 || y0 < 0 || y1 <= y0) return;
+
+      const lf = x0 / W, wf = (x1 + 1 - x0) / W;      /* content left + width, 0..1 */
+      const tf = y0 / H, hf = (y1 + 1 - y0) / H;      /* content top + height, 0..1 */
+      /* already filling the frame: leave the plain image alone */
+      if (wf > 0.94 && hf > 0.94) return;
+
+      /* aspect-ratio, not padding-bottom: a percentage padding resolves against the
+         CONTAINING BLOCK's width, so the moment the box takes a max-width its height
+         keeps following the parent and the crop skews. likewise a percentage "top"
+         resolves against the containing block's HEIGHT, so that one is scaled by hf,
+         not by the image ratio. */
+      setBox({
+        ar: (x1 + 1 - x0) + " / " + ((y1 + 1 - y0) * img.naturalHeight * W /
+             (img.naturalWidth * H)).toFixed(4),
+        w: 100 / wf,                                  /* image width, % of the box  */
+        left: -100 * lf / wf,
+        top: -100 * tf / hf,
+      });
+    } catch (e) {
+      /* a tainted canvas just means the band keeps the paper token and no crop */
+    }
+  };
+
+  /* a cached image can already be complete before react attaches onLoad */
+  useEffectWv(() => {
+    const img = ref.current;
+    if (img && img.complete) sample();
+  }, [src]);
+
+  const pc = (n) => n.toFixed(3) + "%";
   return (
-    <figure className={"wv2-shot" + (wide ? " wide" : "")}>
-      {missing ? (
-        <div className="wv2-shot-ph" role="img" aria-label={alt}>
-          <span>export pending<br /><b>{src}</b></span>
-        </div>
-      ) : (
-        <div className="wv2-shot-frame">
-          <img src={src} alt={alt} loading="lazy" onError={() => setMissing(true)} />
-        </div>
-      )}
-      <figcaption>{cap}</figcaption>
+    <figure className={"wv2-full" + (className ? " " + className : "")}
+      style={bg ? { background: bg } : undefined}>
+      <div className={"wv2-bleed" + (box ? " cropped" : "")}
+        style={box ? { aspectRatio: box.ar } : undefined}>
+        <img ref={ref} src={src} alt={alt} loading="lazy" decoding="async" onLoad={sample}
+          style={box ? { width: pc(box.w), left: pc(box.left), top: pc(box.top) } : undefined} />
+      </div>
     </figure>
   );
 }
+
+/* one component deep dive — header always visible, dense material behind "open →" */
 
 function WvDeep({ id, index, open, onToggle, onReveal }) {
   const p = PROJECTS[id];
@@ -590,8 +817,47 @@ function WvDeep({ id, index, open, onToggle, onReveal }) {
   }, [id]);
 
   if (!p || !p.case) return null;
-  const shots = (p.items || []).filter((it) => it.src);
+  const shots = (p.items || []).filter((it) => it.src && !WV_DROP_STILLS.has(it.src));
   const prose = [["problem", p.case.problem], ["solution", p.case.solution], ["outcome", p.case.outcome]].filter(([, b]) => b);
+  const motion = WV_MOTION[id];
+  const lead = motion && motion.layout === "lead";
+
+  const proseBlock = (
+    <div className="wv2-deep-prose">
+      {prose.map(([label, body]) => (
+        <div className="row" key={label}>
+          <span className="k">{label}</span>
+          <p>{body}</p>
+        </div>
+      ))}
+    </div>
+  );
+  const shotsBlock = shots.length > 0 && (
+    <div className="wv2-figs">
+      {shots.map((s, i) => (
+        <figure className="wv2-fig" key={i} style={{ margin: 0 }}>
+          <img src={s.src} alt={s.caption || p.name} loading="lazy" />
+          <figcaption className="cap">{p.name.replace(/\.$/, "")} · {s.caption} · exported from the weave figma library</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+  const clipsBlock = motion && (
+    <div className={"wv2-clips" + (motion.clips.length === 1 ? " one" : "")}>
+      {motion.clips.map((c, i) => (
+        <figure className={"wv2-clip" + (c.span === 2 ? " span2" : "") + (c.inset ? " inset" : "")} key={i}>
+          <div className="wv2-clip-head">
+            <span className="nm">{p.name.replace(/\.$/, "")} / {c.label}</span>
+            <span className="rec">prototype</span>
+          </div>
+          <img src={c.src} alt={p.name.replace(/\.$/, "") + ": " + c.cap}
+            width={c.w} height={c.h} loading="lazy" decoding="async" />
+          <figcaption>{c.cap}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+
   return (
     <div className="wv2-deep" ref={ref}>
       <div className="wv2-deep-head">
@@ -605,26 +871,55 @@ function WvDeep({ id, index, open, onToggle, onReveal }) {
         </button>
       </div>
       <div className={"wv2-acc" + (open ? " open" : "")} aria-hidden={!open}>
-        <div className="wv2-deep-body">
-          <div className="wv2-deep-prose">
-            {prose.map(([label, body]) => (
-              <div className="row" key={label}>
-                <span className="k">{label}</span>
-                <p>{body}</p>
+        {lead ? (
+          /* three recordings: they run across the top. with no stills left to sit
+             beside, the reading spreads into three columns instead of hugging the
+             left edge under a full-width band of video */
+          <div className="wv2-deep-body lead">
+            {clipsBlock}
+            {shots.length > 0 ? (
+              <div className="wv2-deep-cols">
+                {proseBlock}
+                {shotsBlock}
               </div>
-            ))}
+            ) : (
+              <div className="wv2-deep-prose trio">
+                {prose.map(([label, body]) => (
+                  <div className="row" key={label}>
+                    <span className="k">{label}</span>
+                    <p>{body}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {shots.length > 0 && (
-            <div className="wv2-figs">
-              {shots.map((s, i) => (
-                <figure className="wv2-fig" key={i} style={{ margin: 0 }}>
-                  <img src={s.src} alt={s.caption || p.name} loading="lazy" />
-                  <figcaption className="cap">{p.name.replace(/\.$/, "")} · {s.caption} · exported from the weave figma library</figcaption>
-                </figure>
-              ))}
+        ) : motion ? (
+          /* one recording: it sits beside the prose (their heights are close), and
+             the stills drop to a strip underneath instead of stacking into a tall
+             column that would leave the prose side empty. "flip" swaps the sides. */
+          <React.Fragment>
+            <div className={"wv2-deep-body" + (motion.flip ? " flip" : "")}>
+              {proseBlock}
+              <div className="wv2-deep-side">{clipsBlock}</div>
             </div>
-          )}
-        </div>
+            {shots.length > 0 && (
+              <div className="wv2-figs row">
+                {shots.map((s, i) => (
+                  <figure className="wv2-fig" key={i} style={{ margin: 0 }}>
+                    <img src={s.src} alt={s.caption || p.name} loading="lazy" />
+                    <figcaption className="cap">{s.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </React.Fragment>
+        ) : (
+          /* no recording: prose and stills, the original two columns */
+          <div className="wv2-deep-body">
+            {proseBlock}
+            {shotsBlock}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -738,7 +1033,9 @@ function WeaveCase({ spec, onAsk }) {
         </div>
       </header>
 
-      {/* ── 01 · the story ── */}
+      {/* ── 01 · the story ──
+          the library closes the story and hands off to ownership: you read why the
+          products diverged, then you see the system that answered it. ── */}
       <section className="wv2-sec paper wv2-grid-bg" id="wv2-story">
         <div className="wv2-wrap">
           <span className="wv2-chip">the story · 01</span>
@@ -767,11 +1064,14 @@ function WeaveCase({ spec, onAsk }) {
               </div>
             ))}
           </div>
+
+          <WvBleed className="bottom" src="images-autodesk/autodesk1.jpg"
+            alt="A spread of Weave components: alert banners, buttons, notification cards, a media card, avatars, tags, a tab bar, a stepper, toggles and a date picker" />
         </div>
       </section>
 
       {/* ── 02 · ownership ── */}
-      <section className="wv2-sec darkblue" id="wv2-own">
+      <section className="wv2-sec paper wv2-grid-bg" id="wv2-own">
         <div className="wv2-wrap">
           <span className="wv2-chip">ownership · 02</span>
           <h2 className="wv2-h2">What I owned.</h2>
@@ -796,7 +1096,7 @@ function WeaveCase({ spec, onAsk }) {
       <section className="wv2-sec darkgray" id="wv2-live">
         <div className="wv2-wrap">
           <span className="wv2-chip">the system · 03</span>
-          <h2 className="wv2-h2">Nine combinations. Try all of them.</h2>
+          <h2 className="wv2-h2">Nine combinations.</h2>
           <p className="wv2-live-note">
             The components below run on Weave's own theme data. Pick a theme and a density:
             the colors, buttons, and rows recalculate the same way they do inside AutoCAD.
@@ -873,7 +1173,10 @@ function WeaveCase({ spec, onAsk }) {
         </div>
       </section>
 
-      {/* ── 04 · component deep dives ── */}
+      {/* ── 04 · component deep dives ──
+          the library plate opens the section and the feature set closes it, so a
+          very long accordion reads as three acts instead of one column. both are
+          full bleed and carry the section's own paper, so they have no edge. ── */}
       <section className="wv2-sec paper wv2-grid-bg" id="wv2-components">
         <div className="wv2-wrap">
           <span className="wv2-chip">components · 04</span>
@@ -882,42 +1185,15 @@ function WeaveCase({ spec, onAsk }) {
             The ones I owned end to end. Each header stays put; the full story and the real spec
             artifacts open in place. No subpages.
           </p>
+
           {WEAVE_DEEP_DIVES.map((id, i) => (
             <WvDeep key={id} id={id} index={i}
               open={deepOpen instanceof Set ? deepOpen.has(id) : deepOpen === id}
               onToggle={toggleDeep} onReveal={revealDeep} />
           ))}
-        </div>
 
-        {/* ── the documentation itself. the case claims engineers shipped without a
-            designer in the room; this is the artifact that made that true, so the
-            whole spread goes in at full bleed (the volume IS the argument) and the
-            readable crops sit under it. ── */}
-        <div className="wv2-docs">
-          <div className="wv2-wrap" style={{ padding: 0 }}>
-            <div className="wv2-docs-head">
-              <span className="wv2-chip sm">the documentation</span>
-            </div>
-            <p className="wv2-docs-lede">
-              One component's spec: anatomy, surface, resizing, grippers, content, header,
-              footer, tabs, and every placement (floating, docked, fixed, side, dock, tables
-              and tiles inside panels). This is what "no designer required in the room" looks
-              like as an artifact.
-            </p>
-          </div>
-          <WvShot src="weave-doc-panel-spread.png" wide
-            cap="panel · the full specification page, as delivered to engineering"
-            alt="The complete Panel documentation page: dozens of annotated artboards covering anatomy, states and placements" />
-          <div className="wv2-wrap" style={{ padding: 0 }}>
-            <div className="wv2-docs-trio">
-              <WvShot src="weave-doc-anatomy.png" cap="anatomy · every part named and measured"
-                alt="The Panel anatomy artboard, with each region numbered and described" />
-              <WvShot src="weave-doc-docking.png" cap="docking · the behavior written as steps"
-                alt="The Panel docking documentation, showing the drag-to-dock behavior step by step" />
-              <WvShot src="weave-doc-tabs.png" cap="tabs · parent, content, horizontal, vertical"
-                alt="The Panel tabs documentation covering parent tabs, content tabs and their orientations" />
-            </div>
-          </div>
+          <WvBleed className="bottom" src="images-autodesk/autodesk2.jpg"
+            alt="A spread of Data Grid features: a row expanded into a master detail panel, a table with checkbox selection, the column menu with sort, pin, filter and hide, a sorted table, and a table with nested row groups" />
         </div>
       </section>
 

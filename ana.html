@@ -46,7 +46,13 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* clip, not hidden. `overflow-x: hidden` with a visible overflow-y coerces
+     overflow-y to `auto`, which turns <body> into its own scroll container —
+     a second, nested scroller inside the page. `clip` trims the horizontal
+     spill without ever creating a scroll box, so the viewport stays the one
+     and only scroller and scrolling is entirely the browser's. */
   body { overflow-x: hidden; }
+  @supports (overflow: clip) { body { overflow-x: clip; } }
 
   ::selection { background: rgba(107,78,255,0.20); color: var(--text); }
 

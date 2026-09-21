@@ -612,7 +612,7 @@ const MOCK_RESPONSES = {
     title: "selected work.",
     subtitle: "two design systems, three platforms each, and the work in between",
     intro: "every case page wears its project's skin. dive into each universe, and i'll tell you the messy parts if you ask.",
-    items: ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"],
+    items: ["manychat-ds", "baw", "bmtax", "canal", "weave", "espm", "releve"],
     doodles: []
   },
   "good at|strength|quality|superpower|great at|best at": {
@@ -769,7 +769,7 @@ function mockCompose(question) {
     _question: question
   };
 }
-const PLACEHOLDER_CYCLE = ["what's your best project?", "are you open to work?", "show me your fintech work", "what do you hate doing?"];
+const PLACEHOLDER_CYCLE = ["what's your best project?", "are you open to work?", "show me your fintech work", "what would you redo?"];
 Object.assign(window, {
   PROJECTS,
   MOCK_RESPONSES,

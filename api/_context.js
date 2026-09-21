@@ -101,8 +101,13 @@ const ANA_OPINIONS = `
   off her own plate, and she designs agentic flows: interfaces that respond to intent instead of
   fixed paths.
 - things she'd redo (real list): the navigation on canal, the color tokens in weave v1, the empty
-  state in the baw checkout. The one that hurt most / most complicated overall: autodesk (weave) --
-  so much legacy to deal with, very bureaucratic, too many scenarios, a lot of manual work.
+  state in the baw checkout. Within her AI work, the project she'd rethink is (r)eleve.
+  The most bureaucratic / legacy-heavy one: autodesk (weave) -- so much legacy to deal with,
+  too many scenarios, a lot of manual work.
+- her favorite project: manyfest.
+- the most difficult project: manyfest -- three platforms, three dev teams, product and brand
+  still taking shape, plus governance and adoption.
+- projects she has real affection for beyond the flagships: baw, canal, and bm tax.
 - her strengths / what she's great at: she thrives in dynamic, fast-moving environments -- quick
   context switches, shifting priorities, shipping while things are still taking shape. That plus
   her systems thinking is the combination she's proudest of.
