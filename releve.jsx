@@ -5,7 +5,8 @@
    gradients, and the app's own tokens — every value below is
    sampled from the shipped deck (releve-1…4) or read straight
    out of the prototype's token table (releve-proto.html · const C).
-   The centerpiece is the LIVE prototype, embedded in demo mode.
+   The centerpiece is a recorded walkthrough of the prototype
+   (releve-demo.mp4), embedded as video in the app's own phone shell.
    Full-bleed bands via body.releve-mode; ends with
    NextProjectFooter inside the last dark band.
    Registers LAYOUTS["releve-case"] → hash route #/releve (app.jsx).
@@ -104,6 +105,12 @@ const __RLV_STYLE = `
   .rl-sec { padding: 96px 0 110px; }
   .rl-sec.stage { background: var(--stage); }
   .rl-sec.app { background: var(--bgapp); }
+  /* the screens section carries the recording's OWN gradient (sampled straight
+     off the clip: ~#141418 at the top fading to pure black), not a flat fill —
+     that's what makes the video's edges disappear instead of reading as a box.
+     it also happens to end at #000, which is exactly the next section's --stage,
+     so the handoff into "the process" has no seam either. */
+  #rl-screens { background: linear-gradient(to bottom, #141418 0%, #000000 100%); }
   .rl-chip { display: inline-block; font-family: var(--rl-mono); font-size: 11px;
     letter-spacing: 0.22em; text-transform: uppercase; color: var(--text);
     border: 1px solid var(--line-hi); border-radius: 999px; padding: 8px 16px;
@@ -174,7 +181,7 @@ const __RLV_STYLE = `
   .rl-hero-chip b { color: var(--text); font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.1em; font-size: 9px; margin-right: 6px; }
 
-  /* ── screens — the product is the point: live build + real artifacts ── */
+  /* ── screens — the product is the point: recorded walkthrough + real artifacts ── */
   .rl-wide { max-width: 1500px; margin: 0 auto;
     padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
     gap: clamp(40px, 6vw, 88px); }
@@ -189,27 +196,35 @@ const __RLV_STYLE = `
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .rl-duo { grid-template-columns: 1fr; } }
 
-  /* demo — the prototype is the whole point, so it gets the full column and centers.
-     the old giant "demo" title repeated what the lede already says. */
-  .rl-demo-duo { max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
-    padding: 0 clamp(24px, 5vw, 72px); display: flex; justify-content: center; }
+  /* screens — two columns, text left / recording right. this is .rl-wrap
+     ITSELF (not a second, competing box), so it shares the exact same
+     max-width and left-rail clearance as every other heading on the page —
+     it just adds grid display on top instead of redeclaring the box model.
+     the section's own background IS the recording's background (both
+     --bgapp, #080808), and the video carries no frame, radius or shadow of
+     its own, so there is no box to see: the clip just sits on the page like
+     any other pixel. */
+  .rl-screens-grid { display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px);
+    align-items: center; }
+  @media (max-width: 900px){ .rl-screens-grid { grid-template-columns: minmax(0, 1fr); } }
+  .rl-screens-text { min-width: 0; }
+  .rl-screens-text .rl-h2, .rl-screens-text .rl-lede { max-width: none; }
+  .rl-screens-text .rl-lede { margin-bottom: 0; }
+  .rl-screens-grid .rl-proto { min-width: 0; }
 
-  /* the live prototype — the app in its own phone shell, running in demo mode */
-  .rl-proto { display: flex; flex-direction: column; align-items: center; }
-  .rl-proto-kicker { font-family: var(--rl-mono); font-size: 10.5px; letter-spacing: 0.24em;
-    text-transform: uppercase; margin-bottom: 22px; display: inline-flex;
-    align-items: center; gap: 10px; color: var(--text); }
-  .rl-proto-kicker::before { content: ""; width: 8px; height: 8px; border-radius: 4px;
-    background: var(--green); /* prototype C.green — the "live" dot */ }
-  /* the shell is ALWAYS a true iphone (393×820, radius 55) — when the viewport
-     is shorter than the phone, the whole object scales down as one piece
-     (js sets the wrapper size + transform), never squashed to a new ratio */
-  .rl-phone-fit { position: relative; }
-  .rl-phone { width: 393px; height: 820px; border-radius: 55px; transform-origin: top left;
-    /* the prototype's own shell: 393px, radius 55, hairline border — read from its CSS */
-    border: 2px solid rgba(255,255,255,0.1); overflow: hidden; background: #000;
-    box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 90px rgba(91,63,232,0.18); }
-  .rl-phone iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+  /* the recording, cropped tight to the device silhouette itself (no background
+     margin baked in any more) — the corner radius (15.8% / 7.5%, measured off
+     the actual bezel curve in the source footage: r=120px on a 759×1603 crop)
+     clips the video's own four rectangular corners, which is where the last
+     sliver of the clip's black background lived, so what shows through those
+     corners is the section's own background instead. No border, no shadow. */
+  .rl-proto { display: flex; justify-content: center; }
+  .rl-phone-fit { width: 100%; max-width: 300px; }
+  .rl-phone { width: 100%; aspect-ratio: 480 / 1014; border-radius: 15.8% / 7.5%;
+    overflow: hidden; }
+  .rl-phone video { width: 100%; height: 100%; border: 0; display: block;
+    object-fit: cover; }
 
   /* ── process — four beats ── */
   .rl-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -323,23 +338,42 @@ const RLV_OWN = [
   { h: "Research & testing", p: "Studio observation, six personas, the user-testing protocol. 83% task success, 4.4/5 usability, and six dancers who'd use it again." },
 ];
 
-/* iphone shell at true ratio — scales down as one object to fit the viewport */
+/* recorded walkthrough — sits in its column at its own aspect ratio (480×1014),
+   no frame, no scroll-fit math: it just flows with the page like the text beside it.
+   plays itself: starts (muted, so autoplay is allowed) the moment the clip scrolls
+   into view, loops for as long as it's in view, and pauses once it scrolls away —
+   controls stay on so she can unmute or scrub by hand. */
 function RlvPhone() {
-  const [ps, setPs] = useStateRlv(1);
+  const [node, setNode] = useStateRlv(null);
   useEffectRlv(() => {
-    const fit = () => setPs(Math.min(
-      1,
-      (window.innerHeight - 130) / 820, /* room for the kicker + caption */
-      (window.innerWidth - 48) / 393
-    ));
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, []);
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) node.play && node.play().catch(() => {});
+          else node.pause && node.pause();
+        });
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [node]);
   return (
-    <div className="rl-phone-fit" style={{ width: Math.round(393 * ps), height: Math.round(820 * ps) }}>
-      <div className="rl-phone" style={{ transform: "scale(" + ps + ")" }}>
-        <iframe src="https://releve-gvuu.onrender.com/" title="(r)elevē live prototype · ballet correction app" loading="lazy"></iframe>
+    <div className="rl-phone-fit">
+      <div className="rl-phone">
+        <video
+          ref={setNode}
+          muted
+          loop
+          controls
+          playsInline
+          preload="metadata"
+          poster="releve-demo-poster.jpg"
+          title="(r)elevē walkthrough · ballet correction app"
+        >
+          <source src="releve-demo.mp4" type="video/mp4" />
+        </video>
       </div>
     </div>
   );
@@ -403,31 +437,30 @@ function RlvCase({ spec, onAsk }) {
             and returns corrections a teacher would endorse. Timestamped, replayable,
             in English and Portuguese.
           </p>
-          <button className="rl-cta" onClick={() => RlvScrollTo("rl-proto")} aria-label="open the live prototype">
-            Open the live prototype <span className="arr">↓</span>
+          <button className="rl-cta" onClick={() => RlvScrollTo("rl-proto")} aria-label="watch the recorded walkthrough">
+            Watch the walkthrough <span className="arr">↓</span>
           </button>
         </div>
       </header>
 
-      {/* ── 01 · the screens — the product on stage, live build included ── */}
+      {/* ── 01 · the screens — text and recording side by side, same bg as the clip ── */}
       <section className="rl-sec app" id="rl-screens">
         <div className="rl-wrap">
-          <span className="rl-chip">the screens · 01</span><span className="rl-count">live build + artifacts</span>
-          <h2 className="rl-h2">The product, <em>on stage.</em></h2>
-          <p className="rl-lede">
-            Everything below is the real thing: the shipped deck and the working prototype,
-            <strong> running live in demo mode</strong>. Pick an exercise, upload any video,
-            and walk the same analysis flow the dancers tested.
-          </p>
+          <span className="rl-chip">the screens · 01</span><span className="rl-count">recorded walkthrough + artifacts</span>
         </div>
 
-        {/* demo — the app itself, centered in its own shell */}
-        <div className="rl-demo-duo">
-          <figure className="rl-proto" id="rl-proto" style={{ margin: 0 }}>
-            <span className="rl-proto-kicker">live prototype · demo mode, click through it</span>
+        <div className="rl-wrap rl-screens-grid">
+          <div className="rl-screens-text">
+            <h2 className="rl-h2">The product, <em>on stage.</em></h2>
+            <p className="rl-lede">
+              Everything below is the real thing: the shipped deck and a recording
+              <strong> of the live product</strong>. Choosing an exercise, uploading a video,
+              and walking through the same analysis flow the dancers tested.
+            </p>
+          </div>
+          <div className="rl-proto" id="rl-proto">
             <RlvPhone />
-            <figcaption className="rl-cap">prototype · live build · upload → analysis → timestamped corrections</figcaption>
-          </figure>
+          </div>
         </div>
       </section>
 

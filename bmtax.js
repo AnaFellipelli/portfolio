@@ -95,6 +95,12 @@ const __BMT_STYLE = `
   .bt-sec.paper { background: var(--paper); }
   .bt-sec.white { background: #fff; }
   .bt-sec.dark { background: var(--coal); color: var(--paper); }
+  /* screens → process is a light-to-light handoff (paper → white, no color break
+     to sell it as a section change), so the two sections' standard 96/110px
+     padding stacked into one oversized gap after the last screenshot.
+     tightened just for this pair. */
+  #bt-screens { padding-bottom: 0; }
+  #bt-process { padding-top: 0; }
   /* the hairlines are the page's grid: they sit in the GUTTERS, 44px outside the
      content column, so they frame the copy instead of slicing through a headline. */
   .bt-sec .rule-v { position: absolute; top: 0; bottom: 0; width: 1px;
@@ -231,14 +237,6 @@ const __BMT_STYLE = `
   @media (prefers-reduced-motion: reduce) {
     .bt-xwin { animation: none; }
   }
-
-  /* ── ✕ divider strip — the logo's mark, the site's own motif ── */
-  .bt-xstrip { display: flex; align-items: center; justify-content: center; gap: 34px;
-    background: var(--paper); border-top: 1px solid var(--hair);
-    border-bottom: 1px solid var(--hair); padding: 13px 0; overflow: hidden; }
-  .bt-xstrip span { font-family: var(--bmt-grot); font-weight: 700; font-size: 13px; }
-  .bt-xstrip span:nth-child(odd) { color: var(--mint); }
-  .bt-xstrip span:nth-child(even) { color: var(--ink); opacity: .35; }
 
   /* ── screens — the shipped work, composed big (bw-wide pattern) ── */
   .bt-wide { max-width: 1760px; margin: 0 auto;
@@ -534,14 +532,7 @@ function BmtaxCase({
   }, "visit the live site ", /*#__PURE__*/React.createElement("span", {
     className: "arr",
     "aria-hidden": "true"
-  }, "↗")))))), /*#__PURE__*/React.createElement("div", {
-    className: "bt-xstrip",
-    "aria-hidden": "true"
-  }, Array.from({
-    length: 14
-  }).map((_, i) => /*#__PURE__*/React.createElement("span", {
-    key: i
-  }, "✕"))), /*#__PURE__*/React.createElement("section", {
+  }, "↗")))))), /*#__PURE__*/React.createElement("section", {
     className: "bt-sec paper",
     id: "bt-screens"
   }, /*#__PURE__*/React.createElement("div", {
@@ -596,17 +587,6 @@ function BmtaxCase({
   })), /*#__PURE__*/React.createElement("figure", {
     className: "bt-full",
     style: {
-      background: "#d6d6d2"
-    }
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "images-bmtax/BMTAx3.jpg",
-    alt: "Sobre page, desktop and mobile: the somos bento grid (inovação, precisão, estratégia, tecnologia, the bmtax wordmark) followed by the intro paragraph and a saiba mais button",
-    loading: "lazy",
-    width: "2600",
-    height: "1167"
-  })), /*#__PURE__*/React.createElement("figure", {
-    className: "bt-full",
-    style: {
       background: "#353535"
     }
   }, /*#__PURE__*/React.createElement("img", {
@@ -615,6 +595,17 @@ function BmtaxCase({
     loading: "lazy",
     width: "2700",
     height: "1212"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bt-full",
+    style: {
+      background: "#d6d6d2"
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "images-bmtax/BMTAx3.jpg",
+    alt: "Sobre page, desktop and mobile: the somos bento grid (inovação, precisão, estratégia, tecnologia, the bmtax wordmark) followed by the intro paragraph and a saiba mais button",
+    loading: "lazy",
+    width: "2600",
+    height: "1167"
   })))), /*#__PURE__*/React.createElement("section", {
     className: "bt-sec white",
     id: "bt-process"

@@ -236,10 +236,10 @@ const PROJECTS = {
     items: [
       { kind: "shot",   label: "home",    caption: "simplificando o universo tributário", src: "bmtax-home.jpg", w: 1600, h: 812, pos: "50% 45%", zoom: 1.25 },
       { kind: "proto",  label: "mobile",  caption: "home · mobile", src: "bmtax-mobile-1.png", w: 560, h: 1132, fit: "contain" },
-      { kind: "shot",   label: "time",    caption: "nosso ✕ time", src: "bmtax-time.jpg", w: 1600, h: 955, pos: "22% 35%", zoom: 1.5, slot: 3 },
-      { kind: "proto",  label: "números", caption: "nossos números", src: "bmtax-mobile-2.png", w: 560, h: 1132, fit: "contain", slot: 4 },
-      { kind: "shot",   label: "blog",    caption: "inteligência tributária", src: "bmtax-blog.jpg", w: 1600, h: 882, pos: "78% 50%", zoom: 1.4, slot: 6 },
-      { kind: "note",   label: "note",    caption: "blueprint, not brochure", slot: 5 },
+      { kind: "shot",   label: "time",    caption: "nosso ✕ time", src: "bmtax-time.jpg", w: 1600, h: 955, pos: "22% 35%", zoom: 1.5 },
+      { kind: "proto",  label: "números", caption: "nossos números", src: "bmtax-mobile-2.png", w: 560, h: 1132, fit: "contain" },
+      { kind: "shot",   label: "blog",    caption: "inteligência tributária", src: "bmtax-blog.jpg", w: 1600, h: 882, pos: "78% 50%", zoom: 1.4 },
+      { kind: "note",   label: "note",    caption: "blueprint, not brochure" },
     ],
   },
   "espm": {

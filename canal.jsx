@@ -199,6 +199,12 @@ const __CNL_STYLE = `
   .cn-full img { display: block; width: auto; height: auto;
     max-width: 100%; max-height: min(640px, 68vh); margin: 0 auto; border: 0; }
 
+  /* screens → process: the shared .cn-sec padding (96px top + 110px bottom) was
+     stacking at this seam alone (mist's 110 + paper's 96 = 206px dead band).
+     tightened just here so the images sit close to the process copy. */
+  #cn-screens { padding-bottom: 0; }
+  #cn-process { padding-top: 0; }
+
   /* ── process — four beats, hairline-topped like the menu's dividers ── */
   .cn-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
   @media (max-width: 960px){ .cn-process { grid-template-columns: repeat(2, 1fr); } }

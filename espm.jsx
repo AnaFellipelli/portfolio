@@ -96,6 +96,12 @@ const __ESPM_STYLE = `
   .es-sec.floor { background: var(--floor); color: var(--paper); }
   .es-sec.glass { background: var(--glass); color: var(--paper); }
   .es-sec.light { background: var(--paper); color: var(--floor); }
+  /* screens → decisions is a dark-to-dark handoff (glass → floor, no color
+     break to sell it as a section change), so the two sections' standard
+     96/110px padding stacked into one oversized gap after the last
+     screenshot. tightened just for this pair. */
+  #es-screens { padding-bottom: 0; }
+  #es-decisions { padding-top: 0; }
   .es-chip { display: inline-block; font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.22em; text-transform: uppercase; color: inherit;
     border: 1px solid currentColor; border-radius: 999px; padding: 8px 16px;
@@ -231,8 +237,37 @@ const __ESPM_STYLE = `
      ends up bigger than the gap above — which was the uneven part. */
   .es-sm-head { margin: 72px 0 18px; line-height: 1; }
   .es-sm-head .es-chip.sm { font-size: 10px; padding: 6px 12px; margin-bottom: 0; }
+  /* the caption used to sit BELOW the diagram as a figcaption; it now lives
+     right under the chip that names the diagram, aligned to the chip's own
+     left edge — between the tag and the image, not trailing after it. */
+  .es-sm-head .es-sm-note { display: block; }
   .es-sm-note { font-family: var(--espm-quirk); font-size: 10px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 18px 0 0; }
+    text-transform: uppercase; color: rgba(0,0,0,0.45); margin: 10px 0 0; }
+
+  /* ── the legacy sitemap, redrawn as Ana's original draw.io actually laid
+     it out: an absolutely-positioned canvas + one SVG for the connectors,
+     not the tidy top-down tree used for "after". Real edges, real crossings
+     — Login and Institucional each fan out to children sitting at different
+     depths down their own column, which is the actual argument (one parent,
+     used as a dumping ground) made visible instead of tidied away. ── */
+  /* only width scrolls (narrow viewports only, same as every other diagram
+     here) — the diagram is pre-scaled to its own height, so there's never
+     a second, nested vertical scrollbar to fight the page's own scroll. */
+  .es-old-scroll { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: 4px 4px 16px; }
+  .es-old-scaler { position: relative; }
+  .es-old-canvas { position: relative; transform-origin: top left; }
+  .es-old-svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+  .es-old-node { position: absolute; box-sizing: border-box; width: 150px; min-height: 44px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    text-align: center; padding: 6px 8px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.22);
+    background: #fff; font-family: var(--espm-body); font-size: 10.5px; line-height: 1.22;
+    color: rgba(0,0,0,0.78); overflow-wrap: break-word; }
+  .es-old-node.is-root { background: var(--red); border-color: var(--red); color: var(--paper);
+    font-family: var(--espm-display); font-weight: 900; text-transform: uppercase; letter-spacing: -0.005em; }
+  .es-old-node.is-top { border-width: 2px; border-color: var(--magenta); color: var(--floor);
+    font-weight: 700; background: rgba(228,1,174,0.06); }
+  .es-old-node.is-dup { border-style: dashed; border-color: rgba(0,0,0,0.3);
+    background: transparent; color: rgba(0,0,0,0.45); font-style: italic; }
 
   .es-vt-fig { margin: 0;
     --vt-w: clamp(86px, 8.6vw, 112px);   /* every box the same width, so rows read as levels */
@@ -458,7 +493,7 @@ const ESPM_MAP_OLD = {
 const ESPM_MAP_NEW = {
   label: "Login",
   children: [
-    { label: "Serviços (?)", children: [
+    { label: "Serviços", children: [
       { label: "Financeiro" },
       { label: "Contato" },
       { label: "Requerimeto" },
@@ -486,6 +521,169 @@ const ESPM_MAP_NEW = {
     ]},
   ],
 };
+
+/* ── "before", laid out like the actual draw.io file instead of tidied
+   into a clean fan: same 22 nodes and edges as ESPM_MAP_OLD above (kept
+   there as the annotated source of truth), just positioned on a fixed grid
+   so Login and Institucional each visibly fan out to children sitting at
+   different depths down their own column — the real shape of the mess,
+   not a redrawn one. Two columns per branch (Login+Calendário on the
+   left, Institucional+Educação Continuada on the right), each child at
+   its own row; edges that skip a row jog out into the gap beside the
+   column and back in, instead of running straight through the box
+   between them. ── */
+/* columns, wide gaps: A/B (Login's own two lanes) and C/D (Institucional's)
+   each sit 100px apart — wide enough that a bypass line's offset (up to
+   ~60px past a box's edge) lands in open gutter, never behind the next
+   column's boxes. */
+const ESPM_OLD_NODES = [
+  { id: "tela", label: "Tela Inicial", x: 300, y: 0, root: true },
+  { id: "login", label: "Login", x: 0, y: 110, lvl1: true },
+  { id: "esqueci", label: "Esqueci minha senha", x: 250, y: 110, lvl1: true },
+  { id: "institucional", label: "Institucional", x: 600, y: 110, lvl1: true },
+  { id: "educ", label: "Educação Continuada", x: 850, y: 110 },
+  { id: "notas", label: "Notas e Faltas", x: 0, y: 220 },
+  { id: "pagina", label: "Página na WEB - portal ESPM", x: 250, y: 220 },
+  { id: "aespm", label: "A ESPM", x: 600, y: 220 },
+  { id: "mestrado", label: "Mestrado e Doutorado", x: 850, y: 220 },
+  { id: "carteirinha", label: "Carteirinha", x: 0, y: 330 },
+  { id: "calendario", label: "Calendário", x: 250, y: 330 },
+  { id: "vestibular", label: "Vestibular", x: 600, y: 330 },
+  { id: "educdist", label: "Educação à Distância", x: 850, y: 330 },
+  { id: "financeiro", label: "Financeiro", x: 0, y: 440 },
+  { id: "mais", label: "Mais", x: 250, y: 440 },
+  { id: "graduacao", label: "Graduação", x: 600, y: 440 },
+  { id: "paraempresas", label: "Para empresas", x: 850, y: 440 },
+  { id: "extrato", label: "Extrato", x: 0, y: 550 },
+  { id: "biblioteca", label: "Biblioteca", x: 250, y: 550 },
+  { id: "posgrad", label: "Pós graduação", x: 600, y: 550 },
+  { id: "faleconosco", label: "Fale conosco", x: 850, y: 550 },
+  { id: "ajuda", label: "Ajuda", x: 250, y: 660 },
+  { id: "instdup", label: "Institucional", x: 250, y: 770, dup: true, tag: "loops back ↑" },
+];
+
+/* every "skips a row or a column" edge below carries its own off — a small
+   index that staggers where its jog turns. without it, two edges leaving
+   the same parent toward the same column share their first stretch of line
+   exactly (one path is a literal prefix of the other), which reads as a
+   chain — B hanging off A — instead of the truth, that A alone fans out to
+   both at different depths. staggering the turn keeps every fan-out edge
+   visually distinct along its whole length. */
+const ESPM_OLD_EDGES = [
+  { from: "tela", to: "login" },
+  { from: "tela", to: "esqueci" },
+  { from: "tela", to: "institucional" },
+  { from: "login", to: "notas" },
+  { from: "login", to: "carteirinha", kind: "bypass", off: 0 },
+  { from: "login", to: "financeiro", kind: "bypass", off: 1 },
+  { from: "financeiro", to: "extrato" },
+  { from: "login", to: "calendario" },
+  { from: "calendario", to: "mais" },
+  { from: "mais", to: "biblioteca" },
+  { from: "mais", to: "ajuda", kind: "bypass", off: 0 },
+  { from: "esqueci", to: "pagina" },
+  { from: "institucional", to: "educ", kind: "h" },
+  { from: "institucional", to: "aespm" },
+  { from: "institucional", to: "vestibular", kind: "bypass", off: 0 },
+  { from: "institucional", to: "graduacao", kind: "bypass", off: 1 },
+  { from: "institucional", to: "posgrad", kind: "bypass", off: 2 },
+  { from: "institucional", to: "mestrado", kind: "far", off: 0 },
+  { from: "institucional", to: "educdist", kind: "far", off: 1 },
+  { from: "institucional", to: "paraempresas", kind: "far", off: 2 },
+  { from: "institucional", to: "faleconosco", kind: "far", off: 3 },
+];
+
+/* the loop-back is drawn on its own, dashed and violet, since it isn't a
+   real edge in the tree — it's the duplicate dead end pointing back up. */
+const ESPM_OLD_LOOP = { from: "instdup", to: "institucional" };
+
+function espmOldEdgePath(a, b, edge) {
+  const kind = edge.kind, off = edge.off || 0;
+  if (kind === "h") {
+    const y = a.y + 22;
+    return `M ${a.x + 150} ${y} L ${b.x} ${y}`;
+  }
+  if (kind === "bypass") {
+    // out the parent's right edge, down at an offset unique to this edge, back
+    // in at the child's right edge — a clean detour around whatever sits
+    // between them in the same column.
+    const y1 = a.y + 22, y2 = b.y + 22, ox = a.x + 150 + 32 + off * 12;
+    return `M ${a.x + 150} ${y1} L ${ox} ${y1} L ${ox} ${y2} L ${b.x + 150} ${y2}`;
+  }
+  if (kind === "far") {
+    // same idea, one column further out: past the whole neighboring column
+    // (not just the one box) and back in from its right edge, since the
+    // target itself sits a column away from the parent. anchored on the
+    // target's own right edge (b.x + 150) so it tracks the grid instead of
+    // a number that only matched one particular layout.
+    const ax = a.x + 75, ay = a.y + 44, dy = 16 + off * 10;
+    const farX = b.x + 150 + 24 + off * 16, y2 = b.y + 22;
+    return `M ${ax} ${ay} V ${ay + dy} H ${farX} V ${y2} L ${b.x + 150} ${y2}`;
+  }
+  const ax = a.x + 75, ay = a.y + 44;
+  const bx = b.x + 75, by = b.y;
+  if (ax === bx) return `M ${ax} ${ay} L ${bx} ${by}`;
+  return `M ${ax} ${ay} V ${ay + 16} H ${bx} V ${by}`;
+}
+
+function EspmOldNode({ n }) {
+  return (
+    <div className={"es-old-node"
+      + (n.root ? " is-root" : "")
+      + (n.lvl1 ? " is-top" : "")
+      + (n.dup ? " is-dup" : "")}
+      style={{ left: n.x, top: n.y }}>
+      <span>{n.label}</span>
+      {n.tag && <span className="es-vt-tag">{n.tag}</span>}
+    </div>
+  );
+}
+
+function EspmOldFlowDiagram({ label }) {
+  /* the canvas is laid out full-size (W×H) so every offset above stays easy
+     to reason about, then scaled down as one block — text, boxes and lines
+     together — so the whole "before" map reads at a glance instead of
+     forcing a long vertical scroll to see it end to end. the wrapper is
+     sized to the SCALED footprint so the page doesn't reserve the
+     unscaled height as blank space; only width still scrolls, same as
+     "after" and every other diagram on this page. */
+  const W = 1150, H = 830, SCALE = 0.66;
+  const byId = Object.fromEntries(ESPM_OLD_NODES.map((n) => [n.id, n]));
+  const loopA = byId[ESPM_OLD_LOOP.from], loopB = byId[ESPM_OLD_LOOP.to];
+  return (
+    <figure style={{ margin: 0 }}>
+      <div className="es-old-scroll">
+        <div className="es-old-scaler" style={{ width: W * SCALE, height: H * SCALE }}>
+        <div className="es-old-canvas" style={{ width: W, height: H, transform: `scale(${SCALE})` }} role="img" aria-label={label}>
+          <svg className="es-old-svg" viewBox={`0 0 ${W} ${H}`} width={W} height={H} aria-hidden="true">
+            <defs>
+              <marker id="es-old-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4"
+                orient="auto-start-reverse">
+                <path d="M0,0 L8,4 L0,8 Z" fill="rgba(0,0,0,0.38)" />
+              </marker>
+              <marker id="es-old-arrow-v" markerWidth="8" markerHeight="8" refX="6" refY="4"
+                orient="auto-start-reverse">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#b817cd" />
+              </marker>
+            </defs>
+            {ESPM_OLD_EDGES.map((e, i) => (
+              <path key={i} d={espmOldEdgePath(byId[e.from], byId[e.to], e)}
+                fill="none" stroke="rgba(0,0,0,0.34)" strokeWidth="1.5"
+                markerEnd="url(#es-old-arrow)" />
+            ))}
+            <path d={`M ${loopA.x + 75} ${loopA.y} C ${loopA.x + 210} ${loopA.y - 120}, ${loopB.x + 150} ${loopA.y - 380}, ${loopB.x + 150} ${loopB.y + 44}`}
+              fill="none" stroke="#b817cd" strokeWidth="1.5" strokeDasharray="3 3"
+              markerEnd="url(#es-old-arrow-v)" />
+            <text x={loopA.x + 40} y={loopA.y - 390} fill="#b817cd" fontSize="8" letterSpacing="0.6"
+              fontFamily="var(--espm-quirk)" style={{ textTransform: "uppercase" }}>loops back ↑</text>
+          </svg>
+          {ESPM_OLD_NODES.map((n) => <EspmOldNode key={n.id} n={n} />)}
+        </div>
+        </div>
+      </div>
+    </figure>
+  );
+}
 
 /* which of the two connector idioms a group gets. the rule is about what
    the group CONTAINS, not how deep it sits:
@@ -533,13 +731,12 @@ function EspmTreeNode({ node, depth }) {
   );
 }
 
-function EspmTree({ root, label, note }) {
+function EspmTree({ root, label }) {
   return (
     <figure className="es-vt-fig">
       <div className="es-vt-scroll" role="img" aria-label={label}>
         <ul className="es-vt"><EspmTreeNode node={root} depth={0} /></ul>
       </div>
-      {note && <figcaption className="es-sm-note">{note}</figcaption>}
     </figure>
   );
 }
@@ -675,12 +872,18 @@ function EspmCase({ spec, onAsk }) {
             nothing else. nested inside es-wrap for the same rail-clearing
             reason as the screens section. */}
         <div className="es-wrap">
-          <div className="es-sm-head"><span className="es-chip sm">sitemap · before</span></div>
-          <EspmTree root={ESPM_MAP_OLD} note="5 levels deep · 9 pages under one parent · 1 duplicate dead end"
-            label="Tree diagram of the legacy portal: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login holds Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone holds nine institutional pages." />
+          <div className="es-sm-head">
+            <span className="es-chip sm">sitemap · before</span>
+            <span className="es-sm-note">5 levels deep · 9 pages under one parent · 1 duplicate dead end</span>
+          </div>
+          <EspmOldFlowDiagram
+            label="Diagram of the legacy portal, redrawn as the original draw.io flow laid it out: Tela Inicial branches into Login, Esqueci minha senha and Institucional. Login fans out to Notas e Faltas, Carteirinha, Financeiro (with Extrato) and Calendário, which goes through Mais to Biblioteca, Ajuda and a dead-end Institucional duplicate that loops back to the top level. Institucional alone fans out to nine institutional pages, including Educação Continuada." />
 
-          <div className="es-sm-head"><span className="es-chip sm">sitemap · after</span></div>
-          <EspmTree root={ESPM_MAP_NEW} note="2 levels deep · every task one tap from home"
+          <div className="es-sm-head">
+            <span className="es-chip sm">sitemap · after</span>
+            <span className="es-sm-note">2 levels deep · every task one tap from home</span>
+          </div>
+          <EspmTree root={ESPM_MAP_NEW}
             label="Tree diagram of the redesigned app: Login into four task-first sections (Serviços, Outros, Academico, Tela Home), each holding its own pages and nothing deeper, validated with students before any hi-fi screen existed" />
         </div>
       </section>

@@ -487,8 +487,7 @@ const PROJECTS = {
       w: 1600,
       h: 955,
       pos: "22% 35%",
-      zoom: 1.5,
-      slot: 3
+      zoom: 1.5
     }, {
       kind: "proto",
       label: "números",
@@ -496,8 +495,7 @@ const PROJECTS = {
       src: "bmtax-mobile-2.png",
       w: 560,
       h: 1132,
-      fit: "contain",
-      slot: 4
+      fit: "contain"
     }, {
       kind: "shot",
       label: "blog",
@@ -506,13 +504,11 @@ const PROJECTS = {
       w: 1600,
       h: 882,
       pos: "78% 50%",
-      zoom: 1.4,
-      slot: 6
+      zoom: 1.4
     }, {
       kind: "note",
       label: "note",
-      caption: "blueprint, not brochure",
-      slot: 5
+      caption: "blueprint, not brochure"
     }]
   },
   "espm": {
