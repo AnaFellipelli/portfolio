@@ -475,6 +475,10 @@ function FolderCard({
     "--f-ink": pal.ink
   };
   const tabName = p.name.replace(/\.$/, "");
+  /* route off the project's own canonical question, never off its display name —
+     a name with a space in it ("bm tax") used to fall through the keyword
+     matcher and land on the about page. */
+  const askQ = p.ask || "tell me about " + tabName;
   const canHover = typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
   return /*#__PURE__*/React.createElement("div", {
     className: "folder-cell"
@@ -483,19 +487,15 @@ function FolderCard({
     style: style,
     onClick: () => {
       if (diving) return;
-      if (isCase) {
-        dive("open the full weave case");
-        return;
-      }
-      if (canHover) {
-        dive("tell me about " + tabName);
+      if (canHover || isCase) {
+        dive(askQ);
         return;
       }
       if (!open) {
         setOpen(true);
         return;
       }
-      dive("tell me about " + tabName);
+      dive(askQ);
     },
     onMouseLeave: () => {
       if (!diving) setOpen(false);

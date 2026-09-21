@@ -88,7 +88,7 @@ const __RLV_STYLE = `
   .rlvx :focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
 
   .rl-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .rl-wrap { padding-left: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */

@@ -8,6 +8,7 @@
 const PROJECTS = {
   "weave": {
     name: "weave.",
+    ask: "open the full weave case",
     platforms: ["saas", "desktop", "mobile"],
     category: "design system",
     year: "2022–25",
@@ -209,6 +210,7 @@ const PROJECTS = {
   },
   "manychat-ds": {
     name: "manyfest.",
+    ask: "tell me about manyfest",
     displayName: "manychat",
     platforms: ["desktop", "ios", "android"],
     category: "design system",
@@ -266,6 +268,7 @@ const PROJECTS = {
   },
   "releve": {
     name: "(r)elevē.",
+    ask: "tell me about releve",
     platforms: ["web"],
     category: "ai",
     year: "2026",
@@ -322,6 +325,7 @@ const PROJECTS = {
   },
   "canal": {
     name: "canal.",
+    ask: "tell me about canal",
     platforms: ["desktop", "mobile"],
     category: "e-commerce",
     year: "2023",
@@ -383,6 +387,7 @@ const PROJECTS = {
   },
   "baw": {
     name: "baw.",
+    ask: "tell me about baw",
     platforms: ["desktop", "mobile"],
     category: "e-commerce",
     year: "2024",
@@ -441,6 +446,7 @@ const PROJECTS = {
   },
   "bmtax": {
     name: "bm tax.",
+    ask: "tell me about bmtax",
     platforms: ["desktop", "mobile"],
     category: "website",
     year: "2024",
@@ -459,39 +465,59 @@ const PROJECTS = {
     items: [{
       kind: "shot",
       label: "home",
-      caption: "bm tax",
-      src: "bmtax-home.png",
+      caption: "simplificando o universo tributário",
+      src: "bmtax-home.jpg",
       w: 1600,
-      h: 1000
-    }, {
-      kind: "shot",
-      label: "expertise",
-      caption: "the five verticals",
-      src: "bmtax-expertise.png",
-      w: 1600,
-      h: 1000
+      h: 812,
+      pos: "50% 45%",
+      zoom: 1.25
     }, {
       kind: "proto",
       label: "mobile",
       caption: "home · mobile",
       src: "bmtax-mobile-1.png",
-      w: 800,
-      h: 1600
+      w: 560,
+      h: 1132,
+      fit: "contain"
+    }, {
+      kind: "shot",
+      label: "time",
+      caption: "nosso ✕ time",
+      src: "bmtax-time.jpg",
+      w: 1600,
+      h: 955,
+      pos: "22% 35%",
+      zoom: 1.5,
+      slot: 3
     }, {
       kind: "proto",
-      label: "mobile",
-      caption: "expertise · mobile",
+      label: "números",
+      caption: "nossos números",
       src: "bmtax-mobile-2.png",
-      w: 800,
-      h: 1600
+      w: 560,
+      h: 1132,
+      fit: "contain",
+      slot: 4
+    }, {
+      kind: "shot",
+      label: "blog",
+      caption: "inteligência tributária",
+      src: "bmtax-blog.jpg",
+      w: 1600,
+      h: 882,
+      pos: "78% 50%",
+      zoom: 1.4,
+      slot: 6
     }, {
       kind: "note",
       label: "note",
-      caption: "blueprint, not brochure"
+      caption: "blueprint, not brochure",
+      slot: 5
     }]
   },
   "espm": {
     name: "espm.",
+    ask: "tell me about espm",
     platforms: ["mobile"],
     category: "research",
     year: "2021",
@@ -565,14 +591,6 @@ const MOCK_RESPONSES = {
     items: ["manychat-ds"],
     doodles: []
   },
-  "projects|portfolio|show me your|your work|see your work|selected work|all your|everything you|your projects": {
-    layout: "gallery",
-    title: "selected work.",
-    subtitle: "two design systems, three platforms each, and the work in between",
-    intro: "every case page wears its project's skin. dive into each universe, and i'll tell you the messy parts if you ask.",
-    items: ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"],
-    doodles: []
-  },
   "fashion|commerce|e-commerce|ecommerce|retail|shop|store|brizza|fintech|payment|bank|money|finance": {
     layout: "themed-list",
     title: "studio brizza work.",
@@ -588,6 +606,14 @@ const MOCK_RESPONSES = {
       },
       rotation: 4
     }]
+  },
+  "projects|portfolio|show me your|your work|see your work|selected work|all your|everything you|your projects": {
+    layout: "gallery",
+    title: "selected work.",
+    subtitle: "two design systems, three platforms each, and the work in between",
+    intro: "every case page wears its project's skin. dive into each universe, and i'll tell you the messy parts if you ask.",
+    items: ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"],
+    doodles: []
   },
   "good at|strength|quality|superpower|great at|best at": {
     layout: "quality-showcase",
@@ -678,7 +704,7 @@ const MOCK_RESPONSES = {
     items: ["baw"],
     doodles: []
   },
-  "tell me about bmtax|^bmtax|^bm tax|bmtax website|tax intelligence": {
+  "bm\\s?tax|bmtax|tax intelligence|estúdio brizza website|estudio brizza website": {
     layout: "bmtax-case",
     title: "bm tax.",
     subtitle: "bm tax · estúdio brizza · 2024",

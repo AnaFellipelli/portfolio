@@ -117,7 +117,7 @@ function ContactFlyer({ spec }) {
         {/* right — the contact itself */}
         <div className="flc-right">
           <h1 className="flc-title">let's talk.</h1>
-          <p className="flc-sub">product design, design systems, and ai — tell me what you're building.</p>
+          <p className="flc-sub">product design, design systems, and ai. tell me what you're building.</p>
 
           <div className="flc-rows">
         <button

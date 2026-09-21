@@ -53,7 +53,7 @@ function ProjectCard({
   const showImg = thumbSrc && !broken;
   return /*#__PURE__*/React.createElement("div", {
     className: "proj-card",
-    onClick: () => onAsk && onAsk("tell me about " + p.name.replace(".", ""))
+    onClick: () => onAsk && onAsk(p.ask || "tell me about " + p.name.replace(/\.$/, ""))
   }, /*#__PURE__*/React.createElement("div", {
     className: "proj-thumb" + (showImg ? " has-img" : "")
   }, showImg ? /*#__PURE__*/React.createElement("img", {
@@ -72,51 +72,35 @@ function ProjectCard({
   }, p.desc));
 }
 
-/* ---------- next-project footer (shared across every project/case page) ---------- */
-const PROJECT_NAV = [{
-  id: "manychat-ds",
-  label: "manyfest.",
-  q: "tell me about manychat"
-}, {
-  id: "weave",
-  label: "weave.",
-  q: "open the full weave case"
-}, {
-  id: "releve",
-  label: "(r)elevē.",
-  q: "tell me about releve"
-}, {
-  id: "espm",
-  label: "espm.",
-  q: "tell me about espm"
-}, {
-  id: "canal",
-  label: "canal.",
-  q: "tell me about canal"
-}, {
-  id: "baw",
-  label: "baw.",
-  q: "tell me about baw"
-}, {
-  id: "bmtax",
-  label: "bm tax.",
-  q: "tell me about bmtax"
-}];
+/* ---------- next-project footer (shared across every project/case page) ----------
+   the nav order lives here, but every label and every question is read straight
+   off PROJECTS, so a footer link can never drift from the project it points at.
+   (it used to carry its own hand-typed `q` per row — one typo away from a dead
+   link, and exactly how bm tax got stranded.) */
+const PROJECT_NAV_ORDER = ["manychat-ds", "weave", "releve", "espm", "canal", "baw", "bmtax"];
+const PROJECT_NAV = PROJECT_NAV_ORDER.filter(id => typeof PROJECTS !== "undefined" && PROJECTS[id]).map(id => ({
+  id,
+  label: PROJECTS[id].name,
+  q: PROJECTS[id].ask || "tell me about " + PROJECTS[id].name.replace(/\.$/, "")
+}));
 function NextProjectFooter({
   currentId,
   onAsk
 }) {
   const idx = PROJECT_NAV.findIndex(p => p.id === currentId);
-  if (idx === -1) return null;
+  if (idx === -1 || PROJECT_NAV.length < 2) return null;
   const next = PROJECT_NAV[(idx + 1) % PROJECT_NAV.length];
   const others = PROJECT_NAV.filter(p => p.id !== currentId && p.id !== next.id);
+  const go = q => {
+    if (onAsk) onAsk(q);
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "proj-footer"
   }, /*#__PURE__*/React.createElement("span", {
     className: "pf-label"
   }, "next project"), /*#__PURE__*/React.createElement("button", {
     className: "pf-next-link",
-    onClick: () => onAsk && onAsk(next.q)
+    onClick: () => go(next.q)
   }, next.label, /*#__PURE__*/React.createElement("span", {
     className: "arr"
   }, "→")), /*#__PURE__*/React.createElement("div", {
@@ -128,8 +112,28 @@ function NextProjectFooter({
   }, others.map(p => /*#__PURE__*/React.createElement("button", {
     className: "pf-pill",
     key: p.id,
-    onClick: () => onAsk && onAsk(p.q)
-  }, p.label)))));
+    onClick: () => go(p.q)
+  }, p.label)), /*#__PURE__*/React.createElement("button", {
+    className: "pf-pill",
+    onClick: () => go("show me your work")
+  }, "all work →"))), /*#__PURE__*/React.createElement("div", {
+    className: "pf-all pf-reach"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "pf-label"
+  }, "or reach me"), /*#__PURE__*/React.createElement("div", {
+    className: "pf-pills"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "pf-pill",
+    onClick: () => go("are you open to work")
+  }, "let's talk →"), /*#__PURE__*/React.createElement("a", {
+    className: "pf-pill",
+    href: "mailto:anacristinafellipelli@gmail.com"
+  }, "email ↗"), /*#__PURE__*/React.createElement("a", {
+    className: "pf-pill",
+    href: "https://www.linkedin.com/in/ana-fellipelli/",
+    target: "_blank",
+    rel: "noreferrer noopener"
+  }, "linkedin ↗"))));
 }
 
 /* ---------- justified image grid: the Flickr/Google-Photos technique.

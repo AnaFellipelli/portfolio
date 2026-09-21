@@ -66,7 +66,7 @@ const __BAW_STYLE = `
   /* the left inset clears the fixed rail; the right inset was far smaller, which made
      every band look pushed against the right edge. both are generous now. */
   .bw-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 9vw, 150px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 9vw, 150px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .bw-wrap { padding-left: clamp(24px, 5vw, 72px);
     padding-right: clamp(24px, 5vw, 72px); } }
 
@@ -151,9 +151,13 @@ const __BAW_STYLE = `
   @keyframes bawTicker { to { transform: translateX(-50%); } }
 
   /* ── screens — the UI showcase: everything visible, composed big ── */
-  .bw-wide { max-width: 1500px; margin: 0 auto;
+  .bw-wide { max-width: 1760px; margin: 0 auto;
     padding: 0 clamp(16px, 3vw, 48px); display: flex; flex-direction: column;
     gap: clamp(40px, 6vw, 88px); }
+  /* the section rail is position:fixed at the viewport's left edge and only
+     exists above 1100px, so wide media has to start clear of it instead of
+     running underneath the labels */
+  @media (min-width: 1101px) { .bw-wide { padding-left: 212px; } }
   .bw-shot { border: 1.5px solid var(--ink); overflow: hidden; line-height: 0;
     background: var(--concrete); }
   .bw-shot.bare { border: none; background: transparent; }
@@ -164,6 +168,26 @@ const __BAW_STYLE = `
   .bw-duo { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 56px);
     max-width: 980px; margin: 0 auto; width: 100%; }
   @media (max-width: 640px){ .bw-duo { grid-template-columns: 1fr; } }
+
+  /* ── screens, take two — full-bleed bands, same configuration as the manyfest
+     case (.mnf-full): each capture runs the full viewport, the band's own left
+     padding clears the fixed rail, and the band's background is sampled from
+     that capture's own canvas so there's no seam between page and photo. ── */
+  .bw-full { margin-top: 12px; margin-bottom: 0;
+    padding: 0;
+    padding-left: max(212px, clamp(24px, 15vw, 240px));
+    margin-left: calc(-1 * (max((100vw - 1280px) / 2, 0px) + max(212px, clamp(24px, 15vw, 240px))));
+    margin-right: calc(-1 * (max((100vw - 1280px) / 2, 0px) + clamp(24px, 9vw, 150px))); }
+  .bw-full + .bw-full { margin-top: 0; }
+  @media (max-width: 1100px){ .bw-full { padding-left: 0;
+    margin-left: calc(-1 * clamp(24px, 5vw, 72px));
+    margin-right: calc(-1 * clamp(24px, 5vw, 72px)); } }
+  /* sized down to fit a desktop viewport: these are 3D device-mockup renders
+     (roughly 4:3), not wide screenshots, so full width alone made them taller
+     than the viewport. capping height and letting width follow keeps them
+     centered inside the full-bleed band instead of forcing a giant scroll. */
+  .bw-full img { display: block; width: auto; height: auto;
+    max-width: 100%; max-height: min(640px, 68vh); margin: 0 auto; border: 0; }
 
   /* ── process — double diamond, four beats ── */
   .bw-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -343,80 +367,79 @@ function BawCase({
     className: "bw-chip"
   }, "the screens · 01"), /*#__PURE__*/React.createElement("span", {
     className: "bw-count"
-  }, "5 captures"), /*#__PURE__*/React.createElement("h2", {
+  }, "6 captures"), /*#__PURE__*/React.createElement("h2", {
     className: "bw-h2"
   }, "Loud, and it still converts."), /*#__PURE__*/React.createElement("p", {
     className: "bw-lede"
   }, "Every image below is the shipped product: mobile and desktop, framed as captured. Street photography carries the noise; the UI stays ink-on-chalk so the products and the pictures do the talking.")), /*#__PURE__*/React.createElement("div", {
-    className: "bw-wide"
+    className: "bw-wrap"
   }, /*#__PURE__*/React.createElement("figure", {
-    className: "bw-fig",
+    className: "bw-full",
     style: {
-      margin: 0
+      background: "#eeefe9"
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bw-shot bare"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "baw-1.png",
-    alt: "BAW homepage: desktop and two mobile screens composed over gas-station street photography, slogan 'we make noise not fashion'",
-    loading: "lazy"
-  })), /*#__PURE__*/React.createElement("figcaption", {
-    className: "bw-cap"
-  }, "home · the composed storefront · mobile + desktop")), /*#__PURE__*/React.createElement("figure", {
-    className: "bw-fig",
+    src: "images-baw/BAW1.jpg",
+    alt: "BAW homepage, full desktop scroll composed in two panes: the street-photography hero carousel with the 'we make noise not fashion' slogan bands, then the calçados and novidades carousels down to the footer",
+    loading: "lazy",
+    width: "2600",
+    height: "1172"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bw-full",
     style: {
-      margin: 0
+      background: "#b6a2dd"
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bw-shot"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "baw-2.png",
-    alt: "Desktop product page: cropped t-shirt, colorway swatches, size row and green COMPRAR marquee band",
-    loading: "lazy"
-  })), /*#__PURE__*/React.createElement("figcaption", {
-    className: "bw-cap"
-  }, "pdp · desktop · swatch column, size row, the comprar marquee band")), /*#__PURE__*/React.createElement("div", {
-    className: "bw-duo"
-  }, /*#__PURE__*/React.createElement("figure", {
-    className: "bw-fig",
+    src: "images-baw/baw2.jpg",
+    alt: "Two tilted mobile screens in phone frames: the search overlay with autocomplete suggestions and a product results grid, overlapping the street-photography home hero reading 'we make noise not fashion' with the cart drawer and checkout total open on top, on a lavender background",
+    loading: "lazy",
+    width: "2400",
+    height: "1800"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bw-full",
     style: {
-      margin: 0
+      background: "#b7a3de"
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bw-shot bare"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "baw-3.png",
-    alt: "Mobile product page in a phone frame: price, colorway swatches and product photography",
-    loading: "lazy"
-  })), /*#__PURE__*/React.createElement("figcaption", {
-    className: "bw-cap"
-  }, "pdp · mobile · thumb-first hierarchy")), /*#__PURE__*/React.createElement("figure", {
-    className: "bw-fig",
+    src: "images-baw/BAW3.jpg",
+    alt: "Desktop search overlay with autocomplete suggestions and product results, overlapped with the cart drawer showing the comprar checkout band, on a lavender background",
+    loading: "lazy",
+    width: "2400",
+    height: "1800"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bw-full",
     style: {
-      margin: 0
+      background: "#d6d7d2"
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bw-shot bare"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "baw-4.png",
-    alt: "Mobile category listing for camisetas: photographic category header over a two-column product grid",
-    loading: "lazy"
-  })), /*#__PURE__*/React.createElement("figcaption", {
-    className: "bw-cap"
-  }, "plp · mobile · 1032 produtos, photographic headers"))), /*#__PURE__*/React.createElement("figure", {
-    className: "bw-fig",
+    src: "images-baw/BAW4.jpg",
+    alt: "Two desktop pages overlapped: a homepage grid of street-style lookbook tiles with discount tags, and in front, a cropped t-shirt product page with color swatches, size row and a payment info panel",
+    loading: "lazy",
+    width: "2600",
+    height: "1950"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bw-full",
     style: {
-      margin: 0
+      background: "#282828"
     }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bw-shot"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "baw-5.png",
-    alt: "Desktop product carousel: ghost oversized 'CLASSICOS' headline behind a row of product cards with colorway swatches",
-    loading: "lazy"
-  })), /*#__PURE__*/React.createElement("figcaption", {
-    className: "bw-cap"
-  }, "plp · desktop · ghost headline bleeding behind the shelf")))), /*#__PURE__*/React.createElement("section", {
+    src: "images-baw/BAW5.jpg",
+    alt: "Two mobile screens in phone frames: the cart drawer with the green comprar band, and the search overlay with autocomplete suggestions",
+    loading: "lazy",
+    width: "2000",
+    height: "1500"
+  })), /*#__PURE__*/React.createElement("figure", {
+    className: "bw-full",
+    style: {
+      background: "#a995da"
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "images-baw/BAW6.jpg",
+    alt: "Two mobile screens in phone frames: a product page with size row and colorway swatches, and the 'você pode gostar' recommendations feeding into the newsletter signup",
+    loading: "lazy",
+    width: "2000",
+    height: "1500"
+  })))), /*#__PURE__*/React.createElement("section", {
     className: "bw-sec chalk",
     id: "bw-process"
   }, /*#__PURE__*/React.createElement("div", {

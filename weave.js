@@ -286,7 +286,7 @@ const __WV2_STYLE = `
 
   /* content column — leaves room for the fixed rail */
   .wv2-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px); }
+    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)); }
   @media (max-width: 1100px){ .wv2-wrap { padding-left: clamp(24px, 5vw, 72px); } }
 
   /* ── left rail ── */
@@ -546,7 +546,7 @@ const __WV2_STYLE = `
   /* ── the documentation band ── */
   .wv2-docs { margin-top: 58px; }
   .wv2-docs .wv2-wrap { max-width: 1280px; margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 72px) 0 clamp(24px, 15vw, 240px) !important; }
+    padding: 0 clamp(24px, 5vw, 72px) 0 max(212px, clamp(24px, 15vw, 240px)) !important; }
   .wv2-docs-head { margin-bottom: 14px; }
   .wv2-docs-lede { font-size: 15.5px; line-height: 1.65; opacity: .85; margin: 0 0 30px; }
   .wv2-docs-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
@@ -856,7 +856,7 @@ function WeaveCase({
     onClick: () => WvScrollTo("wv2-own")
   }, "ownership"), /*#__PURE__*/React.createElement("button", {
     onClick: () => WvScrollTo("wv2-live")
-  }, "the system, live"), /*#__PURE__*/React.createElement("button", {
+  }, "the system"), /*#__PURE__*/React.createElement("button", {
     onClick: () => WvScrollTo("wv2-components")
   }, "components"), /*#__PURE__*/React.createElement("button", {
     onClick: () => WvScrollTo("wv2-access")
@@ -995,7 +995,7 @@ function WeaveCase({
     className: "wv2-wrap"
   }, /*#__PURE__*/React.createElement("span", {
     className: "wv2-chip"
-  }, "the system, live · 03"), /*#__PURE__*/React.createElement("h2", {
+  }, "the system · 03"), /*#__PURE__*/React.createElement("h2", {
     className: "wv2-h2"
   }, "Nine combinations. Try all of them."), /*#__PURE__*/React.createElement("p", {
     className: "wv2-live-note"
