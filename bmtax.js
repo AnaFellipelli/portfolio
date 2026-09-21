@@ -98,9 +98,11 @@ const __BMT_STYLE = `
   /* screens → process is a light-to-light handoff (paper → white, no color break
      to sell it as a section change), so the two sections' standard 96/110px
      padding stacked into one oversized gap after the last screenshot.
-     tightened just for this pair. */
+     tightened just for this pair — but the chip still needs its own
+     breathing room off the seam, so process keeps a reduced top pad instead
+     of zeroing it outright. */
   #bt-screens { padding-bottom: 0; }
-  #bt-process { padding-top: 0; }
+  #bt-process { padding-top: 64px; }
   /* the hairlines are the page's grid: they sit in the GUTTERS, 44px outside the
      content column, so they frame the copy instead of slicing through a headline. */
   .bt-sec .rule-v { position: absolute; top: 0; bottom: 0; width: 1px;

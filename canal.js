@@ -206,9 +206,11 @@ const __CNL_STYLE = `
 
   /* screens → process: the shared .cn-sec padding (96px top + 110px bottom) was
      stacking at this seam alone (mist's 110 + paper's 96 = 206px dead band).
-     tightened just here so the images sit close to the process copy. */
+     tightened just here so the images sit close to the process copy — but the
+     chip still needs its own breathing room off the seam, so process keeps a
+     reduced top pad instead of zeroing it outright. */
   #cn-screens { padding-bottom: 0; }
-  #cn-process { padding-top: 0; }
+  #cn-process { padding-top: 64px; }
 
   /* ── process — four beats, hairline-topped like the menu's dividers ── */
   .cn-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }

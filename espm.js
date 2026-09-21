@@ -103,9 +103,11 @@ const __ESPM_STYLE = `
   /* screens → decisions is a dark-to-dark handoff (glass → floor, no color
      break to sell it as a section change), so the two sections' standard
      96/110px padding stacked into one oversized gap after the last
-     screenshot. tightened just for this pair. */
+     screenshot. tightened just for this pair — but the chip still needs its
+     own breathing room off the seam, so decisions keeps a reduced top pad
+     instead of zeroing it outright. */
   #es-screens { padding-bottom: 0; }
-  #es-decisions { padding-top: 0; }
+  #es-decisions { padding-top: 64px; }
   .es-chip { display: inline-block; font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.22em; text-transform: uppercase; color: inherit;
     border: 1px solid currentColor; border-radius: 999px; padding: 8px 16px;

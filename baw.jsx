@@ -87,9 +87,11 @@ const __BAW_STYLE = `
   /* screens → process is a light-to-light handoff (concrete → chalk, no color
      break to sell it as a section change), so the two sections' standard
      96/110px padding stacked into one oversized gap after the last
-     screenshot. tightened just for this pair. */
+     screenshot. tightened just for this pair — but the chip still needs its
+     own breathing room off the seam, so process keeps a reduced top pad
+     instead of zeroing it outright. */
   #bw-screens { padding-bottom: 0; }
-  #bw-process { padding-top: 0; }
+  #bw-process { padding-top: 64px; }
   .bw-chip { display: inline-block; font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.22em; text-transform: uppercase; color: inherit;
     border: 1px solid currentColor; padding: 8px 14px; margin-bottom: 30px; opacity: .85; }
