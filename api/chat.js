@@ -14,6 +14,28 @@ const MODEL = "claude-haiku-4-5-20251001";
 // don't take the site down again.
 const GEMINI_MODEL = "gemini-3.5-flash-lite";
 const MAX_QUESTION_LENGTH = 400;
+/* the browser gives up on this endpoint after 7s (app.jsx CHAT_TIMEOUT_MS), so
+   an upstream that takes longer is only burning a serverless invocation and,
+   on gemini's free tier, quota. measured sep 2026: one call ran 38.6s and later
+   ones never returned at all. cap every upstream hop. */
+const UPSTREAM_TIMEOUT_MS = 6000;
+
+async function fetchWithTimeout(url, init, ms) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), ms || UPSTREAM_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: ctl.signal });
+  } catch (e) {
+    if (e.name === "AbortError") {
+      const err = new Error("upstream timeout after " + (ms || UPSTREAM_TIMEOUT_MS) + "ms");
+      err.upstreamStatus = 504;
+      throw err;
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 const RENDER_PAGE_TOOL = {
   name: "render_page",
@@ -130,8 +152,8 @@ function normalizeSpec(raw) {
 
 /* ── provider calls: both return the raw page-spec object (or null) ── */
 
-async function askClaude(question, apiKey) {
-  const upstream = await fetch("https://api.anthropic.com/v1/messages", {
+async function askClaude(question, apiKey, budgetMs) {
+  const upstream = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -147,7 +169,7 @@ async function askClaude(question, apiKey) {
       tool_choice: { type: "tool", name: "render_page" },
       messages: [{ role: "user", content: question }],
     }),
-  });
+  }, budgetMs);
   if (!upstream.ok) {
     // grab the body so the vercel log shows WHY (invalid key, no credits, rate limit, etc.)
     const body = await upstream.text().catch(() => "");
@@ -178,11 +200,11 @@ const GEMINI_SCHEMA = {
   required: ["layout", "title", "subtitle", "intro", "answer"],
 };
 
-async function askGemini(question, apiKey, retried) {
+async function askGemini(question, apiKey, retried, budgetMs) {
   const url =
     "https://generativelanguage.googleapis.com/v1beta/models/" +
     GEMINI_MODEL + ":generateContent?key=" + encodeURIComponent(apiKey);
-  const upstream = await fetch(url, {
+  const upstream = await fetchWithTimeout(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -200,12 +222,16 @@ async function askGemini(question, apiKey, retried) {
         responseSchema: GEMINI_SCHEMA,
       },
     }),
-  });
+  }, budgetMs);
   if (!upstream.ok) {
-    // free-tier rate limit or transient overload: wait once and retry
-    if (!retried && (upstream.status === 429 || upstream.status === 503)) {
-      await new Promise((r) => setTimeout(r, 1500));
-      return askGemini(question, apiKey, true);
+    /* free-tier rate limit or transient overload: one quick retry, and only if
+       there's still time left in the request's budget. the old 1500ms wait plus
+       a second full-length call put the total past what the browser waits for,
+       so the retry could only ever arrive too late to be used. */
+    const left = (budgetMs || UPSTREAM_TIMEOUT_MS) - 400;
+    if (!retried && left > 1200 && (upstream.status === 429 || upstream.status === 503)) {
+      await new Promise((r) => setTimeout(r, 400));
+      return askGemini(question, apiKey, true, left);
     }
     const body = await upstream.text().catch(() => "");
     console.error("[chat] gemini upstream", upstream.status, body.slice(0, 400));
@@ -247,19 +273,24 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  /* one shared budget for the whole request, so a claude failure followed by a
+     gemini attempt can't add up to two full timeouts back to back */
+  const deadline = Date.now() + UPSTREAM_TIMEOUT_MS;
+  const left = () => Math.max(500, deadline - Date.now());
+
   try {
     let raw;
     if (anthropicKey) {
       try {
-        raw = await askClaude(question, anthropicKey);
+        raw = await askClaude(question, anthropicKey, left());
       } catch (e) {
         // if claude fails and gemini is also configured, fall through instead of 502
         if (!geminiKey) throw e;
         console.error("[chat] claude failed, trying gemini:", e.message);
-        raw = await askGemini(question, geminiKey);
+        raw = await askGemini(question, geminiKey, false, left());
       }
     } else {
-      raw = await askGemini(question, geminiKey);
+      raw = await askGemini(question, geminiKey, false, left());
     }
     res.status(200).json(normalizeSpec(raw));
   } catch (err) {

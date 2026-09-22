@@ -593,9 +593,34 @@ function App() {
     return () => clearInterval(id);
   }, [mode, stage, inputValue]);
 
+  /* ── how long we're willing to wait on the model before giving the visitor
+     the local answer instead. measured sep 2026: a cold / rate-limited
+     /api/chat took 38.6s, and repeat calls never came back at all, which is
+     what "projects take forever to load" actually was. nothing on this site
+     is allowed to block on it again. */
+  const CHAT_TIMEOUT_MS = 7000;
+  /* a background answer that lands later than this is thrown away: swapping the
+     copy under someone who's already reading is worse than not upgrading it. */
+  const UPGRADE_WINDOW_MS = 2500;
+
+  /* the local keyword mock in data.jsx already holds every real page, byte for
+     byte, so any question it recognises can render with zero network. only a
+     genuinely new question needs the model. */
+  const localSpec = q => {
+    if (typeof mockCompose !== "function") return null;
+    const s = mockCompose(q);
+    if (!s || !s._matched || /no match/.test(s._matched)) return null;
+    return s;
+  };
+
   /* asks the real (Claude-backed) endpoint for a PageSpec, falling back to the
-     local keyword mock if there's no backend configured or the call fails */
+     local keyword mock if there's no backend configured, the call fails, or it
+     simply takes too long. `signal` still means "a newer question took over". */
   const fetchSpec = async (q, signal) => {
+    const bail = new AbortController();
+    const relay = () => bail.abort();
+    if (signal) signal.addEventListener("abort", relay);
+    const timer = setTimeout(() => bail.abort(), CHAT_TIMEOUT_MS);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -605,7 +630,7 @@ function App() {
         body: JSON.stringify({
           question: q
         }),
-        signal
+        signal: bail.signal
       });
       if (!res.ok) throw new Error("chat api error " + res.status);
       const spec = await res.json();
@@ -615,8 +640,16 @@ function App() {
         _question: q
       };
     } catch (e) {
-      if (e.name === "AbortError") throw e;
+      /* only a real supersede propagates; our own timeout falls back quietly */
+      if (signal && signal.aborted) {
+        const abort = new Error("superseded");
+        abort.name = "AbortError";
+        throw abort;
+      }
       return mockCompose(q);
+    } finally {
+      clearTimeout(timer);
+      if (signal) signal.removeEventListener("abort", relay);
     }
   };
   const submit = async q => {
@@ -636,6 +669,51 @@ function App() {
     const diving = typeof window !== "undefined" && window.__anaDive;
     if (diving) window.__anaDive = false;
     const minDelay = diving ? 0 : fromHero ? 800 : 560;
+
+    /* keep the URL shareable */
+    const syncRoute = spec => {
+      const route = specToRoute(spec);
+      const target = route ? "#" + route : "";
+      if (target && window.location.hash !== target) {
+        expectedHash.current = target;
+        window.location.hash = target;
+      }
+    };
+
+    /* ── FAST PATH ───────────────────────────────────────────────────────
+       every project page, the gallery, about and contact are already here in
+       data.jsx. opening one used to POST /api/chat and wait for the model to
+       hand back a page the browser could have drawn immediately. now it draws
+       immediately, and the model only gets to refine the wording afterwards
+       (in the visitor's language), if it's quick enough to matter. */
+    const local = localSpec(q);
+    if (local) {
+      /* start the model now so a fast answer is already in flight, but attach
+         the handler only AFTER the page is on screen — the model often beats
+         the loading beat, and at that point spec is still null, so swapping
+         then would land on nothing and be overwritten a moment later. */
+      const pending = fetchSpec(q, controller.signal).catch(() => null);
+      await sleep(minDelay); // her staged loading beat, unchanged
+      if (reqId.current !== myReq) return;
+      setSpec(local);
+      setMode("browse");
+      syncRoute(local);
+      const landed = Date.now();
+      pending.then(better => {
+        if (reqId.current !== myReq) return;
+        if (Date.now() - landed > UPGRADE_WINDOW_MS) return; // too late, don't yank the copy
+        if (!better || better.layout !== local.layout) return;
+        if (!better.answer || better.answer === local.answer) return;
+        setSpec(cur => cur && cur.layout === local.layout ? {
+          ...cur,
+          answer: better.answer
+        } : cur);
+      });
+      return;
+    }
+
+    /* ── free-text question: nothing local matches, so the model is the answer.
+       fetchSpec caps itself at CHAT_TIMEOUT_MS and falls back to the mock. */
     let next;
     try {
       [next] = await Promise.all([fetchSpec(q, controller.signal), sleep(minDelay)]);
@@ -646,14 +724,7 @@ function App() {
 
     setSpec(next);
     setMode("browse");
-
-    /* keep the URL shareable */
-    const route = specToRoute(next);
-    const target = route ? "#" + route : "";
-    if (target && window.location.hash !== target) {
-      expectedHash.current = target;
-      window.location.hash = target;
-    }
+    syncRoute(next);
   };
   const reset = () => {
     clearTimers();
