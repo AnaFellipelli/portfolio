@@ -808,7 +808,7 @@ function EspmCase({ spec, onAsk }) {
               </button>
             </div>
             <figure className="es-hero-shot">
-              <img src="Frame 1000005225.png" alt="ESPM student app, two composed iPhone screens: the gradient home dashboard and the color-coded calendar" />
+              <img src="Frame 1000005225.webp" alt="ESPM student app, two composed iPhone screens: the gradient home dashboard and the color-coded calendar" />
             </figure>
           </div>
         </div>

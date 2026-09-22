@@ -126,7 +126,7 @@ const WV_DROP_STILLS = new Set([
   "weave-datagrid-2.png",   // a seventh table (pagination, annotation crop)
   "weave-panel-2.png",      // 3KB, an all but empty frame
   "weave-skeleton.png",     // the recording already carries the loading story
-  "weave-skeleton-2.png",
+  "weave-skeleton-2.webp",
 ]);
 
 /* ---------- the components, moving ----------

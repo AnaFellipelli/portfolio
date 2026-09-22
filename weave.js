@@ -227,7 +227,7 @@ const WV_DROP_STILLS = new Set(["weave-autocomplete.png",
 // 3KB, an all but empty frame
 "weave-skeleton.png",
 // the recording already carries the loading story
-"weave-skeleton-2.png"]);
+"weave-skeleton-2.webp"]);
 
 /* ---------- the components, moving ----------
    recordings of the real prototypes. "lead" puts them across the top of the dive

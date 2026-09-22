@@ -1096,7 +1096,7 @@ function EspmCase({
   }, "Enroll →")), /*#__PURE__*/React.createElement("figure", {
     className: "es-hero-shot"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "Frame 1000005225.png",
+    src: "Frame 1000005225.webp",
     alt: "ESPM student app, two composed iPhone screens: the gradient home dashboard and the color-coded calendar"
   }))))), /*#__PURE__*/React.createElement("section", {
     className: "es-sec light",

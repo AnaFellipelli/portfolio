@@ -33,7 +33,7 @@ const PROJECTS = {
       kind: "shot",
       label: "skeleton",
       caption: "components + loading states",
-      src: "weave-skeleton-2.png",
+      src: "weave-skeleton-2.webp",
       w: 2201,
       h: 1184,
       pos: "92% 55%",
@@ -195,7 +195,7 @@ const PROJECTS = {
       kind: "shot",
       label: "spinner",
       caption: "indeterminate loader",
-      src: "weave-skeleton-2.png",
+      src: "weave-skeleton-2.webp",
       w: 2201,
       h: 1184
     }, {
@@ -226,7 +226,7 @@ const PROJECTS = {
       kind: "photo",
       label: "cover",
       caption: "manyfest ds",
-      src: "manyfest-cover.png",
+      src: "manyfest-cover.webp",
       w: 2000,
       h: 1144,
       pos: "12% 38%",
@@ -235,7 +235,7 @@ const PROJECTS = {
       kind: "proto",
       label: "mobile",
       caption: "manyme v.0 · onboarding",
-      src: "manyme-hello.png",
+      src: "manyme-hello.webp",
       w: 450,
       h: 920,
       fit: "contain"
@@ -243,7 +243,7 @@ const PROJECTS = {
       kind: "shot",
       label: "components",
       caption: "button · 144 variants",
-      src: "manyfest-buttons.png",
+      src: "manyfest-buttons.webp",
       w: 1616,
       h: 2048,
       pos: "45% 12%",
@@ -292,7 +292,7 @@ const PROJECTS = {
       kind: "proto",
       label: "review",
       caption: "correction timeline",
-      src: "releve-m2.png",
+      src: "releve-m2.webp",
       w: 724,
       h: 1674
     }, {
@@ -308,7 +308,7 @@ const PROJECTS = {
       kind: "proto",
       label: "home",
       caption: "technique score · streaks",
-      src: "releve-m1.png",
+      src: "releve-m1.webp",
       w: 712,
       h: 1706
     }, {
@@ -345,42 +345,42 @@ const PROJECTS = {
       kind: "photo",
       label: "mockup",
       caption: "canal concept",
-      src: "Frame 1000005235.png",
+      src: "Frame 1000005235.webp",
       w: 1813,
       h: 1813
     }, {
       kind: "photo",
       label: "store",
       caption: "canal concept",
-      src: "canal-1.png",
+      src: "canal-1.webp",
       w: 1359,
       h: 2394
     }, {
       kind: "proto",
       label: "nav",
       caption: "navigation",
-      src: "canal-2.png",
+      src: "canal-2.webp",
       w: 1359,
       h: 2394
     }, {
       kind: "proto",
       label: "pdp",
       caption: "compre junto",
-      src: "canal-3.png",
+      src: "canal-3.webp",
       w: 1359,
       h: 2394
     }, {
       kind: "shot",
       label: "desktop nav",
       caption: "desktop mega menu",
-      src: "canal-5.png",
+      src: "canal-5.webp",
       w: 2013,
       h: 1350
     }, {
       kind: "shot",
       label: "desktop pdp",
       caption: "desktop compre junto",
-      src: "canal-6.png",
+      src: "canal-6.webp",
       w: 1342,
       h: 900
     }]
@@ -407,35 +407,35 @@ const PROJECTS = {
       kind: "photo",
       label: "mockup",
       caption: "baw clothing",
-      src: "Frame 1000005236.png",
+      src: "Frame 1000005236.webp",
       w: 1578,
       h: 1578
     }, {
       kind: "photo",
       label: "home",
       caption: "we make noise",
-      src: "baw-1.png",
+      src: "baw-1.webp",
       w: 1486,
       h: 1208
     }, {
       kind: "shot",
       label: "pdp",
       caption: "product page",
-      src: "baw-2.png",
+      src: "baw-2.webp",
       w: 2678,
       h: 1624
     }, {
       kind: "proto",
       label: "mobile",
       caption: "moletons",
-      src: "baw-3.png",
+      src: "baw-3.webp",
       w: 796,
       h: 1596
     }, {
       kind: "proto",
       label: "camisetas",
       caption: "camisetas listing",
-      src: "baw-4.png",
+      src: "baw-4.webp",
       w: 796,
       h: 1596
     }, {
@@ -475,7 +475,7 @@ const PROJECTS = {
       kind: "proto",
       label: "mobile",
       caption: "home · mobile",
-      src: "bmtax-mobile-1.png",
+      src: "bmtax-mobile-1.webp",
       w: 560,
       h: 1132,
       fit: "contain"
@@ -492,7 +492,7 @@ const PROJECTS = {
       kind: "proto",
       label: "números",
       caption: "nossos números",
-      src: "bmtax-mobile-2.png",
+      src: "bmtax-mobile-2.webp",
       w: 560,
       h: 1132,
       fit: "contain"
@@ -532,35 +532,35 @@ const PROJECTS = {
       kind: "photo",
       label: "mockup",
       caption: "espm student app",
-      src: "Frame 1000005225.png",
+      src: "Frame 1000005225.webp",
       w: 1152,
       h: 1230
     }, {
       kind: "photo",
       label: "home",
       caption: "student app",
-      src: "espm-1.png",
+      src: "espm-1.webp",
       w: 934,
       h: 1860
     }, {
       kind: "proto",
       label: "calendar",
       caption: "calendar",
-      src: "espm-3.png",
+      src: "espm-3.webp",
       w: 934,
       h: 1860
     }, {
       kind: "proto",
       label: "dashboard",
       caption: "home dashboard",
-      src: "espm-4.png",
+      src: "espm-4.webp",
       w: 934,
       h: 1860
     }, {
       kind: "proto",
       label: "grades",
       caption: "marketing II exams",
-      src: "espm-5.png",
+      src: "espm-5.webp",
       w: 934,
       h: 1860
     }, {
